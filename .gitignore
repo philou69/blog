@@ -3,4 +3,6 @@
 app/parameters.php
 composer.json
 /vendor/*
-/var/*
+!vendor
+/var/cache/*
+!var
