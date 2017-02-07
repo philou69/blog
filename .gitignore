@@ -1,0 +1,6 @@
+
+.idea/
+app/parameters.php
+composer.json
+/vendor/*
+/var/*
