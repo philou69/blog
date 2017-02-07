@@ -8,7 +8,7 @@ class Commentaire
 {
     private $id;
     private $user;
-    private $text;
+    private $commentaire;
     private $chapitre;
     private $commentaireParent = null;
     private $signaled = false;
@@ -67,18 +67,18 @@ class Commentaire
     /**
      * @return mixed
      */
-    public function getText()
+    public function getCommentaire()
     {
-        return $this->text;
+        return $this->commentaire;
     }
 
     /**
-     * @param mixed $text
+     * @param mixed $commentaire
      */
-    public function setText($text)
+    public function setCommentaire($commentaire)
     {
-        if(is_string($text)){
-            $this->text = $text;
+        if(is_string($commentaire)){
+            $this->commentaire = $commentaire;
         }
     }
 

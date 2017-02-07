@@ -66,4 +66,20 @@ class UserManager
 
         return $users;
     }
+
+    public function findOneByUserName($username, $password){
+        $q = $this->db->prepare("SELECT id, username, mail, roles FROM User WHERE username = :username AND  password = :password");
+        $q->execute(array(":username" => $username,
+            ":password" => $password));
+        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
+
+        return new User($donnees);
+    }
+
+    public function findOneById($id){
+        $q = $this->db->prepare("SELECT id, username FROM User WHERE id = :id");
+        $q->execute(array(":id" => $id));
+        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
+        return new User($donnees);
+    }
 }

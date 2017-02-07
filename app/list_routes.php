@@ -10,9 +10,9 @@ $routes["index"] = ["method" => "get",
                 "url" => "/",
                 "controller" => "App:index"];
 
-$routes["episode"] = ["method" => "get",
-                "url" => "/episode/:id",
-                "controller" => "App:episode"];
+$routes["chapitre"] = ["method" => "get",
+                "url" => "/chapitre/:id",
+                "controller" => "App:chapitre"];
 $routes["add_commentaire"] = ["method" => "post",
                 "url" => "/commetaire",
                 "controller" => "App:add"];
