@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        {% block title %}Blog BSA{% endblock %}
+    </title>
+    <!-- appelle des cdn de bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    {% block link %}{% endblock %}
+    <style type="text/css">
+        {% block stylesheets %}
+        /* Margin haute au body pour descendre le contenu de la page sous la barre de navigation */
+        body {
+            padding-top: 80px;
+        }
+
+        {% endblock %}
+    </style>
+</head>
+    <body>
+    {# On inclue l'affichage de la navbar #}
+    {% include 'navbar.html.twig' %}
+    <div class="container">
+        {# block body qui sera rempli sur les differents fichiers de pages #}
+        {% block body %}
+        {% endblock %}
+    </div>
+    </body>
+</html>

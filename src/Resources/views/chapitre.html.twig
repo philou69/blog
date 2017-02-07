@@ -1,0 +1,40 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %} {{ chapitre.tilte }} {% endblock %}
+
+{% block body %}
+    <h1 class="center">{{ chapitre.title }}</h1>
+    <p>{{ chapitre.chapitre | e('html') }}</p>
+
+    <h2>Commentaires</h2>
+    {# le visiteur est connecter ?#}
+    {% if app.username != "visiteur" %}
+        <p>
+            <a href="/login">Connecter</a> vous pour laisser un commentaire sur se chapitre.
+        </p>
+    {% else %}
+        <form action="" method="post">
+            <label for="commentaire"> Votre commentaire</label>
+            <textarea name="commentaire" id="commentaire" cols="30" rows="10" required></textarea>
+            <input type="hidden" name="chapitre" id="chapitre" value="{{ chapitre.id }}" required>
+            <input type="submit" value="Envoyer">
+        </form>
+
+    {% endif %}
+    <ul>
+        {% for commentaire in listCommentaires %}
+            <p>
+                {{ commentaire.commentaire }}<br/>
+                <small>Ercit par : {{ commentaire.user.username }} le : {{ commentaire.created_at|date("d-mY") }}</small>
+            </p>
+            {% for commentaireEnfant in listCommentaires if commentaireEnfant.commentaireParent == commentaire.id %}
+                <p>
+                    enfant
+                    {{ commentaire.commentaire }}<br/>
+                    <small>Ercit par : {{ commentaire.user.username }} le : {{ commentaire.created_at|date("d-mY") }}</small>
+                </p>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+
+{% endblock %}

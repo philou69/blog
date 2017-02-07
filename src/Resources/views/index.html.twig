@@ -1,0 +1,29 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %} {{ parent() }} {% endblock %}
+
+{% block body %}
+    <h1>Bienvenue sur le blog de "Un billet simple pour l'Alaska"</h1>
+    <p>
+        {{ presentation.content }}
+    </p>
+
+    <h2>Les chapitres</h2>
+    <ul class="list-unstyled">
+        {% for chapitre in listChapitres %}
+                <li>
+                    <h4><a href="/chapitre/{{ chapitre.id }}"><h4>{{ chapitre.title }}</h4></a></h4>
+                    {% if chapitre.published_at > "now"|date("Y-m-d") %}
+                        <p>
+                            Le prochain chapitre est en cours d'écriture. Il sera diffusé le {{ chapitre.published_at| date('d-mY') }}.<br>
+                            En attendant n'hesiter pas à lire les autres articles.
+                        </p>
+                    {% else %}
+                        <p>
+                            {{ chapitre.chapitre | slice(0,50)  }}
+                        </p>
+                    {% endif %}
+                </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
