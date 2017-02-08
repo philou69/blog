@@ -21,8 +21,9 @@ class Controller
      * @param array $params
      * Fonction génerique permettant d'afficher une vue twig
      */
-    protected function render($view, $params = [])
+    protected function render($view, $params = [], $session)
     {
+        $this->twig->addGlobal('session', $session);
         $this->template = $this->twig->load($view);
         echo $this->template->render($params);
     }

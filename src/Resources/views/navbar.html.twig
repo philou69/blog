@@ -1,26 +1,31 @@
 <header>
-<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                Menu
-                <i class="glyphicon glyphicon-hamburger-menu"></i>
-            </button>
-            <a class="navbar-brand " href="#">Blog BSA</a>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    Menu
+                    <i class="glyphicon glyphicon-hamburger-menu"></i>
+                </button>
+                <a class="navbar-brand " href="#">Blog BSA</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li id="accueil">
+                        <a href="/"><i class="glyphicon glyphicon-home"></i> Accueil</a>
+                    {% if session.isconnected == false %}
+                        <li id="login">
+                            <a href="/login">Se connecter</a>
+                        </li>
+                        <li id="inscription">
+                            <a href="/inscription">S'inscrire</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="/logout">Se déconnecter</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav ">
-                <li id="accueil">
-                    <a href="/"><i class="glyphicon glyphicon-home"></i> Accueil</a>
-                </li>
-                <li id="login">
-                    <a href="/login">Se connecter</a>
-                </li>
-                <li id="inscription">
-                    <a href="/inscription">S'inscrire</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+    </nav>
 </header>

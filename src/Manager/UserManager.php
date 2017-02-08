@@ -26,7 +26,7 @@ class UserManager
                 ":username" => $user->getUsername(),
                 ":mail" => $user->getMail(),
                 ":password" => $user->getPassword(),
-                ":roles" => $user->serializeRoles()
+                ":roles" => $user->serializeRoles(),
             )
         );
     }
@@ -42,7 +42,7 @@ class UserManager
                 ":mail" => $user->getMail(),
                 ":passwprd" => $user->getPassword(),
                 ":roles" => $user->serializeRoles(),
-                ":id" => $user->getId()
+                ":id" => $user->getId(),
             )
         );
     }
@@ -67,18 +67,57 @@ class UserManager
         return $users;
     }
 
-    public function findOneByUserName($username, $password){
-        $q = $this->db->prepare("SELECT id, username, mail, roles FROM User WHERE username = :username AND  password = :password");
-        $q->execute(array(":username" => $username,
-            ":password" => $password));
+    public function findOneByUserName($username, $password)
+    {
+        $q = $this->db->prepare(
+            "SELECT id, username, mail, roles FROM User WHERE username = :username AND  password = :password"
+        );
+        $q->execute(
+            array(
+                ":username" => $username,
+                ":password" => $password,
+            )
+        );
         $donnees = $q->fetch(\PDO::FETCH_ASSOC);
+
         return new User($donnees);
     }
 
-    public function findOneById($id){
+    public function findOneById($id)
+    {
         $q = $this->db->prepare("SELECT id, username FROM User WHERE id = :id");
         $q->execute(array(":id" => $id));
         $donnees = $q->fetch(\PDO::FETCH_ASSOC);
+
         return new User($donnees);
+    }
+
+    public function findByUsernameOrMail($username, $mail)
+    {
+        $q = $this->db->prepare("SELECT id, username FROM User WHERE username = :username OR mail = :mail");
+        $q->execute(
+            array(
+                ":username" => $username,
+                ":mail" => $mail,
+            )
+        );
+        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
+        if (is_bool($donnees)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function findByMail($mail)
+    {
+        $q = $this->db->prepare("SELECT id, username FROM User WHERE mail = :mail");
+        $q->execute(array(":mail" => $mail));
+        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
+        if (is_bool($donnees)) {
+            return false;
+        }
+
+        return true;
     }
 }

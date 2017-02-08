@@ -14,7 +14,7 @@ class User
 
     function __construct(array $donnees = null)
     {
-        if(isset($donnees)){
+        if (isset($donnees)) {
             foreach ($donnees as $key => $value) {
                 $method = 'set'.ucfirst($key);
                 if (method_exists($this, $method)) {
@@ -101,7 +101,7 @@ class User
     public function setPassword($password)
     {
         if (is_string($password)) {
-            $this->password = password;
+            $this->password = $password;
         }
     }
 
@@ -134,10 +134,17 @@ class User
      */
     public function setRoles($roles)
     {
-        $this->roles = unserialize($roles);
+        if (is_array($roles)) {
+            $this->roles = $roles;
+        } else {
+            if (is_string($roles)) {
+                $this->roles = unserialize($roles);
+            }
+        }
     }
 
-    public function serializeRoles(){
+    public function serializeRoles()
+    {
         return serialize($this->roles);
     }
 

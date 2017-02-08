@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constraint\UserConstraint;
 use App\Entity\Chapitre;
 use App\Entity\User;
 use App\Manager\ChapitreManager;
@@ -18,11 +19,10 @@ class AppController extends Controller
         session_start();
         // On vérifie si le visiteur viens pour la premier fois sur le site
         $this->session();
-        var_dump($_SESSION);
         $chapitreManager = new ChapitreManager();
         $listChapitres = $chapitreManager->getAll();
 
-        $this->render('index.html.twig', array('listChapitres' => $listChapitres));
+        $this->render('index.html.twig', array('listChapitres' => $listChapitres), $_SESSION);
     }
 
     public function chapitreAction($id)
@@ -37,17 +37,17 @@ class AppController extends Controller
             $listCommentaires = $commentaireManager->getAllForAChapitre($id);
             $this->render(
                 'chapitre.html.twig',
-                array('chapitre' => $chapitre, 'listCommentaires' => $listCommentaires)
+                array('chapitre' => $chapitre, 'listCommentaires' => $listCommentaires),
+                $_SESSION
             );
         }
     }
 
     public function loginAction()
     {
+        session_start();
         // On vérifie si la personne n'est pas déjà connecter et on supprime la session en cours
-        if (isset($_SESSION)) {
-            session_unset();
-        }
+
         $erreurs = [];
         // On vérifie qe la methode est post et donc que le formulaire est passé
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -85,27 +85,27 @@ class AppController extends Controller
                 echo "<META HTTP-EQUIV='refresh' CONTENT='0;URL=http://blog.fr'>";
             }
         }
-        $this->render('login.html.twig', array('erreurs' => $erreurs));
+        $this->render('login.html.twig', array('erreurs' => $erreurs), $_SESSION);
     }
 
     public function logoutAction()
     {
-        // On vide la session et on crée une session visiteur
-        session_unset();
+        session_start();
         $this->fillSession();
         // Puis, on redirige vers la page d'accueil
         header("Locate : http://blog.fr");
+        echo "<META HTTP-EQUIV='refresh' CONTENT='0;URL=http://blog.fr'>";
     }
 
     public function inscriptionAction()
     {
-        // On va vide la session
-        session_unset();
-        $erreurs[] = null;
+        session_start();
         // On vérifie si le formulaire a bien été envoyé
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             // On vérifie la presence des éléments post username, mail, password et password2
-            if (isset($_POST['username']) && isset($_POST['mail']) && isset($_POST['password']) && isset($_POST['passwordconfirmation'])) {
+            if (isset($_POST['username']) && isset($_POST['mail']) && isset($_POST['password']) && isset($_POST['passwordConfirmation'])) {
+
+                $erreurs = [];
                 // Ils sont tous remplient
                 // On utilise le validator
                 $validator = new Validator();
@@ -118,18 +118,13 @@ class AppController extends Controller
                     $erreurs[] = ["erreur" => "mail", "message" => "Le mail n'est pas du format"];
                 }
                 // les mots de passe
-                if ($_POST['password'] !== $_POST['passwordconfirmation']) {
+                if ($_POST['password'] !== $_POST['passwordConfirmation']) {
                     $erreurs[] = ["erreur" => "passwords", "message" => "Les mots de passe ne sont pas identique"];
                 }
                 if (!$validator->isPassword($_POST['password'])) {
                     $erreurs[] = ["erreur" => "password", "message" => "Le mot de passe n'est pas du format"];
                 }
-            } else {
-                $erreurs[] = ["erreurs" => "formulaire", "message" => "le formulaire ne peut être vide"];
-            }
-            // On vérifie si la  variable erreur n'est pas vide
-            if (empty($erreurs)) {
-                // tous est bon, on crée le user
+                // On va s'assurer que l'username et mail n'est pas déjà utilise
                 $user = new User(
                     [
                         "username" => htmlspecialchars($_POST['username']),
@@ -138,6 +133,21 @@ class AppController extends Controller
                         "roles" => ['ROLE_USER'],
                     ]
                 );
+                $userConstraint = new UserConstraint($user);
+                if (!$userConstraint->isNotOtherUser()) {
+                    $erreurs[] = [
+                        "erreur" => "user",
+                        "message" => "Il existe déjà un visiteur avec ce nom ou cet mail",
+                    ];
+
+                }
+            } else {
+                $erreurs[] = ["erreur" => "formulaire", "message" => "le formulaire ne peut être vide"];
+            }
+            // On vérifie si la  variable erreur n'est pas vide
+            if (empty($erreurs)) {
+                // tous est bon, on crée le user
+
                 // On l'enregistre
                 $userManager = new UserManager();
                 $userManager->create($user);
@@ -149,11 +159,10 @@ class AppController extends Controller
             }
         }
         // On affiche la vue du formulaire
-        $this->render('connect.html.twig');
+        $this->render('connect.html.twig', array("erreurs" => $erreurs), $_SESSION);
     }
 
-    private
-    function session()
+    private function session()
     {
         // On commence par vérifie l'exisance d'une session
         if (empty($_SESSION)) {
@@ -162,16 +171,15 @@ class AppController extends Controller
         }
     }
 
-    private
-    function fillSession(
-        $user = null
-    ) {
+    private function fillSession($user = null)
+    {
+        session_unset();
         if ($user) {
 
             $_SESSION['id'] = $user->getId();
             $_SESSION['username'] = $user->getUsername();
             $_SESSION['roles'] = $user->getRoles();
-            $_SESSION['isconnected'] = false;
+            $_SESSION['isconnected'] = true;
         } else {
             $_SESSION['username'] = "visiteur";
             $_SESSION['roles'] = ["ROLE_USER"];

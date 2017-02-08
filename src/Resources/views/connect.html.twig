@@ -6,7 +6,7 @@
     <div class="well">
         <form action="" method="post" class="form-horizontal">
             <h1 class="text-center">Formulaire d'inscription</h1>
-            {% for erreur in erreurs if erreur.erreur == "formulaire" %}
+            {% for erreur in erreurs if erreur.erreur == "user" or erreur.erreur == "password" %}
                 <div class="alert alert-danger">
                     {{ erreur.message }}
                 </div>
@@ -14,7 +14,7 @@
             <div class="form-group">
                 <label for="username" class="control-label col-sm-2">Nom : </label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" name="username" id="username" value="">
+                    <input type="text" class="form-control" name="username" id="username" required>
                 </div>
                 {% for erreur in erreurs if erreur.erreur == "username" %}
                     <div class="alert alert-danger col-sm-5">
@@ -23,9 +23,9 @@
                 {% endfor %}
             </div>
             <div class="form-group">
-                <label for="username" class="control-label col-sm-2">Mail : </label>
+                <label for="mail" class="control-label col-sm-2">Mail : </label>
                 <div class="col-sm-5">
-                    <input type="email" class="form-control" name="username" id="username" value="">
+                    <input type="email" class="form-control" name="mail" id="mail" required>
                 </div>
                 {% for erreur in erreurs if erreur.erreur == "mail" %}
                     <div class="alert alert-danger col-sm-5">
@@ -36,7 +36,7 @@
             <div class="form-group">
                 <label for="password" class="control-label col-sm-2">Mot de passe :</label>
                 <div class="col-sm-5">
-                    <input type="password" class="form-control" name="password" id="username">
+                    <input type="password" class="form-control" name="password" id="password" required>
                 </div>{% for erreur in erreurs if erreur.erreur == "password" %}
                 <div class="alert alert-danger col-sm-5">
                     {{ erreur.message }}
@@ -44,9 +44,10 @@
                 {% endfor %}
             </div>
             <div class="form-group">
-                <label for="password" class="control-label col-sm-2">Confirmation mot de passe :</label>
+                <label for="passwordConfirmation" class="control-label col-sm-2">Confirmation mot de passe :</label>
                 <div class="col-sm-5">
-                    <input type="password" class="form-control" name="password" id="username">
+                    <input type="password" class="form-control" name="passwordConfirmation" id="passwordConfirmation"
+                           required>
                 </div>{% for erreur in erreurs if erreur.erreur == "passwords" %}
                 <div class="alert alert-danger col-sm-5">
                     {{ erreur.message }}
