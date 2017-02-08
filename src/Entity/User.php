@@ -101,7 +101,7 @@ class User
     public function setPassword($password)
     {
         if (is_string($password)) {
-            $this->password = password_hash($password, PASSWORD_DEFAULT);
+            $this->password = password;
         }
     }
 

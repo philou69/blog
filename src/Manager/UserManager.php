@@ -72,7 +72,6 @@ class UserManager
         $q->execute(array(":username" => $username,
             ":password" => $password));
         $donnees = $q->fetch(\PDO::FETCH_ASSOC);
-
         return new User($donnees);
     }
 

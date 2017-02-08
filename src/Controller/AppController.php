@@ -8,13 +8,17 @@ use App\Manager\ChapitreManager;
 use App\Manager\CommentaireManager;
 use App\Manager\UserManager;
 use App\Router\RouterException;
+use App\Validator\Validator;
 
 class AppController extends Controller
 {
 
     public function indexAction()
     {
+        session_start();
+        // On vérifie si le visiteur viens pour la premier fois sur le site
         $this->session();
+        var_dump($_SESSION);
         $chapitreManager = new ChapitreManager();
         $listChapitres = $chapitreManager->getAll();
 
@@ -31,7 +35,10 @@ class AppController extends Controller
 
             $chapitre = $chapitreManager->getOne($id);
             $listCommentaires = $commentaireManager->getAllForAChapitre($id);
-            $this->render('chapitre.html.twig', array('chapitre' => $chapitre, 'listCommentaires' => $listCommentaires));
+            $this->render(
+                'chapitre.html.twig',
+                array('chapitre' => $chapitre, 'listCommentaires' => $listCommentaires)
+            );
         }
     }
 
@@ -39,125 +46,136 @@ class AppController extends Controller
     {
         // On vérifie si la personne n'est pas déjà connecter et on supprime la session en cours
         if (isset($_SESSION)) {
-            session_destroy();
+            session_unset();
         }
-        // On vérifie la présence de données username et password en post
-        if (isset($_POST['username']) && isset($_POST['password'])) {
-            // on vérifie leurs formes par regex
-            // Username doit etre des lettres et/ou chiffres de 2 à 25 caractères
-            // Password doit être des lettres, chiffres, @, /, *, - ou + de 3 à 25 caractères
-            if (preg_match("^[a-zA-Z0-9éèàùêâûîô_-]{2,25}$", $_POST['username'])) {
-                if (preg_match("^[a-zA-Z0-9@+-*/&]{3,25}$", $_POST['password'])) {
-                    // On va chercher un utilisateur correspondant au username et password
-                    // Il n'est pas utile de protege les POST car password est  hashé et username est protéger automatiquement dans la requête
-                    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-                    $userManager = new UserManager();
-                    $user = $userManager->findOneByUserName($_POST["username"], $password);
-                    // on vérifie l'existance de l'user
-                    if (!$user) {
-                        throw new \Exception("L'user n'existe pas ou mauvais mot de passe");
-                    }
-                    // On crée un session
-                    session_start();
-                    $_SESSION['id'] = $user->getId();
-                    $_SESSION['username'] = $user->getUsername();
-                    $_SESSION['mail'] = $user->getMail();
-                    $_SESSION['roles'] = $user->getMail();
-
-                    // L'utilisateur étant enrgistrer on le renvoye vers la page d'accueil
-                    header("Location : http://blog.fr");
-                } else {
-                    throw new \Exception("Erreur sur le format du mot de passe");
+        $erreurs = [];
+        // On vérifie qe la methode est post et donc que le formulaire est passé
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // On vérifie la présence de données username et password en post
+            // On va pour cela utiliser un validator
+            if (isset($_POST['username']) && isset($_POST['password'])) {
+                // On va vérifier les données avec un validator
+                // Les regex sont gérer dans le validator
+                $validator = new Validator();
+                if (!$validator->isUsername($_POST['username'])) {
+                    $erreurs[] = ["erreur" => "username", "message" => "Erreur sur le format du nom"];
+                }
+                if (!$validator->isPassword($_POST['password'])) {
+                    $erreurs[] = ["erreur" => "password", "message" => "Erreur sur le format du mot de passe"];
                 }
             } else {
-                throw new \Exception("Erreur sur le format du nom");
+                $erreurs[] = ["erreur" => "formulaire", "message" => "Il faut un nom et un mot de passe!"];
             }
-        } else {
-            throw new \Exception("Il faut un nom et un mot de passe!");
+            // Si $erreurs est vide, cela signifie que tous est ok
+            // Et on connect l'utilisateur
+            if (empty($erreurs)) {
+                // On va chercher un utilisateur correspondant au username et password
+                // Il n'est pas utile de protege les POST car password est  hashé et username est protéger automatiquement dans la requête
+                $password = hash("sha512", $_POST["password"]);
+                $userManager = new UserManager();
+                $user = $userManager->findOneByUserName($_POST["username"], $password);
+                // on vérifie l'existance de l'user
+                if (!$user) {
+                    throw new \Exception("L'user n'existe pas ou mauvais mot de passe");
+                }
+                // On enregistre l'utilisateur dans une session
+                $this->fillSession($user);
+                // L'utilisateur étant enrgistrer on le renvoye vers la page d'accueil
+                header("Location : http://blog.fr/");
+                echo "<META HTTP-EQUIV='refresh' CONTENT='0;URL=http://blog.fr'>";
+            }
         }
+        $this->render('login.html.twig', array('erreurs' => $erreurs));
     }
 
     public function logoutAction()
     {
-        // on vérifie la presence d'une session  et d'un champ email qui confirme que la session est à un visiteur enregistrez
-        if (isset($_SESSION) && isset($_SESSION['mail'])) {
-            // On vide la session
-            session_unset();
-            // Puis on crée une session visiteur
-            $this->createSession();
-        }
-        // Dans tous les cas, on redirige vers la page d'accueil
+        // On vide la session et on crée une session visiteur
+        session_unset();
+        $this->fillSession();
+        // Puis, on redirige vers la page d'accueil
         header("Locate : http://blog.fr");
     }
 
     public function inscriptionAction()
     {
+        // On va vide la session
+        session_unset();
         $erreurs[] = null;
-        // On vérifie la presence des éléments post username, mail, password et password2
-        if (isset($_POST['username']) && isset($_POST['mail']) && isset($_POST['password']) && isset($_POST['password2'])) {
-            // Ils sont tous remplient
-            // On les vérifie par regex
-            // le prénoms d'abord
-            if(!preg_match("^[a-zA-Z0-9éèàùêâûîô-_]{2,25}$", $_POST['username'])){
-                $erreurs[] = ["username" => "Le nom n'est pas du format"];
+        // On vérifie si le formulaire a bien été envoyé
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            // On vérifie la presence des éléments post username, mail, password et password2
+            if (isset($_POST['username']) && isset($_POST['mail']) && isset($_POST['password']) && isset($_POST['passwordconfirmation'])) {
+                // Ils sont tous remplient
+                // On utilise le validator
+                $validator = new Validator();
+                // le prénoms d'abord
+                if (!$validator->isUsername($_POST['username'])) {
+                    $erreurs[] = ["erreur" => "username", "message" => "Le nom n'est pas du format"];
+                }
+                // le mail
+                if (!$validator->isMail($_POST['mail'])) {
+                    $erreurs[] = ["erreur" => "mail", "message" => "Le mail n'est pas du format"];
+                }
+                // les mots de passe
+                if ($_POST['password'] !== $_POST['passwordconfirmation']) {
+                    $erreurs[] = ["erreur" => "passwords", "message" => "Les mots de passe ne sont pas identique"];
+                }
+                if (!$validator->isPassword($_POST['password'])) {
+                    $erreurs[] = ["erreur" => "password", "message" => "Le mot de passe n'est pas du format"];
+                }
+            } else {
+                $erreurs[] = ["erreurs" => "formulaire", "message" => "le formulaire ne peut être vide"];
             }
-            // le mail
-            if(!preg_match("^[a-z0-9._-]+@[a-z0-9_-]{2,}\.[a-z]{2,4}$", $_POST['mail'])){
-                $erreurs[] = ["mail" => "Le mail n'est pas du format"];
+            // On vérifie si la  variable erreur n'est pas vide
+            if (empty($erreurs)) {
+                // tous est bon, on crée le user
+                $user = new User(
+                    [
+                        "username" => htmlspecialchars($_POST['username']),
+                        "mail" => htmlspecialchars($_POST['mail']),
+                        "password" => htmlspecialchars($_POST['password']),
+                        "roles" => ['ROLE_USER'],
+                    ]
+                );
+                // On l'enregistre
+                $userManager = new UserManager();
+                $userManager->create($user);
+                // On crée une session de l'utilisateur
+                $this->fillSession($user);
+                // On renvoye vers la page d'accueil
+                header("Location : http://blog.fr");
+                echo "<META HTTP-EQUIV='refresh' CONTENT='0;URL=http://blog.fr'>";
             }
-            // les mots de passe
-            if($_POST['password'] !== $_POST['password2']){
-                $erreurs[] = ["passwords" => "Les mots de passe ne sont pas identique"];
-            }
-            if(!preg_match("^[a-z0-9éèà@./*-+_&]{3,25}$", $_POST['password'])){
-                $erreurs[] = ["password" => "Le mot de passe n'est pas du format"];
-            }
-            // On vérifie si la  variable erreur est vide
-            if($erreurs != null){
-                // On affiche la vue du formulaire
-                require "../Resources/views/create.php";
-            }
-            // tous est bon, on crée le user
-            $user = new User(["username" => htmlspecialchars($_POST['username']),
-                "mail" => htmlspecialchars($_POST['mail']),
-                "password" => htmlspecialchars($_POST['password']),
-                "roles" =>['ROLE_USER']
-            ]);
-            // On l'enregistre
-            $userManagetr = new UserManager();
-            $userManagetr->create($user);
-            session_start();
+        }
+        // On affiche la vue du formulaire
+        $this->render('connect.html.twig');
+    }
+
+    private
+    function session()
+    {
+        // On commence par vérifie l'exisance d'une session
+        if (empty($_SESSION)) {
+            // On va crée une session visiteur
+            $this->fillSession();
+        }
+    }
+
+    private
+    function fillSession(
+        $user = null
+    ) {
+        if ($user) {
+
             $_SESSION['id'] = $user->getId();
             $_SESSION['username'] = $user->getUsername();
             $_SESSION['roles'] = $user->getRoles();
             $_SESSION['isconnected'] = false;
-            // On renvoye vers la page d'accueil
-            header("Location : http://blog.fr");
-        }else {
-            // On affiche la vue du formulaire
-            require "../Resources/views/create.php";
-        }
-
-    }
-
-    private function session()
-    {
-        // On commence par vérifie l'exisance d'une session
-        if (!isset($_SESSION)) {
-            // On va crée une session visiteur
-            session_start();
-            $this->createSession();
-
-            return true;
         } else {
-            return false;
+            $_SESSION['username'] = "visiteur";
+            $_SESSION['roles'] = ["ROLE_USER"];
+            $_SESSION['isconnected'] = false;
         }
-    }
-
-    private function createSession()
-    {
-        $_SESSION['username'] = "visiteur";
-        $_SESSION['roles'] = ["ROLE_USER"];
-        $_SESSION['isconnected'] = false;
     }
 }

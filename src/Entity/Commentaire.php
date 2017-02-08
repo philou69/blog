@@ -11,9 +11,11 @@ class Commentaire
     private $commentaire;
     private $chapitre;
     private $commentaireParent = null;
+    private $parent = false;
     private $signaled = false;
     private $banished = false;
     private $created_at;
+    private $commentaires = null;
 
     public function __construct(array $donnees = null){
         foreach ($donnees as $key => $value){
@@ -166,6 +168,37 @@ class Commentaire
         $this->created_at = $created_at;
     }
 
+        /**
+     * @return mixed
+     */
+    public function getCommentaires()
+    {
+        return $this->commentaires;
+    }/**
+     * @param array $commentaires
+     */
+    public function setCommentaires( $commentaires)
+    {
+        $this->commentaires = $commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire){
+        $this->commentaires[] = $commentaire;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isParent()
+    {
+        return $this->parent;
+    }/**
+     * @param bool $parent
+     */
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
+    }
 
 
 }

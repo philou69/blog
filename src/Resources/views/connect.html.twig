@@ -1,0 +1,62 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %} S'inscrire {% endblock %}
+
+{% block body %}
+    <div class="well">
+        <form action="" method="post" class="form-horizontal">
+            <h1 class="text-center">Formulaire d'inscription</h1>
+            {% for erreur in erreurs if erreur.erreur == "formulaire" %}
+                <div class="alert alert-danger">
+                    {{ erreur.message }}
+                </div>
+            {% endfor %}
+            <div class="form-group">
+                <label for="username" class="control-label col-sm-2">Nom : </label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" name="username" id="username" value="">
+                </div>
+                {% for erreur in erreurs if erreur.erreur == "username" %}
+                    <div class="alert alert-danger col-sm-5">
+                        {{ erreur.message }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="username" class="control-label col-sm-2">Mail : </label>
+                <div class="col-sm-5">
+                    <input type="email" class="form-control" name="username" id="username" value="">
+                </div>
+                {% for erreur in erreurs if erreur.erreur == "mail" %}
+                    <div class="alert alert-danger col-sm-5">
+                        {{ erreur.message }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="password" class="control-label col-sm-2">Mot de passe :</label>
+                <div class="col-sm-5">
+                    <input type="password" class="form-control" name="password" id="username">
+                </div>{% for erreur in erreurs if erreur.erreur == "password" %}
+                <div class="alert alert-danger col-sm-5">
+                    {{ erreur.message }}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="password" class="control-label col-sm-2">Confirmation mot de passe :</label>
+                <div class="col-sm-5">
+                    <input type="password" class="form-control" name="password" id="username">
+                </div>{% for erreur in erreurs if erreur.erreur == "passwords" %}
+                <div class="alert alert-danger col-sm-5">
+                    {{ erreur.message }}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="text-center">
+                <input type="submit" value="Se connecter" class="button button-s button-primary center">
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

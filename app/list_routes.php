@@ -27,10 +27,10 @@ $routes["logout"] = ["method" => "get",
                 "controller" => "App:logout"];
 $routes["inscription"] = ["method" => "get",
                 "url" => "/inscription",
-                "controller" => "App:logout"];
+                "controller" => "App:inscription"];
 $routes["inscription_post"] = ["method" => "post",
                 "url" => "/inscription",
-                "controller" => "App:logout"];
+                "controller" => "App:inscription"];
 $routes["admin_login_get"] = ["method" => "get",
                 "url" => "/admin/login",
                 "controller" => "Admin:login"];
