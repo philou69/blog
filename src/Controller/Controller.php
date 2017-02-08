@@ -4,6 +4,8 @@
 namespace App\Controller;
 
 
+use App\Manager\ContentManager;
+
 class Controller
 {
     private $loader;
@@ -23,7 +25,10 @@ class Controller
      */
     protected function render($view, $params = [], $session)
     {
+        $contentManager = new ContentManager();
+        $contents  =  $contentManager->findAll();
         $this->twig->addGlobal('session', $session);
+        $this->twig->addGlobal('contents', $contents);
         $this->template = $this->twig->load($view);
         echo $this->template->render($params);
     }

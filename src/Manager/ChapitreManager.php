@@ -70,4 +70,13 @@ class ChapitreManager
 
     }
 
+    public function findPublished(){
+        $chapitres = [];
+        $q = $this->db->query("SELECT id , title, chapitre, published_at FROM Chapitre WHERE published = 1 ORDER BY published_at DESC");
+        while ($donnees = $q->fetch(\PDO::FETCH_ASSOC)){
+            $chapitres[] = new Chapitre($donnees);
+        }
+        return $chapitres;
+    }
+
 }

@@ -13,7 +13,7 @@
 {% endblock %}
 {% block body %}
     <h1 class="center">{{ chapitre.title }}</h1>
-    <p>{{ chapitre.chapitre | e('html') }}</p>
+    <p>{{ chapitre.chapitre | raw }}</p>
 
     <h2>Commentaires</h2>
     {# le visiteur est connecter ?#}

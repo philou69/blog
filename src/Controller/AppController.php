@@ -20,13 +20,13 @@ class AppController extends Controller
         // On vérifie si le visiteur viens pour la premier fois sur le site
         $this->session();
         $chapitreManager = new ChapitreManager();
-        $listChapitres = $chapitreManager->getAll();
-
+        $listChapitres = $chapitreManager->findPublished();
         $this->render('index.html.twig', array('listChapitres' => $listChapitres), $_SESSION);
     }
 
     public function chapitreAction($id)
     {
+        session_start();
         if (!is_numeric($id)) {
             throw new RouterException("$id has to be a number");
         } else {

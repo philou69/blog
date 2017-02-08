@@ -86,7 +86,7 @@ class Chapitre
     /**
      * @return mixed
      */
-    public function getPublishedAt()
+    public function getPublished_at()
     {
         return $this->published_at;
     }
@@ -94,7 +94,7 @@ class Chapitre
     /**
      * @param mixed $published_at
      */
-    public function setPublishedAt(\DateTime $published_at)
+    public function setPublished_at($published_at)
     {
         $this->published_at = $published_at;
     }
