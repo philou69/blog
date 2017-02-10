@@ -31,6 +31,12 @@ $routes["inscription"] = ["method" => "get",
 $routes["inscription_post"] = ["method" => "post",
                 "url" => "/inscription",
                 "controller" => "App:inscription"];
+$routes["profil"] = ["method" => "get",
+                "url" => "/profil",
+                "controller" => "App:profil"];
+$routes["profil_post"] = ["method" => "post",
+                "url" => "/profil",
+                "controller" => "App:profil"];
 $routes["admin_login_get"] = ["method" => "get",
                 "url" => "/admin/login",
                 "controller" => "Admin:login"];

@@ -1,0 +1,68 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Profil {% endblock %}
+
+{% block body %}
+    {% if success is not null %}
+        <div class="alert alert-info">
+            {{ success }}
+        </div>
+    {% endif %}
+    <h1 class="text-center">Profil de : {{ user.username }}</h1>
+
+    <form action="" method="post" class="well form-horizontal">
+        {% for erreur in erreurs if erreur.erreur == "formulaire" %}
+            <div class="alert alert-danger">
+                {{ erreur.message }}
+            </div>
+        {% endfor %}
+        <div class="form-group">
+            <label for="username" class="control-label col-sm-2">Nom :</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" name="username" id="username" value="{{ user.username }}">
+            </div>
+            {% for erreur in erreurs if erreur.erreur == "username" %}
+                <div class="alert alert-danger col-sm-5">
+                    {{ erreur.message }}
+                </div>
+                {% endfor %}
+        </div>
+        <div class="form-group">
+            <label for="mail" class="control-label col-sm-2">Mail :</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="mail" name="mail" value="{{ user.mail }}">
+            </div>
+            {% for erreur in erreurs if erreur.erreur == "mail" %}
+                <div class="alert alert-danger col-sm-5">
+                    {{ erreur.message }}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label for="password" class="control-label col-sm-2">
+                Mot de passe : <br/>
+                <small>Laissez vide pour garder l'ancien</small>
+            </label>
+            <div class="col-sm-5">
+                <input type="password" class="form-control" id="password" name="password" >
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password_confirmation" class="control-label col-sm-2">
+                Mot de passe (confirmation) : <br/>
+                <small>Laissez vide pour garder l'ancien</small>
+            </label>
+            <div class="col-sm-5">
+                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
+            </div>
+            {% for erreur in erreurs if erreur.erreur == "password" %}
+                <div class="alert alert-danger col-sm-5">
+                    {{ erreur.message }}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center">
+            <input type="submit" value="Enregistrer les changements" class="btn btn-xs btn-info">
+        </div>
+    </form>
+{% endblock %}

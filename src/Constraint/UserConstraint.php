@@ -12,7 +12,7 @@ class UserConstraint
     private $user;
     private $userManager;
 
-    function __construct(User $user)
+    function __construct(User $user = null)
     {
         $this->user = $user;
         $this->userManager = new UserManager();
@@ -29,17 +29,18 @@ class UserConstraint
         return false;
     }
 
-    public function isNotOtherUserName()
+    public function isNotOtherUserName($username)
     {
-        /* if(!$this->userManager->findByUsername($this->user->getUsername())){
+        // On regard si la réponse est un boolean
+        if($this->userManager->findByUsername($username)){
              return true;
          }
-         return false;*/
+         return false;
     }
 
-    public function isNotOtherMail()
+    public function isNotOtherMail($mail)
     {
-        if (!$this->userManager->findByMail($this->user->getMail())) {
+        if ($this->userManager->findByMail($mail)) {
             return true;
         }
 

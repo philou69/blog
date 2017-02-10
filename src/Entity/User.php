@@ -39,7 +39,8 @@ class User
      */
     public function setId($id)
     {
-        $this->id = $id;
+
+        $this->id = intval($id);
     }
 
 
