@@ -21,17 +21,18 @@ class CommentaireManager
     public function add(Commentaire $commentaire)
     {
         $q = $this->db->prepare(
-            "INSERT INTO Commentaire(commentaire, id_chapitre, id_user, id_parent, signaled, banished, created_at) VALUES (:commentaire, :id_chapitre, :id_user, :id_parent, :signaled, :banished, :created_at)"
+            "INSERT INTO Commentaire(commentaire, id_chapitre, id_user, id_parent, signaled, banished, created_at, lastChild) VALUES (:commentaire, :id_chapitre, :id_user, :id_parent, :signaled, :banished, :created_at, :lastChild)"
         );
         $q->execute(
             array(
-                ":commentaire" => $commentaire->getText(),
+                ":commentaire" => $commentaire->getCommentaire(),
                 ":id_chapitre" => $commentaire->getChapitre()->getId(),
                 ":id_user" => $commentaire->getUser()->getId(),
                 ":id_parent" => $commentaire->getCommentaireParent()->getId(),
                 ":signaled" => $commentaire->isSignaled(),
                 ":banished" => $commentaire->isBanished(),
                 ":created_at" => $commentaire->getCreatedAt(),
+                ":lastChild" => $commentaire->isLastChild(),
             )
         );
     }
@@ -43,7 +44,7 @@ class CommentaireManager
         );
         $q->execute(
             array(
-                ":commentaire" => $commentaire->getText(),
+                ":commentaire" => $commentaire->getCommentaire(),
                 ":id_chapitre" => $commentaire->getChapitre()->getId(),
                 ":id_user" => $commentaire->getUser()->getId(),
                 ":id_parent" => $commentaire->getCommentaireParent()->getId(),
@@ -57,7 +58,7 @@ class CommentaireManager
     public function findOneById($id)
     {
         $q = $this->db->prepare(
-            "SELECT id, commentaire, id_chapitre, id_parent, id_user, signaled, banished, created_at, parent FROM Commentaire WHERE  id = :id"
+            "SELECT id, commentaire, id_chapitre, id_parent, id_user, signaled, banished, created_at, parent, lastChild FROM Commentaire WHERE  id = :id"
         );
         $q->execute(array(":id" => $id));
         if($q->rowCount() == 0){
@@ -65,6 +66,14 @@ class CommentaireManager
         }
         $donnees = $q->fetch(\PDO::FETCH_ASSOC);
         $donnees['chapitre'] = $this->addChapitre($donnees['id_chapitre']);
+        $donnees['user'] = $this->addUser($donnees['id_user']);
+        if($donnees['id_parent'] != null){
+            $q2 = $this->db->prepare(
+                "SELECT id, commentaire, id_chapitre, id_parent, id_user, signaled, banished, created_at, parent FROM Commentaire WHERE  id = :id");
+            $q2->execute(array(":id" => $donnees['id_parent']));
+            $donneesParent = $q2->fetch(\PDO::FETCH_ASSOC);
+            $donnees['commentaireParent'] = new Commentaire($donneesParent);
+        }
         return new Commentaire($donnees);
     }
     public function findAll()
@@ -155,4 +164,9 @@ class CommentaireManager
         return $chapitre;
     }
 
+    public function updateParent(Commentaire $commentaire){
+        $q = $this->db->prepare("UPDATE Commentaire SET parent = :parent WHERE id = :id");
+        $q->execute(array(":parent" => $commentaire->isParent(),
+                    ":id" => $commentaire->getId()));
+    }
 }

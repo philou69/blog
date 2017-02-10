@@ -16,6 +16,7 @@ class Commentaire
     private $banished = false;
     private $created_at;
     private $commentaires = null;
+    private $lastChild = false;
 
     public function __construct(array $donnees = null){
         foreach ($donnees as $key => $value){
@@ -129,7 +130,7 @@ class Commentaire
      */
     public function setSignaled($signaled)
     {
-            $this->signaled = filter_var($signaled, FILTER_VALIDATE_BOOLEAN);
+            $this->signaled = $signaled;
 
     }
 
@@ -146,7 +147,7 @@ class Commentaire
      */
     public function setBanished($banished)
     {
-            $this->banished = filter_var($banished, FILTER_VALIDATE_BOOLEAN);
+            $this->banished = $banished;
 
     }
 
@@ -163,7 +164,7 @@ class Commentaire
      */
     public function setCreatedAt(\DateTime $created_at)
     {
-        $this->created_at = $created_at;
+        $this->created_at = $created_at->format('Y-m-d H:i:s');
     }
 
         /**
@@ -197,6 +198,23 @@ class Commentaire
     {
         $this->parent = $parent;
     }
+
+    /**
+     * @return bool
+     */
+    public function isLastChild()
+    {
+        return $this->lastChild;
+    }
+
+    /**
+     * @param bool $lastChild
+     */
+    public function setLastChild($lastChild)
+    {
+        $this->lastChild = $lastChild;
+    }
+
 
 
 }

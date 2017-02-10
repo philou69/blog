@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Constraint\UserConstraint;
 use App\Entity\Chapitre;
+use App\Entity\Commentaire;
 use App\Entity\User;
 use App\Manager\ChapitreManager;
 use App\Manager\CommentaireManager;
@@ -239,6 +240,51 @@ class AppController extends Controller
         $this->redirectTo("/chapitre/$idChapitre");
     }
 
+    public function responseAction($id){
+        if(!is_numeric($id)){
+            throw new \Exception("Page Introuvable");
+        }
+        $commentaireManager = new CommentaireManager();
+        $commentaire = $commentaireManager->findOneById($id);
+        if(!$commentaire){
+            throw new \Exception("Page Introuvalbe");
+        }
+        session_start();
+        if(isset($_POST['response'])){
+            $text = null;
+            $username = $commentaire->getUser()->getUsername();
+            if($commentaire->isLastChild()){
+                $id_parent = $commentaire->getCommentaireParent()->getId();
+                $commentaire = $commentaireManager->findOneById($id_parent);
+                $last_child = true;
+                $text = "@".$username." ".htmlspecialchars($_POST['response']);
+            }else if($commentaire->getCommentaireParent() != null && $commentaire->getCommentaireParent()->getCommentaireParent() == null){
+                $last_child = true;
+            }
+            else{
+                $last_child = false;
+            }
+
+            $date = new \DateTime();
+            $user= new User(array('id' => $_SESSION['id']));
+            if($text == null){
+                $text = htmlspecialchars($_POST['response']);
+            }
+            $new_commentaire = new Commentaire(array("commentaire" => $text,
+                "commentaireParent" => $commentaire,
+                "chapitre" => $commentaire->getChapitre(),
+                "parent" => false,
+                "lastChild" => $last_child,
+                "createdAt" => $date,
+                "user" => $user));
+            $commentaireManager->add($new_commentaire);
+            if(!$commentaire->isParent()){
+                $commentaire->setParent(true);
+                $commentaireManager->updateParent($commentaire);
+            }
+            $this->redirectTo("/chapitre/".$commentaire->getChapitre()->getId());
+        }
+    }
     private function session()
     {
         // On commence par vérifie l'exisance d'une session
