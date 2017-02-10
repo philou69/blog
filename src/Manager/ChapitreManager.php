@@ -32,7 +32,7 @@ class ChapitreManager
 
     }
 
-    public function getOne($id)
+    public function findOneById($id)
     {
         $q = $this->db->prepare("SELECT id, title, chapitre, published_at, published FROM Chapitre WHERE id = :id");
         $q->execute(array(':id' => $id));

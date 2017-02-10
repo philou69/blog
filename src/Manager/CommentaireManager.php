@@ -54,20 +54,20 @@ class CommentaireManager
         );
     }
 
-    public function getOne($id)
+    public function findOneById($id)
     {
         $q = $this->db->prepare(
             "SELECT id, commentaire, id_chapitre, id_parent, id_user, signaled, banished, created_at, parent FROM Commentaire WHERE  id = :id"
         );
         $q->execute(array(":id" => $id));
-        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
-        if($donnees['parent'] == 1){
-            $commentaires = $this->getAllForOneCommentaire($donnees['id']);
-            $donnees['commentaires'] = $commentaires;
+        if($q->rowCount() == 0){
+            return false;
         }
+        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
+        $donnees['chapitre'] = $this->addChapitre($donnees['id_chapitre']);
         return new Commentaire($donnees);
     }
-    public function getAll()
+    public function findAll()
     {
         $commentaires = [];
 
@@ -81,7 +81,7 @@ class CommentaireManager
         return $commentaires;
     }
 
-    public function getAllForAChapitre($id)
+    public function findAllForAChapitre($id)
     {
         $commentaires = [];
 
@@ -93,7 +93,7 @@ class CommentaireManager
             // Création d'un objet user passer dans le tableau donnees
             $donnees['user'] = $this->addUser($donnees['id_user']);
             if ($donnees['parent'] == 1) {
-                $commentairesEnfants = $this->getChildrenForOneCommentaire($donnees['id']);
+                $commentairesEnfants = $this->findChildrenForOneCommentaire($donnees['id']);
                 $donnees['commentaires'] = $commentairesEnfants;
             }
             $commentaires[] = new Commentaire($donnees);
@@ -102,9 +102,9 @@ class CommentaireManager
     }
 
 
-    public function getChildrenForOneCommentaire($id){
+    public function findChildrenForOneCommentaire($id){
         $commentaires = [];
-        $q = $this->db->prepare("SELECT id, commentaire, id_user, parent FROM Commentaire WHERE id_parent = :id");
+        $q = $this->db->prepare("SELECT id, commentaire, id_user, parent, banished, signaled FROM Commentaire WHERE id_parent = :id");
         $q->execute(array(":id" => $id));
         while($donnees = $q->fetch(\PDO::FETCH_ASSOC)){
             // On vérifie si le commentaire est parent
@@ -137,14 +137,22 @@ class CommentaireManager
 
     public function signaled(Commentaire $commentaire)
     {
+        var_dump($commentaire);
         $q = $this->db->prepare("UPDATE Commentaire SET signaled = :signaled WHERE id = :id");
-        $q->execute(array(":signaled" => $commentaire->isSignaled()));
+        $q->execute(array(":signaled" => $commentaire->isSignaled(),
+                    ":id" => $commentaire->getId()));
     }
 
     public function addUser($id){
         $userManager = new UserManager();
         $user = $userManager->getOne($id);
         return $user;
+    }
+
+    public function addChapitre($id){
+        $chapitreManager = new ChapitreManager();
+        $chapitre = $chapitreManager->findOneById($id);
+        return $chapitre;
     }
 
 }

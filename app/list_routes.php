@@ -37,6 +37,9 @@ $routes["profil"] = ["method" => "get",
 $routes["profil_post"] = ["method" => "post",
                 "url" => "/profil",
                 "controller" => "App:profil"];
+$routes["signal"] = ["method" => "get",
+                "url" => "/signal/:id",
+                "controller" => "App:signal"];
 $routes["admin_login_get"] = ["method" => "get",
                 "url" => "/admin/login",
                 "controller" => "Admin:login"];

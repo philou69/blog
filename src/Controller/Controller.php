@@ -32,4 +32,9 @@ class Controller
         $this->template = $this->twig->load($view);
         echo $this->template->render($params);
     }
+
+    protected function redirectTo($string){
+        header("Location : $string");
+        echo "<META HTTP-EQUIV='refresh' CONTENT='0;URL=$string'>";
+    }
 }

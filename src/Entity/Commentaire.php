@@ -129,9 +129,8 @@ class Commentaire
      */
     public function setSignaled($signaled)
     {
-        if(is_bool($signaled)){
-            $this->signaled = $signaled;
-        }
+            $this->signaled = filter_var($signaled, FILTER_VALIDATE_BOOLEAN);
+
     }
 
     /**
@@ -147,9 +146,8 @@ class Commentaire
      */
     public function setBanished($banished)
     {
-        if(is_bool($banished)){
-            $this->banished = $banished;
-        }
+            $this->banished = filter_var($banished, FILTER_VALIDATE_BOOLEAN);
+
     }
 
     /**

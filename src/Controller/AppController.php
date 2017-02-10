@@ -7,6 +7,7 @@ use App\Entity\Chapitre;
 use App\Entity\User;
 use App\Manager\ChapitreManager;
 use App\Manager\CommentaireManager;
+use App\Manager\ContentManager;
 use App\Manager\UserManager;
 use App\Router\RouterException;
 use App\Validator\Validator;
@@ -33,8 +34,8 @@ class AppController extends Controller
             $chapitreManager = new ChapitreManager();
             $commentaireManager = new CommentaireManager();
 
-            $chapitre = $chapitreManager->getOne($id);
-            $listCommentaires = $commentaireManager->getAllForAChapitre($id);
+            $chapitre = $chapitreManager->findOneById($id);
+            $listCommentaires = $commentaireManager->findAllForAChapitre($id);
             $this->render(
                 'chapitre.html.twig',
                 array('chapitre' => $chapitre, 'listCommentaires' => $listCommentaires),
@@ -220,6 +221,22 @@ class AppController extends Controller
         // Si la méthode est post, on vérifie les données du formulaire
 
         $this->render('profil.html.twig', array('user' => $user, 'erreurs' => $erreurs, 'success' => $success), $_SESSION);
+    }
+
+    public function signalAction($id){
+        if(!is_numeric($id)){
+            throw new \Exception("Page introuvable!");
+        }
+        $commentaireManager = new CommentaireManager();
+        $commentaire = $commentaireManager->findOneById($id);
+        if($commentaire == false){
+            throw new \Exception("Page Introuvable");
+        }
+
+        $commentaire->setSignaled(true);
+        $commentaireManager->signaled($commentaire);
+        $idChapitre = $commentaire->getChapitre()->getId();
+        $this->redirectTo("/chapitre/$idChapitre");
     }
 
     private function session()
