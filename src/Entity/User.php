@@ -12,10 +12,10 @@ class User
     private $password;
     private $roles = [];
 
-    function __construct(array $donnees = null)
+    function __construct(array $data = null)
     {
-        if (isset($donnees)) {
-            foreach ($donnees as $key => $value) {
+        if (isset($data)) {
+            foreach ($data as $key => $value) {
                 $method = 'set'.ucfirst($key);
                 if (method_exists($this, $method)) {
                     $this->$method($value);
@@ -24,9 +24,9 @@ class User
         }
     }
 
-    public function hydrate(array $donnees)
+    public function hydrate(array $data)
     {
-        foreach ($donnees as $key => $value) {
+        foreach ($data as $key => $value) {
             $method = 'set'.ucfirst($key);
             if (method_exists($this, $method)) {
                 $this->$method($value);

@@ -17,17 +17,23 @@
 
     <h2>Commentaires</h2>
     {# le visiteur est connecter ?#}
-    {% if app.username != "visiteur" %}
+    {% if session.isconnected == false %}
         <p>
             <a href="/login">Connecter</a> vous pour laisser un commentaire sur ce chapitre.
         </p>
     {% else %}
-        <form action="" method="post">
-
-            <label for="commentaire"> Votre commentaire</label>
-            <textarea name="commentaire" id="commentaire" cols="30" rows="10" required></textarea>
+        <form action="" method="post" class="form-horizontal well">
+            <h2>{{ session.name }} laissez votre avis sur ce chapitre.</h2>
+            <div class="form-group">
+                <label for="commentaire" class="control-label col-sm-3"> Votre commentaire :</label>
+                <div class="col-sm-7">
+                    <textarea class="form-control" name="commentaire" id="commentaire" cols="30" rows="10" required></textarea>
+                </div>
             <input type="hidden" name="chapitre" id="chapitre" value="{{ chapitre.id }}" required>
-            <input type="submit" value="Envoyer">
+            </div>
+            <div class="text-center">
+                <input type="submit" value="Envoyer" class="btn btn-info btn-xs">
+            </div>
         </form>
 
     {% endif %}

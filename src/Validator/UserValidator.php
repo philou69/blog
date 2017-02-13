@@ -2,7 +2,7 @@
 
 namespace App\Validator;
 
-class Validator
+class UserValidator
 {
     private $regexUsername;
     private $regexPassword;

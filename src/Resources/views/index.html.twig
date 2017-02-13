@@ -3,17 +3,16 @@
 
 {% block body %}
     <div class="well">
-
-        <h1 class="text-center">{% for content in contents if content.title == "title_index" %}{{ content.content }}
+        <h1 class="text-center">{% for content in listContent if content.title == "title_index" %}{{ content.content }}
     {% endfor %}</h1>
         <p>
-            {% for content in contents if content.title == "presentation" %}
+            {% for content in listContent if content.title == "presentation" %}
                 {{ content.content| raw }}
             {% endfor %}
         </p>
     </div>
-    <div class="jumbotron">
-        <h2 class="text-center">Les chapitres</h2>
+    <div>
+        <h2 class="text-center well">Les chapitres</h2>
         <ul class="list-unstyled">
             {% for chapitre in listChapitres %}
                 {% if chapitre.published_at > "now"|date("Y-m-d") %}
@@ -22,7 +21,7 @@
 
                         <p>
                             Le prochain chapitre est en cours d'écriture. Il sera diffusé le {{ chapitre.published_at| date('d/m/Y') }}.<br>
-                            En attendant n'hesiter pas à lire les autres articles.
+                            En attendant n'hesiter pas à lire les autres chapitres.
                         </p>
                     </li>
                 {% else %}

@@ -20,7 +20,7 @@ class PDO
 
     private function __destruct()
     {
-        if($instance != null){
+        if($this->instance != null){
             $instance = null;
         }
     }

@@ -9,10 +9,11 @@ class Content
     private $id;
     private $title;
     private $content;
+    private $page;
 
-    function __construct(array $donnees = null)
+    function __construct(array $data = null)
     {
-        foreach ($donnees as $key => $value){
+        foreach ($data as $key => $value){
             $method = 'set'.ucfirst($key);
             if(method_exists($this, $method)){
                 $this->$method($value);
@@ -28,6 +29,14 @@ class Content
         return $this->id;
     }
 
+    /**
+     * @param int $id
+     * @return $this
+     */
+    public function setId($id){
+        $this->id = intval($id);
+        return $this;
+    }
     /**
      * @return mixed
      */
@@ -58,6 +67,22 @@ class Content
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    /**
+     * @param mixed $page
+     */
+    public function setPage($page)
+    {
+        $this->page = $page;
     }
 
 

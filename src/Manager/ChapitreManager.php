@@ -18,64 +18,95 @@ class ChapitreManager
 
     public function add(Chapitre $chapitre)
     {
+        // Fonction pour ajouter un chapitre
+        // On s'assure que le chapitre passer en paramètre est bien remplie
+        if($chapitre->getTitle() == null || $chapitre->getChapitre() == null || $chapitre->getPublished_at() == null || $chapitre->isPublished() == null){
+            return false;
+        }
         $q = $this->db->prepare(
             'INSERT INTO Chapitre(title, chapitre, published_at,published) VALUES(:title, :chapitre, :published_at, :published)'
         );
-        $q->execute(
-            array(
-                ':title' => $chapitre->getTitle(),
-                ':chapitre' => $chapitre->getChapitre(),
-                ':published_at' => $chapitre->getPublishedAt(),
-                ':published' => $chapitre->isPublished(),
-            )
+        $q->bindValue(':title', $chapitre->getTitle(), \PDO::PARAM_STR);
+        $q->bindValue(':chapitre', $chapitre->getChapitre(), \PDO::PARAM_STR);
+        $q->bindValue(':published_at', date("Y-m-d H:i:m", strtotime($chapitre->getPublishedAt())), \PDO::PARAM_STR);
+        $q->bindValue(':published', $chapitre->isPublished(), \PDO::PARAM_BOOL);
+        $q->execute();
+
+    }
+
+    public function update(Chapitre $chapitre)
+    {
+        // Fonction pour mettre à jour un chapitre
+        // On s'assure que le chapitre passer en paramètre est bien remplie
+        if($chapitre->getTitle() == null || $chapitre->getChapitre() == null || $chapitre->getPublished_at() == null || $chapitre->isPublished() == null){
+            return false;
+        }
+        $q = $this->db->prepare(
+            "UPDATE Chapitre SET title = :title, chapitre = :chapitre, published_at = :published_at, published = :published WHERE id = :id"
         );
+        $q->bindValue(':title', $chapitre->getTitle(), \PDO::PARAM_STR);
+        $q->bindValue(':chapitre', $chapitre->getChapitre(), \PDO::PARAM_STR);
+        $q->bindValue(':published_at', date("Y-m-d H:i:s", strtotime($chapitre->getPublishedAt())), \PDO::PARAM_STR);
+        $q->bindValue(':published', $chapitre->isPublished(), \PDO::PARAM_BOOL);
+        $q->execute();
 
     }
 
     public function findOneById($id)
     {
+        // Fonction  cherchant un chapitre par son identifiant
         $q = $this->db->prepare("SELECT id, title, chapitre, published_at, published FROM Chapitre WHERE id = :id");
-        $q->execute(array(':id' => $id));
-        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
+        $q->bindValue(":id", $id, \PDO::PARAM_INT);
+        $q->execute();
+        // vérification du nombre d'entrée retourné
+        if ($q->rowCount() != 1) {
+            return false;
+        }
+        // On récupere le tous dans un tableau qu'on passe en paramètre d'une instance de chapitre
+        $data = $q->fetch(\PDO::FETCH_ASSOC);
 
-        return new Chapitre($donnees);
+        // On revoie l'objet Chapitre
+        return new Chapitre($data);
     }
 
-    public function getAll()
+    public function findAll()
     {
+        // Fonction cherchant tous les chapitres
+        // Tableau prévue pour contenir tous les chapitres
         $chapitres = [];
         $q = $this->db->query(
             'SELECT id, title, chapitre, published_at, published FROM Chapitre ORDER BY published_at DESC '
         );
-        while ($donnees = $q->fetch(\PDO::FETCH_ASSOC)) {
-            $chapitres[] = new Chapitre($donnees);
+        if ($q->rowCount() < 1) {
+            return false;
+        }
+        // On boucle autant que possible pour ajouter les objets au tableau
+        while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
+            $chapitres[] = new Chapitre($data);
         }
 
+        // On retourne le tableau
         return $chapitres;
     }
 
-    public function update(Chapitre $chapitre)
+    public function findPublished()
     {
-        $q = $this->db->prepare(
-            "UPDATE Chapitre SET title = :title, chapitre = :chapitre, published_at = :published_at, published = :published WHERE id = :id"
-        );
-        $q->execute(
-            array(
-                ':title' => $chapitre->getTitle(),
-                ':chapitre' => $chapitre->getChapitre(),
-                ':published_at' => $chapitre->getPublishedAt(),
-                ':published' => $chapitre->isPublished(),
-            )
-        );
-
-    }
-
-    public function findPublished(){
+        // Fonction cherchant  tous les chapitres marqué publié
+        // Tableau prévue pour contenir les chapitres
         $chapitres = [];
-        $q = $this->db->query("SELECT id , title, chapitre, published_at FROM Chapitre WHERE published = 1 ORDER BY published_at DESC");
-        while ($donnees = $q->fetch(\PDO::FETCH_ASSOC)){
-            $chapitres[] = new Chapitre($donnees);
+        $q = $this->db->query(
+            "SELECT id , title, chapitre, published_at FROM Chapitre WHERE published = 1 ORDER BY published_at DESC"
+        );
+        // On vérifie le nombre d'entrées retourné
+        if ($q->rowCount() < 1) {
+            return false;
         }
+        // On boucle autant que possible pour ajoute les objets au tableau
+        while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
+            $chapitres[] = new Chapitre($data);
+        }
+
+        // On retourne le tableau de chapitres
         return $chapitres;
     }
 

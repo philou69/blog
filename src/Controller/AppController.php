@@ -11,11 +11,11 @@ use App\Manager\CommentaireManager;
 use App\Manager\ContentManager;
 use App\Manager\UserManager;
 use App\Router\RouterException;
+use App\Validator\UserValidator;
 use App\Validator\Validator;
 
 class AppController extends Controller
 {
-
     public function indexAction()
     {
         session_start();
@@ -23,7 +23,15 @@ class AppController extends Controller
         $this->session();
         $chapitreManager = new ChapitreManager();
         $listChapitres = $chapitreManager->findPublished();
-        $this->render('index.html.twig', array('listChapitres' => $listChapitres), $_SESSION);
+        $listContent = $this->contentManager->findAllPerPage("index");
+        if (!$listContent || !$listChapitres) {
+            throw new \Exception("Page introuvable");
+        }
+        $this->render(
+            'index.html.twig',
+            array('listChapitres' => $listChapitres, 'listContent' => $listContent),
+            $_SESSION
+        );
     }
 
     public function chapitreAction($id)
@@ -31,24 +39,43 @@ class AppController extends Controller
         session_start();
         if (!is_numeric($id)) {
             throw new RouterException("$id has to be a number");
-        } else {
-            $chapitreManager = new ChapitreManager();
-            $commentaireManager = new CommentaireManager();
-
-            $chapitre = $chapitreManager->findOneById($id);
-            $listCommentaires = $commentaireManager->findAllForAChapitre($id);
-            $this->render(
-                'chapitre.html.twig',
-                array('chapitre' => $chapitre, 'listCommentaires' => $listCommentaires),
-                $_SESSION
-            );
         }
+        $chapitreManager = new ChapitreManager();
+        $commentaireManager = new CommentaireManager();
+        $chapitre = $chapitreManager->findOneById($id);
+        if($_SERVER['REQUEST_METHOD'] == "POST"){
+            if(isset($_POST['commentaire']) && !empty($_POST['commentaire'])){
+                $userManager = new UserManager();
+                $user = $userManager->findOneById($_SESSION['id']);
+                $commentaire = new Commentaire();
+                $now = new \DateTime();
+                $commentaire->setCommentaire(htmlspecialchars($_POST['commentaire']))
+                    ->setChapitre($chapitre)
+                    ->setUser($user);
+                var_dump($commentaire);
+                var_dump(date("Y-m-d H:i:s", strtotime($commentaire->getCreatedAt())));
+                $commentaireManager->add($commentaire);
+            }
+        }
+        $listCommentaires = $commentaireManager->findAllForAChapitre($id);
+        // On vérifie la présence du chapitre
+        // Comme les commentaires ne sont pas obligatoire, on ne vérifie pas
+        if (!$chapitre) {
+            throw new \Exception("Page Introuvable");
+        }
+
+
+
+        $this->render(
+            'chapitre.html.twig',
+            array('chapitre' => $chapitre, 'listCommentaires' => $listCommentaires),
+            $_SESSION
+        );
     }
 
     public function loginAction()
     {
         session_start();
-        // On vérifie si la personne n'est pas déjà connecter et on supprime la session en cours
 
         $erreurs = [];
         // On vérifie qe la methode est post et donc que le formulaire est passé
@@ -58,11 +85,11 @@ class AppController extends Controller
             if (isset($_POST['username']) && isset($_POST['password'])) {
                 // On va vérifier les données avec un validator
                 // Les regex sont gérer dans le validator
-                $validator = new Validator();
-                if (!$validator->isUsername($_POST['username'])) {
+                $userValidator = new UserValidator();
+                if (!$userValidator->isUsername($_POST['username'])) {
                     $erreurs[] = ["erreur" => "username", "message" => "Erreur sur le format du nom"];
                 }
-                if (!$validator->isPassword($_POST['password'])) {
+                if (!$userValidator->isPassword($_POST['password'])) {
                     $erreurs[] = ["erreur" => "password", "message" => "Erreur sur le format du mot de passe"];
                 }
             } else {
@@ -109,21 +136,21 @@ class AppController extends Controller
             if (isset($_POST['username']) && isset($_POST['mail']) && isset($_POST['password']) && isset($_POST['passwordConfirmation'])) {
 
                 // Ils sont tous remplient
-                // On utilise le validator
-                $validator = new Validator();
+                // On utilise le userValidator
+                $userValidator = new UserValidator();
                 // le prénoms d'abord
-                if (!$validator->isUsername($_POST['username'])) {
+                if (!$userValidator->isUsername($_POST['username'])) {
                     $erreurs[] = ["erreur" => "username", "message" => "Le nom n'est pas du format"];
                 }
                 // le mail
-                if (!$validator->isMail($_POST['mail'])) {
+                if (!$userValidator->isMail($_POST['mail'])) {
                     $erreurs[] = ["erreur" => "mail", "message" => "Le mail n'est pas du format"];
                 }
                 // les mots de passe
                 if ($_POST['password'] !== $_POST['passwordConfirmation']) {
                     $erreurs[] = ["erreur" => "passwords", "message" => "Les mots de passe ne sont pas identique"];
                 }
-                if (!$validator->isPassword($_POST['password'])) {
+                if (!$userValidator->isPassword($_POST['password'])) {
                     $erreurs[] = ["erreur" => "password", "message" => "Le mot de passe n'est pas du format"];
                 }
                 // On va s'assurer que l'username et mail n'est pas déjà utilise
@@ -131,7 +158,7 @@ class AppController extends Controller
                     [
                         "username" => htmlspecialchars($_POST['username']),
                         "mail" => htmlspecialchars($_POST['mail']),
-                        "password" => hash("sha512",$_POST['password']),
+                        "password" => hash("sha512", $_POST['password']),
                         "roles" => ['ROLE_USER'],
                     ]
                 );
@@ -177,21 +204,23 @@ class AppController extends Controller
 
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             // On crée un tableau d'erreurs et un vérificateur
-            $validator = new Validator();
+            $userValidator = new UserValidator();
             if (isset($_POST['username'])) {
                 //username n'est pas vide.
-                if (!$validator->isUsername($_POST['username'])) {
+                if (!$userValidator->isUsername($_POST['username'])) {
                     // ce n'est pas un username, on remplie le tableau
                     $erreurs[] = ["erreur" => "username", "message" => "Le nom n'a pas un bon format"];
                 }
-                if (!$userConstraint->isNotOtherUserName($_POST['username']) && $user->getUsername() != $_POST['username'] ) {
+                if (!$userConstraint->isNotOtherUserName($_POST['username']) && $user->getUsername(
+                    ) != $_POST['username']
+                ) {
                     $erreurs[] = ["erreur" => "formulaire", "message" => "Modification 1 impossible"];
                 }
                 $user->setUsername(htmlspecialchars($_POST['username']));
             }
             if (isset($_POST['mail'])) {
                 // mail n'est pas vide.
-                if (!$validator->isMail($_POST['mail'])) {
+                if (!$userValidator->isMail($_POST['mail'])) {
                     $erreurs[] = ["erreur" => "mail", "message" => "Le mail n'est pas au bon format!"];
                 }
                 if (!$userConstraint->isNotOtherMail($_POST['mail']) && $user->getMail() != $_POST['mail']) {
@@ -206,7 +235,7 @@ class AppController extends Controller
                     $erreurs[] = ["erreur" => "password", "message" => "Les mots de passe ne sont pas identiques"];
                 } else {
                     // Les mots sont identiques
-                    if (!$validator->isPassword($_POST['password'])) {
+                    if (!$userValidator->isPassword($_POST['password'])) {
                         $erreurs[] = ["erreur" => "password", "message" => "Le mot de passe n'est pas au bon format!"];
                     }
                     $user->setPassword(hash("sha512", $_POST['password']));
@@ -221,16 +250,21 @@ class AppController extends Controller
         }
         // Si la méthode est post, on vérifie les données du formulaire
 
-        $this->render('profil.html.twig', array('user' => $user, 'erreurs' => $erreurs, 'success' => $success), $_SESSION);
+        $this->render(
+            'profil.html.twig',
+            array('user' => $user, 'erreurs' => $erreurs, 'success' => $success),
+            $_SESSION
+        );
     }
 
-    public function signalAction($id){
-        if(!is_numeric($id)){
+    public function signalAction($id)
+    {
+        if (!is_numeric($id)) {
             throw new \Exception("Page introuvable!");
         }
         $commentaireManager = new CommentaireManager();
         $commentaire = $commentaireManager->findOneById($id);
-        if($commentaire == false){
+        if ($commentaire == false) {
             throw new \Exception("Page Introuvable");
         }
 
@@ -240,51 +274,60 @@ class AppController extends Controller
         $this->redirectTo("/chapitre/$idChapitre");
     }
 
-    public function responseAction($id){
-        if(!is_numeric($id)){
+    public function responseAction($id)
+    {
+        if (!is_numeric($id)) {
             throw new \Exception("Page Introuvable");
         }
         $commentaireManager = new CommentaireManager();
         $commentaire = $commentaireManager->findOneById($id);
-        if(!$commentaire){
+        if (!$commentaire) {
             throw new \Exception("Page Introuvalbe");
         }
         session_start();
-        if(isset($_POST['response'])){
+        if (isset($_POST['response'])) {
             $text = null;
             $username = $commentaire->getUser()->getUsername();
-            if($commentaire->isLastChild()){
+            if ($commentaire->isLastChild()) {
                 $id_parent = $commentaire->getCommentaireParent()->getId();
                 $commentaire = $commentaireManager->findOneById($id_parent);
                 $last_child = true;
                 $text = "@".$username." ".htmlspecialchars($_POST['response']);
-            }else if($commentaire->getCommentaireParent() != null && $commentaire->getCommentaireParent()->getCommentaireParent() == null){
-                $last_child = true;
-            }
-            else{
-                $last_child = false;
+            } else {
+                if ($commentaire->getCommentaireParent() != null && $commentaire->getCommentaireParent(
+                    )->getCommentaireParent() == null
+                ) {
+                    $last_child = true;
+                } else {
+                    $last_child = false;
+                }
             }
 
             $date = new \DateTime();
-            $user= new User(array('id' => $_SESSION['id']));
-            if($text == null){
+            $user = new User(array('id' => $_SESSION['id']));
+            if ($text == null) {
                 $text = htmlspecialchars($_POST['response']);
             }
-            $new_commentaire = new Commentaire(array("commentaire" => $text,
-                "commentaireParent" => $commentaire,
-                "chapitre" => $commentaire->getChapitre(),
-                "parent" => false,
-                "lastChild" => $last_child,
-                "createdAt" => $date,
-                "user" => $user));
+            $new_commentaire = new Commentaire(
+                array(
+                    "commentaire" => $text,
+                    "commentaireParent" => $commentaire,
+                    "chapitre" => $commentaire->getChapitre(),
+                    "parent" => false,
+                    "lastChild" => $last_child,
+                    "createdAt" => $date,
+                    "user" => $user,
+                )
+            );
             $commentaireManager->add($new_commentaire);
-            if(!$commentaire->isParent()){
+            if (!$commentaire->isParent()) {
                 $commentaire->setParent(true);
                 $commentaireManager->updateParent($commentaire);
             }
             $this->redirectTo("/chapitre/".$commentaire->getChapitre()->getId());
         }
     }
+
     private function session()
     {
         // On commence par vérifie l'exisance d'une session

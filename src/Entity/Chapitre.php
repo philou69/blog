@@ -12,18 +12,21 @@ class Chapitre
     private $published_at;
     private $published;
 
-    public function __construct(array $donnees = null){
-        foreach ($donnees as $key => $value){
+    public function __construct(array $data = null)
+    {
+        foreach ($data as $key => $value) {
             $method = 'set'.ucfirst($key);
-            if(method_exists($this, $method)){
+            if (method_exists($this, $method)) {
                 $this->$method($value);
             }
         }
     }
-    public function hydrate(array $donnees){
-        foreach ($donnees as $key => $value){
+
+    public function hydrate(array $data)
+    {
+        foreach ($data as $key => $value) {
             $method = 'set'.ucfirst($key);
-            if(method_exists($this, $method)){
+            if (method_exists($this, $method)) {
                 $this->$method($value);
             }
         }
@@ -34,9 +37,8 @@ class Chapitre
      */
     public function setId($id)
     {
-        $this->id = $id;
+        $this->id = intval($id);
     }
-
 
 
     /**

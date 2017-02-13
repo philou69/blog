@@ -17,29 +17,29 @@
             </div>
         {% endfor %}
         <div class="form-group">
-            <label for="username" class="control-label col-sm-2">Nom :</label>
+            <label for="username" class="control-label col-sm-3">Nom :</label>
             <div class="col-sm-5">
                 <input type="text" class="form-control" name="username" id="username" value="{{ user.username }}">
             </div>
             {% for erreur in erreurs if erreur.erreur == "username" %}
-                <div class="alert alert-danger col-sm-5">
+                <div class="alert alert-danger col-sm-4">
                     {{ erreur.message }}
                 </div>
                 {% endfor %}
         </div>
         <div class="form-group">
-            <label for="mail" class="control-label col-sm-2">Mail :</label>
+            <label for="mail" class="control-label col-sm-3">Mail :</label>
             <div class="col-sm-5">
                 <input type="text" class="form-control" id="mail" name="mail" value="{{ user.mail }}">
             </div>
             {% for erreur in erreurs if erreur.erreur == "mail" %}
-                <div class="alert alert-danger col-sm-5">
+                <div class="alert alert-danger col-sm-4">
                     {{ erreur.message }}
                 </div>
             {% endfor %}
         </div>
         <div class="form-group">
-            <label for="password" class="control-label col-sm-2">
+            <label for="password" class="control-label col-sm-3">
                 Mot de passe : <br/>
                 <small>Laissez vide pour garder l'ancien</small>
             </label>
@@ -48,7 +48,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="password_confirmation" class="control-label col-sm-2">
+            <label for="password_confirmation" class="control-label col-sm-3">
                 Mot de passe (confirmation) : <br/>
                 <small>Laissez vide pour garder l'ancien</small>
             </label>
@@ -56,7 +56,7 @@
                 <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
             </div>
             {% for erreur in erreurs if erreur.erreur == "password" %}
-                <div class="alert alert-danger col-sm-5">
+                <div class="alert alert-danger col-sm-4">
                     {{ erreur.message }}
                 </div>
             {% endfor %}
