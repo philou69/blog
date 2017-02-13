@@ -1,6 +1,13 @@
 {% extends 'layout.html.twig' %}
 {% block title %} {{ parent() }} {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    #chapitre {
+        margin-left: 40px;
+        color: blue;
+    }
+{% endblock %}
 {% block body %}
     <div class="well">
         <h1 class="text-center">{% for content in listContent if content.title == "title_index" %}{{ content.content }}
@@ -12,7 +19,7 @@
         </p>
     </div>
     <div>
-        <h2 class="text-center well">Les chapitres</h2>
+        <h2 id="chapitre">Les chapitres</h2>
         <ul class="list-unstyled">
             {% for chapitre in listChapitres %}
                 {% if chapitre.published_at > "now"|date("Y-m-d") %}

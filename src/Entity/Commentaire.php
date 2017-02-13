@@ -11,16 +11,15 @@ class Commentaire
     private $commentaire;
     private $chapitre;
     private $commentaireParent = null;
-    private $parent = false;
     private $signaled = false;
     private $banished = false;
     private $created_at;
     private $commentaires = null;
-    private $lastChild = false;
+    private $place = 1;
 
     public function __construct(array $data = null)
     {
-        $this->created_at = new \DateTime();
+        $this->setCreatedAt(new \DateTime());
         if(is_array($data)){
             foreach ($data as $key => $value) {
                 $method = 'set'.ucfirst($key);
@@ -258,6 +257,24 @@ class Commentaire
     {
         $this->lastChild = $lastChild;
 
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPlace()
+    {
+        return $this->place;
+    }
+
+    /**
+     * @param int $place
+     * @return $this
+     */
+    public function setPlace($place)
+    {
+        $this->place = intval($place);
         return $this;
     }
 

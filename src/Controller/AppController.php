@@ -52,8 +52,6 @@ class AppController extends Controller
                 $commentaire->setCommentaire(htmlspecialchars($_POST['commentaire']))
                     ->setChapitre($chapitre)
                     ->setUser($user);
-                var_dump($commentaire);
-                var_dump(date("Y-m-d H:i:s", strtotime($commentaire->getCreatedAt())));
                 $commentaireManager->add($commentaire);
             }
         }
@@ -285,45 +283,34 @@ class AppController extends Controller
             throw new \Exception("Page Introuvalbe");
         }
         session_start();
-        if (isset($_POST['response'])) {
+        if (isset($_POST['response']) && !empty($_POST['response'])) {
+            // on crée un commentaire qui contiendra la réponse
+            $new_commentaire = new Commentaire();
             $text = null;
             $username = $commentaire->getUser()->getUsername();
-            if ($commentaire->isLastChild()) {
-                $id_parent = $commentaire->getCommentaireParent()->getId();
-                $commentaire = $commentaireManager->findOneById($id_parent);
-                $last_child = true;
+            // On regarde la place du commentaire
+            if ($commentaire->getPlace() == 3) {
+                // Si elle vaut 3, on rajoute @username au message
                 $text = "@".$username." ".htmlspecialchars($_POST['response']);
-            } else {
-                if ($commentaire->getCommentaireParent() != null && $commentaire->getCommentaireParent(
-                    )->getCommentaireParent() == null
-                ) {
-                    $last_child = true;
-                } else {
-                    $last_child = false;
-                }
-            }
-
-            $date = new \DateTime();
-            $user = new User(array('id' => $_SESSION['id']));
-            if ($text == null) {
+                // On passe à la reponse le commentaire parent  en parentet la place 3
+                $new_commentaire->setCommentaireParent($commentaire->getCommentaireParent())
+                    ->setPlace(3);
+            }else{
+                // autrement, on prends simplement le message
                 $text = htmlspecialchars($_POST['response']);
+                // On passe le commentaire en parent et la place du commentaire plus 1
+                $new_commentaire->setCommentaireParent($commentaire)
+                    ->setPlace($commentaire->getPlace()+1);
+
             }
-            $new_commentaire = new Commentaire(
-                array(
-                    "commentaire" => $text,
-                    "commentaireParent" => $commentaire,
-                    "chapitre" => $commentaire->getChapitre(),
-                    "parent" => false,
-                    "lastChild" => $last_child,
-                    "createdAt" => $date,
-                    "user" => $user,
-                )
-            );
+            $user = new User(array('id' => $_SESSION['id']));
+
+
+            $new_commentaire->setCommentaire($text)
+                ->setUser($user)
+                ->setChapitre($commentaire->getChapitre());
             $commentaireManager->add($new_commentaire);
-            if (!$commentaire->isParent()) {
-                $commentaire->setParent(true);
-                $commentaireManager->updateParent($commentaire);
-            }
+
             $this->redirectTo("/chapitre/".$commentaire->getChapitre()->getId());
         }
     }

@@ -27,9 +27,10 @@
             <div class="form-group">
                 <label for="commentaire" class="control-label col-sm-3"> Votre commentaire :</label>
                 <div class="col-sm-7">
-                    <textarea class="form-control" name="commentaire" id="commentaire" cols="30" rows="10" required></textarea>
+                    <textarea class="form-control" name="commentaire" id="commentaire" cols="30" rows="10"
+                              required></textarea>
                 </div>
-            <input type="hidden" name="chapitre" id="chapitre" value="{{ chapitre.id }}" required>
+                <input type="hidden" name="chapitre" id="chapitre" value="{{ chapitre.id }}" required>
             </div>
             <div class="text-center">
                 <input type="submit" value="Envoyer" class="btn btn-info btn-xs">
@@ -38,40 +39,31 @@
 
     {% endif %}
     <ul class="list-unstyled row">
-        {% for commentaire in listCommentaires  if commentaire.commentaireParent == null %}
+        {% for commentaire in listCommentaires %}
             <li>
-                {{ include('commentaire.html.twig') }}
-                <ul class="list-unstyled push-1">
-                    {% for commentaire in commentaire.commentaires %}
-                        <li>
-                            {{ include('commentaire.html.twig') }}
-                            {% if commentaire.commentaires | length > 0 %}
+                {%  include 'commentaire.html.twig'  %}
+                {% for commentaire2 in commentaire.commentaires %}
+                    {% if loop.first %}
+                        <ul class="list-unstyled push-1">
+                    {% endif %}
+                    <li>
+                        {%  include 'commentaire.html.twig' with {'commentaire': commentaire2} %}
+                        {% for commentaire3 in commentaire2.commentaires %}
+                            {% if loop.first %}
                                 <ul class="list-unstyled push-2">
-                                    {% for commentaire in commentaire.commentaires %}
-                                        <li>
-                                            {{ include(('commentaire.html.twig')) }}
-                                        </li>
-                                    {% endfor %}
+                            {% endif %}
+                            <li>
+                                {%  include 'commentaire.html.twig' with {'commentaire': commentaire3} %}
+                            </li>
+                            {% if loop.last %}
                                 </ul>
                             {% endif %}
-                        </li>
-
-                    {% endfor %}
-                    {% if app.username != "visiteur" %}
-                        <p>
-                            <a href="/login">Connecter</a> vous pour répondre à commentaire.
-                        </p>
-                    {% else %}
-                        <form action="" method="post">
-                            <label for="commentaire"> Votre commentaire</label>
-                            <textarea name="commentaire" id="commentaire" cols="30" rows="10" required></textarea>
-                            <input type="hidden" name="chapitre" id="chapitre" value="{{ chapitre.id }}" required>
-                            <input type="hidden" name="parent" id="parent" value="{{ commentaireParents }}" required>
-                            <input type="submit" value="Envoyer">
-                        </form>
-
+                        {% endfor %}
+                    </li>
+                    {% if loop.last %}
+                        </ul>
                     {% endif %}
-                </ul>
+                {% endfor %}
             </li>
         {% endfor %}
     </ul>
@@ -98,7 +90,7 @@
         // fonction génerant le formulaire
         function addForm(id, form) {
             form.setAttribute("method", "post");
-            form.setAttribute("action", "/response/"+id);
+            form.setAttribute("action", "/response/" + id);
             form.classList.add("form-horizontal");
             var hElt = document.createElement("h2");
             hElt.classList.add("text-center");
