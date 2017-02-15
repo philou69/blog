@@ -9,6 +9,9 @@ $routes = [];
 $routes["index"] = ["method" => "get",
                 "url" => "/",
                 "controller" => "App:index"];
+$routes["chapitres"] = ["method" => "get",
+                "url" => "/chapitres",
+                "controller" => "App:chapitres"];
 $routes["chapitre"] = ["method" => "get",
                 "url" => "/chapitre/:id",
                 "controller" => "App:chapitre"];

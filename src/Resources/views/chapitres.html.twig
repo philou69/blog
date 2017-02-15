@@ -1,0 +1,40 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Liste des chapitres{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    #chapitre {
+    margin-left: 40px;
+    color: blue;
+    }
+{% endblock %}
+
+{% block body %}
+    <div>
+        <h2 id="chapitre">Les chapitres</h2>
+        <ul class="list-unstyled">
+            {% for chapitre in listChapitres %}
+                {% if chapitre.published_at > "now"|date("Y-m-d") %}
+                    <li class="well">
+                        <h4>{{ chapitre.title }}</h4>
+
+                        <p>
+                            Le prochain chapitre est en cours d'écriture. Il sera diffusé
+                            le {{ chapitre.published_at| date('d/m/Y') }}.<br>
+                            En attendant n'hesiter pas à lire les autres chapitres.
+                        </p>
+                    </li>
+                {% else %}
+                    <li class="well">
+                        <h4><a href="/chapitre/{{ chapitre.id }}">{{ chapitre.title }}</a></h4>
+                        <p>
+                            {{ chapitre.chapitre | slice(0,5) }}...
+                        </p>
+                        <small>Paru le : {{ chapitre.published_at | date("d/m/Y") }}</small>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

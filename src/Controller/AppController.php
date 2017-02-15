@@ -21,19 +21,35 @@ class AppController extends Controller
         session_start();
         // On vérifie si le visiteur viens pour la premier fois sur le site
         $this->session();
-        $chapitreManager = new ChapitreManager();
-        $listChapitres = $chapitreManager->findPublished();
         $listContent = $this->contentManager->findAllPerPage("index");
-        if (!$listContent || !$listChapitres) {
+        $chapitreManager = new ChapitreManager();
+        $chapitre = $chapitreManager->findLastPublished();
+        if (!$listContent || !$chapitre) {
             throw new \Exception("Page introuvable");
         }
         $this->render(
             'index.html.twig',
-            array('listChapitres' => $listChapitres, 'listContent' => $listContent),
+            array('listContent' => $listContent, 'chapitre' => $chapitre),
             $_SESSION
         );
     }
 
+    public function chapitresAction(){
+        session_start();
+        // On vérifie si le visiteur viens pour la premier fois sur le site
+        $this->session();
+        $chapitreManager = new ChapitreManager();
+        $listChapitres = $chapitreManager->findPublished();
+
+        if (!$listChapitres) {
+            throw new \Exception("Page introuvable");
+        }
+        $this->render(
+            'chapitres.html.twig',
+            array('listChapitres' => $listChapitres),
+            $_SESSION
+        );
+    }
     public function chapitreAction($id)
     {
         session_start();

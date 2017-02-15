@@ -97,6 +97,7 @@ class ChapitreManager
         $q = $this->db->query(
             "SELECT id , title, chapitre, published_at FROM Chapitre WHERE published = 1 ORDER BY published_at DESC"
         );
+
         // On vérifie le nombre d'entrées retourné
         if ($q->rowCount() < 1) {
             return false;
@@ -108,6 +109,16 @@ class ChapitreManager
 
         // On retourne le tableau de chapitres
         return $chapitres;
+    }
+
+    public function findLastPublished(){
+        $q = $this->db->query("SELECT id,title, chapitre, published_at FROM Chapitre WHERE published = true ORDER BY published_at DESC  LIMIT 0, 1");
+        if($q->rowCount() != 1){
+            return false;
+        }
+        $data = $q->fetch(\PDO::FETCH_ASSOC);
+
+        return new Chapitre($data);
     }
 
 }

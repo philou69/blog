@@ -13,7 +13,14 @@
 {% endblock %}
 {% block body %}
     <h1 class="center">{{ chapitre.title }}</h1>
-    <p>{{ chapitre.chapitre | raw }}</p>
+    {% if chapitre.published >= "now"|date("Y-m-d") %}
+        <p>{{ chapitre.chapitre | raw }}</p>
+        {% else %}
+        <p>
+            Le chapitre n'est pas encore publié.<br/>
+            Revenez le {{ chapitre.published_at }}
+        </p>
+    {% endif %}
 
     <h2>Commentaires</h2>
     {# le visiteur est connecter ?#}
