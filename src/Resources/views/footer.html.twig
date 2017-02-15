@@ -1,0 +1,36 @@
+<footer id="footer" class="well">
+    <div class="container ">
+        <div class="row">
+            <div id="pages" class="col-sm-4">
+                <h5 class="text-center">Les pages du site</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/">Accueil</a></li>
+                    <li><a href="/chapitres">Les chapitres</a></li>
+                    {% if session.isconnected == true %}
+                        <li><a href="/profil">Mon profil</a></li>
+                    {% else %}
+                        <li><a href="/login">Se connecter</a></li>
+                        <li><a href="/inscription">S'incrire</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-sm-5" id="reseaux">
+                <h5 class="text-center">
+                    Retrouvez moi sur :
+                </h5>
+                <ul class="list-unstyled">
+                    <li><a href="facebook.com">Facebook</a></li>
+                    <li><a href="twitter.com">Twitter</a></li>
+                    <li><a href="instagram.com">Instagram</a></li>
+                    <li><a href="edition.flamarion.com">Edition Flamarion</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-3" id="lien">
+                <ul class="list-unstyled">
+                    <li><a href="/mention_legal">Mention légal</a></li>
+                    <li><a href="/admin/login">Administration</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
