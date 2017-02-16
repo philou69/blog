@@ -1,26 +1,23 @@
-var btnsResponse = document.querySelectorAll("a.response");
-console.log(btnsResponse);
-btnsResponse.forEach(function(btn){
 
-    btn.addEventListener("click",function (e) {
-            var liElt = btn.parentNode.parentNode.parentNode;
+var btnsResponse = document.querySelectorAll("a.response");
+btnsResponse.forEach(function (btn) {
+
+    btn.addEventListener("click", function (e) {
+            var pElt = btn.parentNode.parentNode;
             var id = this.getAttribute('id');
-            console.log(id);
             var form = document.createElement('form');
             addForm(id, form);
-            console.log(e.target);
-            liElt.appendChild(form);
+            pElt.appendChild(form);
             e.target.parentNode.removeChild(e.target);
             e.preventDefault();
         }
     )
 })
 // fonction génerant le formulaire
-function addForm(id, form){
+function addForm(id, form) {
     form.setAttribute("method", "post");
-    form.setAttribute("action", "/response/".id);
+    form.setAttribute("action", "/response/" + id);
     form.classList.add("form-horizontal");
-    form.classList.add("well");
     var hElt = document.createElement("h2");
     hElt.classList.add("text-center");
     hElt.innerHTML = "Répondre ";
@@ -31,7 +28,7 @@ function addForm(id, form){
     textLabel.setAttribute("for", "response");
     textLabel.classList.add("control-label");
     textLabel.classList.add("col-sm-3");
-    textLabel.innerHTML = "Commentaire :";
+    textLabel.innerHTML = "Réponse :";
 
     var divElt = document.createElement("div");
     divElt.classList.add("col-sm-5");

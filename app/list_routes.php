@@ -57,15 +57,15 @@ $routes["admin_login_post"] = ["method" => "post",
 $routes["admin_index"] = ["method" => "get",
                 "url" => "/admin/",
                 "controller"=> "Admin:index"];
-$routes["admin_episodes"] = ["method" =>"get",
-                "url" => "/admin/episodes",
-                "controller" => "Admin:episode"];
-$routes["admin_episode"] = ["method" =>"get",
-                "url" => "/admin/episode/:id",
-                "controller" => "Admin:episode"];
-$routes["admin_episode_post"] = ["method" =>"post",
-                "url" => "/admin/episode/:id",
-                "controller" => "Admin:episode"];
+$routes["admin_chapitres"] = ["method" =>"get",
+                "url" => "/admin/chapitres",
+                "controller" => "Admin:chapitres"];
+$routes["admin_chapitre"] = ["method" =>"get",
+                "url" => "/admin/chapitre/:id",
+                "controller" => "Admin:chapitre"];
+$routes["admin_chapitre_post"] = ["method" =>"post",
+                "url" => "/admin/chapitre/:id",
+                "controller" => "Admin:chapitre"];
 $routes["admin_commentaires"] = ["method" => "get",
                 "url" => "/admin/commentaires",
                 "controller" => "Admin:commentaire"];

@@ -26,7 +26,7 @@ class Controller
      * @param array $params
      * Fonction génerique permettant d'afficher une vue twig
      */
-    protected function render($view, $params = [], $session)
+    protected function render($view, $params = [], $session = null)
     {
         $contentManager = new ContentManager();
         $contents  =  $contentManager->findAll();
@@ -39,5 +39,30 @@ class Controller
     protected function redirectTo($string){
         header("Location : $string");
         echo "<META HTTP-EQUIV='refresh' CONTENT='0;URL=$string'>";
+    }
+
+    protected function session()
+    {
+        // On commence par vérifie l'exisance d'une session
+        if (empty($_SESSION)) {
+            // On va crée une session visiteur
+            $this->fillSession();
+        }
+    }
+
+    protected function fillSession($user = null)
+    {
+        session_unset();
+        if ($user) {
+
+            $_SESSION['id'] = $user->getId();
+            $_SESSION['username'] = $user->getUsername();
+            $_SESSION['roles'] = $user->getRoles();
+            $_SESSION['isconnected'] = true;
+        } else {
+            $_SESSION['username'] = "visiteur";
+            $_SESSION['roles'] = ["ROLE_USER"];
+            $_SESSION['isconnected'] = false;
+        }
     }
 }

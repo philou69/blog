@@ -93,7 +93,7 @@ class CommentaireManager
         $q->bindValue(":id", $id, \PDO::PARAM_INT);
         $q->execute();
         // On vérifie le nombre d'entrée renvoyé
-        if ($q->rowCount() != 1) {
+        if ($q->rowCount() == 0) {
             return false;
         }
         $data = $q->fetch(\PDO::FETCH_ASSOC);
@@ -125,7 +125,7 @@ class CommentaireManager
             "SELECT id,commentaire, id_chapitre, id_parent, id_user, signaled, banished, created_at, place FROM Commentaire "
         );
         // On vérifie avoir au moins une entrée
-        if ($q->rowCount() < 1) {
+        if ($q->rowCount() == 0) {
             return false;
         }
         // On boucle sur les entrées
@@ -163,7 +163,7 @@ class CommentaireManager
         $q->bindValue(":id", $id, \PDO::PARAM_INT);
         $q->execute();
         // On vérifie avoir au moins une entrée
-        if ($q->rowCount() < 1) {
+        if ($q->rowCount() == 0) {
             return false;
         }
         while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {

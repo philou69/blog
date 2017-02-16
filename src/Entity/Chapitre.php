@@ -102,7 +102,7 @@ class Chapitre
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
     public function isPublished()
     {
@@ -110,13 +110,11 @@ class Chapitre
     }
 
     /**
-     * @param mixed $published
+     * @param bool $published
      */
     public function setPublished($published)
     {
-        if (is_bool($published)) {
             $this->published = $published;
-        }
     }
 
 

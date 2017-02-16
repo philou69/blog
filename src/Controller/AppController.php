@@ -103,7 +103,7 @@ class AppController extends Controller
                 if (!$userValidator->isUsername($_POST['username'])) {
                     $erreurs[] = ["erreur" => "username", "message" => "Erreur sur le format du nom"];
                 }
-                if (!$userValidator->isPassword($_POST['password'])) {
+                if (!$userValidator->isPassword(htmlspecialchars($_POST['password']))) {
                     $erreurs[] = ["erreur" => "password", "message" => "Erreur sur le format du mot de passe"];
                 }
             } else {
@@ -114,7 +114,7 @@ class AppController extends Controller
             if (empty($erreurs)) {
                 // On va chercher un utilisateur correspondant au username et password
                 // Il n'est pas utile de protege les POST car password est  hashé et username est protéger automatiquement dans la requête
-                $password = hash("sha512", $_POST["password"]);
+                $password = hash("sha512", htmlspecialchars($_POST["password"]));
                 $userManager = new UserManager();
                 $user = $userManager->findOneByUserNameAndPassword($_POST["username"], $password);
                 // on vérifie l'existance de l'user
@@ -331,30 +331,6 @@ class AppController extends Controller
         }
     }
 
-    private function session()
-    {
-        // On commence par vérifie l'exisance d'une session
-        if (empty($_SESSION)) {
-            // On va crée une session visiteur
-            $this->fillSession();
-        }
-    }
-
-    private function fillSession($user = null)
-    {
-        session_unset();
-        if ($user) {
-
-            $_SESSION['id'] = $user->getId();
-            $_SESSION['username'] = $user->getUsername();
-            $_SESSION['roles'] = $user->getRoles();
-            $_SESSION['isconnected'] = true;
-        } else {
-            $_SESSION['username'] = "visiteur";
-            $_SESSION['roles'] = ["ROLE_USER"];
-            $_SESSION['isconnected'] = false;
-        }
-    }
 
 
 }

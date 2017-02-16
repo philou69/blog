@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        {% block title %}Blog BSA{% endblock %}
+    </title>
+    <!-- appelle des cdn de bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    {% block link %}{% endblock %}
+    <style type="text/css">
+        {% block stylesheets %}
+        /* Margin haute au body pour descendre le contenu de la page sous la barre de navigation */
+            html, body{
+                max-height: 99vh;
+                margin: 0;
+                padding: 0;
+            }
+            #menu{
+                min-height: 98vh;
+                background-color: #2e3436;
+                color: #9d9d9d;
+                padding-left: 50px;
+            }
+            #menu, #content{
+                margin: 0;
+                padding-top: 20px;
+            }
+        {% endblock %}
+    </style>
+</head>
+<body>
+    <div class="row">
+        <div id="menu" class="col-sm-3">
+            <h2 class="text-center">Menu</h2>
+            <ul class="list-unstyled">
+                <li><a href="/admin">Accueil</a>{% block accueil %}{% endblock %}</li>
+                <li><a href="/admin/chapitres">Chapitres</a>{% block chapitres %}{% endblock %}</li>
+                <li><a href="/admin/commentaires">Commentaires</a>{% block commentaires %}{% endblock %}</li>
+                <li><a href="/admin/user">Visiteurs</a>{% block visiteurs %}{% endblock %}</li>
+            </ul>
+        </div>
+        <div class="col-sm-9" id="content">
+            {% block body %}
+            {% endblock %}
+        </div>
+    </div>
+{% block javascript %}
+    <!-- Appel de la bibliothèque JQuery de Bootstrap et du Javascript en cdn -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/locales/bootstrap-datepicker.fr.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+{% endblock %}
+</body>
+</html>
