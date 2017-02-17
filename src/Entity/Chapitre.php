@@ -14,10 +14,12 @@ class Chapitre
 
     public function __construct(array $data = null)
     {
-        foreach ($data as $key => $value) {
-            $method = 'set'.ucfirst($key);
-            if (method_exists($this, $method)) {
-                $this->$method($value);
+        if(is_array($data)){
+            foreach ($data as $key => $value) {
+                $method = 'set'.ucfirst($key);
+                if (method_exists($this, $method)) {
+                    $this->$method($value);
+                }
             }
         }
     }
@@ -59,12 +61,14 @@ class Chapitre
 
     /**
      * @param mixed $title
+     * @return $this
      */
     public function setTitle($title)
     {
         if (is_string($title)) {
             $this->title = $title;
         }
+        return $this;
     }
 
     /**
@@ -77,12 +81,14 @@ class Chapitre
 
     /**
      * @param mixed $chapitre
+     * @return $this
      */
     public function setChapitre($chapitre)
     {
         if (is_string($chapitre)) {
             $this->chapitre = $chapitre;
         }
+        return $this;
     }
 
     /**
@@ -95,10 +101,12 @@ class Chapitre
 
     /**
      * @param mixed $published_at
+     * @return $this
      */
     public function setPublished_at($published_at)
     {
         $this->published_at = $published_at;
+        return $this;
     }
 
     /**
@@ -111,10 +119,12 @@ class Chapitre
 
     /**
      * @param bool $published
+     * @return $this
      */
     public function setPublished($published)
     {
             $this->published = $published;
+            return $this;
     }
 
 

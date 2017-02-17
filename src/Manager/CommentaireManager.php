@@ -44,7 +44,7 @@ class CommentaireManager
     public function update(Commentaire $commentaire)
     {
         // Fonction pour mettre à jour un commentaire
-        if ($commentaire->getCommentaireParent()->getId() != null) {
+        if ($commentaire->getCommentaireParent() != null) {
             $q = $this->db->prepare(
                 "UPDATE Commentaire SET commentaire = :commentaire, id_chapitre = :id_chapitre, id_user = :id_user, id_parent = :id_parent, signaled = :signaled, banished = :banished, created_at = :created_at, place = :place WHERE id = :id"
             );
@@ -61,6 +61,7 @@ class CommentaireManager
         $q->bindValue(":banished", $commentaire->isBanished(), \PDO::PARAM_BOOL);
         $q->bindValue(":created_at", $commentaire->getCreatedAt(), \PDO::PARAM_STR);
         $q->bindValue(":place", $commentaire->getPlace(), \PDO::PARAM_INT);
+        $q->bindValue(":id", $commentaire->getId(), \PDO::PARAM_INT);
         $q->execute();
     }
 
@@ -122,7 +123,7 @@ class CommentaireManager
         // Tableau contenant les commentaires
         $commentaires = [];
         $q = $this->db->query(
-            "SELECT id,commentaire, id_chapitre, id_parent, id_user, signaled, banished, created_at, place FROM Commentaire "
+            "SELECT id,commentaire, id_chapitre, id_parent, id_user, signaled, banished, created_at, place FROM Commentaire"
         );
         // On vérifie avoir au moins une entrée
         if ($q->rowCount() == 0) {
@@ -222,6 +223,32 @@ class CommentaireManager
         return $commentaires;
     }
 
+    public function findAllSignaled(){
+        $comments =[];
+        $q = $this->db->query("SELECT id, commentaire, id_user, place, banished, signaled, id_chapitre FROM Commentaire WHERE signaled is true");
+        if($q->rowCount() == 0){
+            return false;
+        }
+        while ($data =$q->fetch(\PDO::FETCH_ASSOC)){
+            $data['user'] = $this->addUser($data['id_user']);
+            $data['chapitre'] = $this->addChapitre($data['id_chapitre']);
+            $comments[] =  new Commentaire($data);
+        }
+        return $comments;
+    }
+    public function findAllBanished(){
+        $comments =[];
+        $q = $this->db->query("SELECT id, commentaire, id_user, place, banished, signaled, id_chapitre FROM Commentaire WHERE banished is true");
+        if($q->rowCount() == 0){
+            return false;
+        }
+        while ($data =$q->fetch(\PDO::FETCH_ASSOC)){
+            $data['user'] = $this->addUser($data['id_user']);
+            $data['chapitre'] = $this->addChapitre($data['id_chapitre']);
+            $comments[] =  new Commentaire($data);
+        }
+        return $comments;
+    }
     public function addUser($id)
     {
         $userManager = new UserManager();

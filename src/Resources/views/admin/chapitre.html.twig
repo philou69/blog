@@ -1,0 +1,83 @@
+{% extends "admin/layout.html.twig" %}
+
+{%  block title %}Créer un chapitre{% endblock %}
+
+{% block script %}
+    {{ parent() }}
+    <script src="//cloud.tinymce.com/stable/tinymce.min.js"></script>
+    <script type="text/javascript">
+        tinymce.init({
+            selector: "#chapitre"
+        });
+    </script>
+{% endblock %}
+{% block chapitres %}
+    {% include "admin/chapitresbar.html.twig" %}
+
+{% endblock %}
+{% block body %}
+    <div class="well">
+        <h2 class="text-center">Création d'un formulaire</h2>
+        <form action="" method="post" class="form-horizontal">
+            <div class="form-group">
+                <label for="title" class="col-sm-2 control-label">Titre :</label>
+                <div class="col-sm-5">
+                    <input type="text" name="title" id="title" class="form-control" value="{{ chapitre.title }}">
+                </div>
+                {% for error in errors if error.error == "title" %}
+                    <div class="alert alert-danger col-sm-4">
+                        {{ error.message }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="chapitre" class="col-sm-2 control-label">Text :</label>
+                <div class="col-sm-8">
+                    <textarea name="chapitre" id="chapitre">{{ chapitre.chapitre }}</textarea>
+                </div>
+                {% for error in errors if error.error == "chapitre" %}
+                    <div class="alert alert-danger col-sm-2">
+                        {{ error.message }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="published_at" class="col-sm-2 control-label">publier le :</label>
+                <div class="col-sm-5">
+                    <input type="date" format=""dd/mm/YYYY name="published_at" id="published_at" class="form-control" value="{{ chapitre.published_at|date("Y-m-d") }}">
+                </div>
+                {% for error in errors if error.error == "published_at" %}
+                    <div class="alert alert-danger col-sm-4">
+                        {{ error.message }}
+                    </div>
+                {% endfor %}
+            </div>
+            {{ chapitre.published }}
+            <div class="form-group">
+                <label for="published" class="col-sm-2 control-label">Publiable</label>
+                <div class="col-sm-5">
+                    <div class="btn-group" data-toggle="buttons" aria-required="true">
+                        <label id="true" class="btn btn-success published {% if chapitre.published == true %}active{% endif %} ">
+                            <input type="radio" name="published" value="true">oui
+                        </label>
+                        <label id="false" class="btn btn-danger published {% if chapitre.published == false %}active{% endif %}">
+                            <input type="radio" name="published" value="false"  >non
+                        </label>
+                    </div>
+                </div>
+                {% for error in errors if error.error == "published" %}
+                    <div class="alert alert-danger col-sm-4">
+                        {{ error.message }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="text-center">
+                <input type="submit" value="Envoyer" class="btn btn-xs btn-info">
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+{% endblock %}

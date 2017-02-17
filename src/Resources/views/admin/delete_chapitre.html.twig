@@ -1,0 +1,21 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Suppression d'un chapitre{% endblock  %}
+
+{% block chapitres %}
+    {% include "admin/chapitresbar.html.twig" %}
+{% endblock %}
+
+{% block body %}
+    <div class="well">
+        <h1 class="text-center">Suppression d'article</h1>
+        <form class="form-horizontal" action="" method="post">
+            <div class="form-group">
+                <label for="delete" class="col-sm-8 control-label">Supprimer l'article {{ chapitre.title }} :</label>
+                <div class="col-sm-2">
+                    <input type="submit" name="delete" id="delete" value="Supprimer" class="btn btn-xs btn-danger">
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

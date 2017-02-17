@@ -28,7 +28,7 @@ class ChapitreManager
         );
         $q->bindValue(':title', $chapitre->getTitle(), \PDO::PARAM_STR);
         $q->bindValue(':chapitre', $chapitre->getChapitre(), \PDO::PARAM_STR);
-        $q->bindValue(':published_at', date("Y-m-d H:i:m", strtotime($chapitre->getPublishedAt())), \PDO::PARAM_STR);
+        $q->bindValue(':published_at', $chapitre->getPublished_at(), \PDO::PARAM_STR);
         $q->bindValue(':published', $chapitre->isPublished(), \PDO::PARAM_BOOL);
         $q->execute();
 
@@ -51,7 +51,11 @@ class ChapitreManager
         $q->execute();
 
     }
-
+    public function delete(Chapitre $chapitre){
+        $q = $this->db->prepare("DELETE FROM Chapitre WHERE id = :id");
+        $q->bindValue(":id", $chapitre->getId(), \PDO::PARAM_INT);
+        $q->execute();
+    }
     public function findOneById($id)
     {
         // Fonction  cherchant un chapitre par son identifiant

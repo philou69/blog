@@ -7,28 +7,37 @@
     <title>
         {% block title %}Blog BSA{% endblock %}
     </title>
+    {% block script %}
     <!-- appelle des cdn de bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-    {% block link %}{% endblock %}
+    {% endblock %}
     <style type="text/css">
         {% block stylesheets %}
         /* Margin haute au body pour descendre le contenu de la page sous la barre de navigation */
-            html, body{
-                max-height: 99vh;
+            html{
+                position: relative;
+                min-height: 100%;
                 margin: 0;
                 padding: 0;
             }
             #menu{
-                min-height: 98vh;
+                position: absolute;
+                bottom: 0;
+                top: 0;
+                min-height: 100%;
                 background-color: #2e3436;
                 color: #9d9d9d;
-                padding-left: 50px;
-            }
-            #menu, #content{
                 margin: 0;
                 padding-top: 20px;
+                padding-left: 50px;
             }
+            #content{
+                margin-left:0;
+                margin-top: 0;
+                padding:20px 50px;
+            }
+
         {% endblock %}
     </style>
 </head>
@@ -40,10 +49,13 @@
                 <li><a href="/admin">Accueil</a>{% block accueil %}{% endblock %}</li>
                 <li><a href="/admin/chapitres">Chapitres</a>{% block chapitres %}{% endblock %}</li>
                 <li><a href="/admin/commentaires">Commentaires</a>{% block commentaires %}{% endblock %}</li>
-                <li><a href="/admin/user">Visiteurs</a>{% block visiteurs %}{% endblock %}</li>
+                <li><a href="/admin/users">Visiteurs</a>{% block visiteurs %}{% endblock %}</li>
+                <li><a href="/admin/pages">Pages</a></li>
+                <li><a href="/admin/logout">Se deconnecter</a></li>
+                <li><a href="/">Retour au site</a></li>
             </ul>
         </div>
-        <div class="col-sm-9" id="content">
+        <div class="col-sm-9 col-sm-push-3" id="content">
             {% block body %}
             {% endblock %}
         </div>

@@ -1,0 +1,46 @@
+<form action="" method="post" class="form-horizontal">
+    <div class="form-group">
+        <label for="title" class="col-sm-3 control-label">Titre :</label>
+        <div class="col-sm-5">
+            <input type="text" name="title" id="title" class="form-control">
+        </div>
+        {% for error in errors if error.error == "title" %}
+            <div class="alert alert-danger col-sm-4">
+                {{ error.message }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="chapitre" class="col-sm-3 control-label">Text :</label>
+        <div class="col-sm-5">
+            <textarea name="chapitre" id="chapitre"></textarea>
+        </div>
+        {% for error in errors if error.error == "chapitre" %}
+            <div class="alert alert-danger col-sm-4">
+                {{ error.message }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="published_at" class="col-sm-3 control-label">publier le :</label>
+        <div class="col-sm-5">
+            <input type="date" name="published_at" id="published_at" class="form-control">
+        </div>
+        {% for error in errors if error.error == "published_at" %}
+            <div class="alert alert-danger col-sm-4">
+                {{ error.message }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="published" class="col-sm-3 control-label">Publiable</label>
+        <div class="col-sm-5">
+            <input type="checkbox" name="published" id="published" class="form-control">
+        </div>
+        {% for error in errors if error.error == "published" %}
+            <div class="alert alert-danger col-sm-4">
+                {{ error.message }}
+            </div>
+        {% endfor %}
+    </div>
+</form>

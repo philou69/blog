@@ -1,0 +1,44 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block title %}{{ user.username }}{% endblock %}
+
+
+{% block body %}
+    <div class="well">
+        <h1 class="text-center"> {{ user.username }}</h1>
+        <form action="" method="post" class="form-horizontal">
+            <div class="form-group">
+                <label for="id" class="col-sm-3 control-label">Id :</label>
+                <div class="col-sm-5">
+                    <input type="text" id="id" readonly="readonly" value="{{ user.id }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="username" class="col-sm-3 control-label">Nom</label>
+                <div class="col-sm-5">
+                    <input type="text" id="username" readonly="readonly" value="{{ user.username }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mail" class="col-sm-3 control-label">Mail</label>
+                <div class="col-sm-5">
+                    <input type="email" id="mail" readonly="readonly" value="{{ user.mail }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="roles" class="col-sm-3 control-label">Roles :</label>
+                <div class="col-sm-5">
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="roles[]" value="ROLE_USER" {% for role in user.roles if role == "ROLE_USER" %}checked="true"{% endfor %}>ROLE_USER</label>
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="roles[]" value="ROLE_ADMIN" {% for role in user.roles if role == "ROLE_ADMIN" %}checked="true"{% endfor %}>ROLE_ADMIN</label>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <input type="submit" value="Envoyer" class="btn btn-xs btn-info">
+            </div>
+        </form>
+    </div>
+{% endblock %}

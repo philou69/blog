@@ -148,4 +148,16 @@ class UserManager
         }
         return false;
     }
+
+    public function findAll(){
+        $users = [];
+        $q = $this->db->query("SELECT id, username, mail, roles FROM User ");
+        if($q->rowCount() == 0){
+            return false;
+        }
+        while ($data = $q->fetch(\PDO::FETCH_ASSOC)){
+            $users[] = new User($data);
+        }
+        return $users;
+    }
 }

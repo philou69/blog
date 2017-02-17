@@ -151,7 +151,7 @@ class Commentaire
      */
     public function setSignaled($signaled)
     {
-        $this->signaled = $signaled;
+        $this->signaled = filter_var($signaled, FILTER_VALIDATE_BOOLEAN);
 
         return $this;
 
@@ -171,7 +171,7 @@ class Commentaire
      */
     public function setBanished($banished)
     {
-        $this->banished = $banished;
+        $this->banished = filter_var($banished, FILTER_VALIDATE_BOOLEAN);
 
         return $this;
 
@@ -182,7 +182,7 @@ class Commentaire
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->created_at->format('Y-m-d H:i:s');
     }
 
     /**
@@ -191,7 +191,7 @@ class Commentaire
      */
     public function setCreatedAt(\DateTime $created_at)
     {
-        $this->created_at = $created_at->format('Y-m-d H:i:s');
+        $this->created_at = $created_at;
 
         return $this;
     }
