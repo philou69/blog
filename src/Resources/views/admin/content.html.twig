@@ -1,0 +1,51 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block title %}{{ content.title }}{% endblock %}
+
+{% block script %}
+    {{ parent() }}
+    <script src="//cloud.tinymce.com/stable/tinymce.min.js"></script>
+    <script type="text/javascript">
+        tinymce.init({
+            selector: 'textarea',
+            menubar: false,
+            forced_root_block : ""
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="well">
+        <h1 class="text-center">{{ content.title }}</h1>
+        <form action="" method="post" class="form-horizontal">
+            <div class="form-group">
+                <label for="id" class="col-sm-2 control-label">Id :</label>
+                <div class="col-sm-5">
+                    <input class="form-control" type="text"  id="id" value="{{ content.id }}" readonly="readonly">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="title" class="col-sm-2 control-label">titre :</label>
+                <div class="col-sm-5">
+                    <input class="form-control" type="text"  id="title" value="{{ content.title }}" readonly="readonly">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="chapitre" class="col-sm-2 control-label">Id :</label>
+                <div class="col-sm-9">
+                    <textarea class="form-control" name="content" id="content">{{ content.content| raw }}</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="page" class="col-sm-2 control-label">Id :</label>
+                <div class="col-sm-5">
+                    <input class="form-control" type="text"  id="page" value="{{ content.page }}" readonly="readonly">
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <input type="submit" value="Enregistrer" class="btn btn-info btn-xs">
+            </div>
+        </form>
+    </div>
+{% endblock %}

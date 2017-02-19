@@ -16,6 +16,12 @@ class ContentManager
         $this->bd = PDO::get();
     }
 
+    public function update($content){
+        $q = $this->bd->prepare('UPDATE Content SET content = :content WHERE id = :id');
+        $q->bindValue(":content", $content->getContent(), \PDO::PARAM_STR);
+        $q->bindValue(":id", $content->getId(), \PDO::PARAM_INT);
+        $q->execute();
+    }
     public function findByTitle($title)
     {
         // Fonction cherchant un contenu par son titre
@@ -34,7 +40,7 @@ class ContentManager
     {
         // Fonction cherchant tous les contenus
         $contents = [];
-        $q = $this->bd->query("SELECT id, title, content, page FROM Content");
+        $q = $this->bd->query("SELECT id, title, content, page FROM Content ORDER  BY page");
         if ($q->rowCount() < 1) {
             return false;
         }
@@ -62,6 +68,18 @@ class ContentManager
 
         return $contents;
 
+    }
+
+    public function findById($id){
+        $q = $this->bd->prepare("SELECT id, title, content, page FROM Content WHERE id = :id");
+        $q->bindValue(":id", $id, \PDO::PARAM_INT);
+        $q->execute();
+        if($q->rowCount() == 0){
+            return false;
+        }
+        $data = $q->fetch(\PDO::FETCH_ASSOC);
+
+        return new Content($data);
     }
 
 }

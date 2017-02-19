@@ -34,7 +34,7 @@
                             <th class="col-sm-3">{{ commentaire.user.username }}</th>
                             <th class="col-sm-2">{{ commentaire.published_at | date('d/m/Y') }}</th>
                             <th class="col-sm-2">{% if commentaire.signaled == true %}Signaler{% elseif  commentaire.banished == true%}Bannie{% else %}Normal{% endif %}</th>
-                            <th class="col-sm-1"><a href="/admin/commentaire/edit/{{ commentaire.id }}"><i class="glyphicon glyphicon-edit"></i></a></th>
+                            <th class="col-sm-1"><a href="/admin/commentaire/edit/{{ commentaire.id }}"  class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i></a></th>
                         </tr>
                     {% endfor %}
                     {% for commentaire in listCommentaire if commentaire.banished == true%}
@@ -44,7 +44,7 @@
                             <th class="col-sm-3">{{ commentaire.user.username }}</th>
                             <th class="col-sm-2">{{ commentaire.published_at | date('d/m/Y') }}</th>
                             <th class="col-sm-2">{% if commentaire.signaled == true %}Signaler{% elseif  commentaire.banished == true%}Bannie{% else %}Normal{% endif %}</th>
-                            <th class="col-sm-1"><a href="/admin/commentaire/edit/{{ commentaire.id }}"><i class="glyphicon glyphicon-edit"></i></a></th>
+                            <th class="col-sm-1"><a href="/admin/commentaire/edit/{{ commentaire.id }}"  class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i></a></th>
                         </tr>
                     {% endfor %}
                     {% for commentaire in listCommentaire if commentaire.signaled == false and commentaire.banished == false%}
@@ -54,7 +54,7 @@
                             <th class="col-sm-3">{{ commentaire.user.username }}</th>
                             <th class="col-sm-2">{{ commentaire.published_at | date('d/m/Y') }}</th>
                             <th class="col-sm-2">{% if commentaire.signaled == true %}Signaler{% elseif  commentaire.banished == true%}Bannie{% else %}Normal{% endif %}</th>
-                            <th class="col-sm-1"><a href="/admin/commentaire/edit/{{ commentaire.id }}"><i class="glyphicon glyphicon-edit"></i></a></th>
+                            <th class="col-sm-1"><a href="/admin/commentaire/edit/{{ commentaire.id }}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i></a></th>
                         </tr>
                     {% endfor %}
                     </tbody>

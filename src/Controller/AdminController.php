@@ -7,6 +7,8 @@ namespace App\Controller;
 use App\Entity\Chapitre;
 use App\Manager\ChapitreManager;
 use App\Manager\CommentaireManager;
+use App\Manager\ContentManager;
+use App\Manager\PageManager;
 use App\Manager\UserManager;
 use App\Validator\ChapitreValidator;
 use App\Validator\UserValidator;
@@ -306,5 +308,33 @@ class AdminController extends Controller
             }
         }
         $this->render("admin/user.html.twig", array('user' => $user, 'errors' => $errors));
+    }
+
+    public function contentsAction(){
+        $this->isAuthorized();
+        $contentManager = new ContentManager();
+        $contents = $contentManager->findAll();
+        $this->render("admin/contents.html.twig", array('contents' => $contents));
+    }
+
+    public function contentAction($id){
+        $this->isAuthorized();
+        if(!is_numeric($id)){
+            throw new \Exception("Page introuvable!");
+        }
+        $contentManager = new ContentManager();
+        $content = $contentManager->findById($id);
+        if(!$content){
+            throw new \Exception("Page introuvable");
+        }
+
+        if($_SERVER['REQUEST_METHOD'] == "POST"){
+            if(isset($_POST['content'])){
+                $content->setContent(htmlspecialchars($_POST['content']));
+                $contentManager->update($content);
+                $this->redirectTo("/admin/contents");
+            }
+        }
+        $this->render("admin/content.html.twig", array("content" => $content));
     }
 }

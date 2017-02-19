@@ -16,7 +16,7 @@
                 <th class="col-sm-3">Nom</th>
                 <th class="col-sm-3">Mail</th>
                 <th class="col-sm-1">Roles</th>
-                <th class="col-sm-1">Editer Supprimer</th>
+                <th class="col-sm-1">Editer </th>
             </tr>
             </thead>
             <tbody>
@@ -28,7 +28,7 @@
                     <th class="col-sm-1">{% for role in user.roles %}
                             {{ role }}<br/>
                         {% endfor %}</th>
-                    <th class="col-sm-1"><a href="/admin/user/{{ user.id }}"><i class="glyphicon glyphicon-edit"></i></a></th>
+                    <th class="col-sm-1"><a href="/admin/user/{{ user.id }}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i></a></th>
                 </tr>
             {% endfor %}
             </tbody>

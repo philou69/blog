@@ -102,12 +102,15 @@ $routes["admin_users"] = ["method" => "get",
 $routes["admin_user"] = ["method" => "get",
                 "url" => "/admin/user/:id",
                 "controller" => "Admin:user"];
-$routes["admin_pages"] = ["method" => "get",
-                "url" => "/admin/pages",
-                "controller" => "Admin:pages"];
-$routes["admin_page"] = ["method" => "get",
-                "url" => "/admin/page/:page",
-                "controller" => "Admin:page"];
+$routes["admin_contents"] = ["method" => "get",
+                "url" => "/admin/contents",
+                "controller" => "Admin:contents"];
+$routes["admin_content"] = ["method" => "get",
+                "url" => "/admin/content/:id",
+                "controller" => "Admin:content"];
+$routes["admin_content_post"] = ["method" => "post",
+                "url" => "/admin/content/:id",
+                "controller" => "Admin:content"];
 $routes["admin_user_post"] = ["method" => "post",
                 "url" => "/admin/user/:id",
                 "controller" => "Admin:user"];

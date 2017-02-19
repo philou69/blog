@@ -9,6 +9,9 @@
 {% block body %}
     <div class="well">
         <h1 class="text-center">Les chapitres</h1>
+        <div class="text-right">
+            <a href="/admin/add/chapitre" class="btn btn-xs btn-info">Ecrire un chapitre</a>
+        </div>
         <table class="table table-striped table-hover">
             <thead>
                 <tr class="succes row">
@@ -28,7 +31,7 @@
                         <th class="col-sm-3">{{ chapitre.chapitre | slice(0,10) }}...</th>
                         <th class="col-sm-1">{{  chapitre.published ? "Oui" : "Non"}}</th>
                         <th class="col-sm-2">{{ chapitre.published_at | date('d/m/Y') }}</th>
-                        <th class="col-sm-1"><a href="/admin/chapitre/edit/{{ chapitre.id }}"><i class="glyphicon glyphicon-edit"></i></a>    <a href="/admin/chapitre/delete/{{ chapitre.id }}"><i class="glyphicon glyphicon-trash"></i></a></th>
+                        <th class="col-sm-1"><a href="/admin/chapitre/edit/{{ chapitre.id }}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i></a>    <a href="/admin/chapitre/delete/{{ chapitre.id }}" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-trash"></i></a></th>
                     </tr>
                 {% endfor %}
             </tbody>
