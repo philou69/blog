@@ -2,30 +2,30 @@
 
 {% block title %}Commentaire{%endblock %}
 
-{% block commentaires %}{% include "admin/commentaires_bar.html.twig" %}{% endblock %}
+{% block comments %}{% include "admin/comments_bar.html.twig" %}{% endblock %}
 
 {% block body %}
     <div class="well">
-    {% if commentaire.signaled == true %}
+    {% if comment.signaled == true %}
         {% set etat = "signaled" %}
-    {% elseif commentaire.banished == true %}
+    {% elseif comment.banished == true %}
         {% set etat = "banished" %}
     {% else %}
         {% set etat = "normal" %}
     {% endif %}
 
-        <h2>Commentaire {{ commentaire.id }}</h2>
+        <h2>Commentaire {{ comment.id }}</h2>
         <form action="" method="post" class="form-horizontal">
             <div class="form-group">
                 <label for="id" class="col-sm-3 control-label">Id :</label>
                 <div class="col-sm-5">
-                    <input type="text" id="id" value="{{ commentaire.id }}" class="form-control" readonly="readonly">
+                    <input type="text" id="id" value="{{ comment.id }}" class="form-control" readonly="readonly">
                 </div>
             </div>
             <div class="form-group">
-                <label for="commentaire" class="col-sm-3 control-label">Commentaire :</label>
+                <label for="comment" class="col-sm-3 control-label">Commentaire :</label>
                 <div class="col-sm-5">
-                    <textarea id="commentaire" class="form-control" readonly="readonly">{{ commentaire.commentaire }}</textarea>
+                    <textarea id="comment" class="form-control" readonly="readonly">{{ comment.comment }}</textarea>
                 </div>
             </div>
             <div class="form-group">
@@ -51,13 +51,13 @@
             <div class="form-group">
                 <label for="created_at" class="col-sm-3 control-label">Posté le :</label>
                 <div class="col-sm-5">
-                    <input type="date" id="created_at" value="{{ commentaire.created_at| date("Y-m-d")}}" class="form-control" readonly="readonly">
+                    <input type="date" id="created_at" value="{{ comment.created_at| date("Y-m-d")}}" class="form-control" readonly="readonly">
                 </div>
             </div>
             <div class="form-group">
                 <label for="user" class="col-sm-3 control-label">publié par :</label>
                 <div class="col-sm-5">
-                    <input type="text" id="user" value="{{ commentaire.user.username }}" class="form-control" readonly="readonly">
+                    <input type="text" id="user" value="{{ comment.user.username }}" class="form-control" readonly="readonly">
                 </div>
             </div>
             <div class="text-center">

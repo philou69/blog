@@ -13,9 +13,9 @@
     <div class="well">
         <form action="" method="post" class="form-horizontal">
             <h1 class="text-center">Formulaire de connection</h1>
-            {% for erreur in erreurs if erreur.erreur == "formulaire" %}
+            {% for error in errors if error.error == "formulaire" %}
                 <div class="alert alert-danger">
-                    {{ erreur.message }}
+                    {{ error.message }}
                 </div>
             {% endfor %}
             <div class="form-group">
@@ -23,9 +23,9 @@
                 <div class="col-sm-5">
                     <input type="text" class="form-control" name="username" id="username" value="">
                 </div>
-                {% for erreur in erreurs if erreur.erreur == "username" %}
+                {% for error in errors if error.error == "username" %}
                     <div class="alert alert-danger col-sm-5">
-                        {{ erreur.message }}
+                        {{ error.message }}
                     </div>
                 {% endfor %}
             </div>
@@ -33,9 +33,9 @@
                 <label for="password" class="control-label col-sm-2">Mot de passe :</label>
                 <div class="col-sm-5">
                     <input type="password" class="form-control" name="password" id="password">
-                </div>{% for erreur in erreurs if erreur.erreur == "password" %}
+                </div>{% for error in errors if error.error == "password" %}
                 <div class="alert alert-danger col-sm-5">
-                    {{ erreur.message }}
+                    {{ error.message }}
                 </div>
                 {% endfor %}
             </div>

@@ -9,16 +9,16 @@ $routes = [];
 $routes["index"] = ["method" => "get",
                 "url" => "/",
                 "controller" => "App:index"];
-$routes["chapitres"] = ["method" => "get",
-                "url" => "/chapitres",
-                "controller" => "App:chapitres"];
-$routes["chapitre"] = ["method" => "get",
-                "url" => "/chapitre/:id",
-                "controller" => "App:chapitre"];
-$routes["chapitre_post"] = ["method" => "post",
-                "url" => "/chapitre/:id",
-                "controller" => "App:chapitre"];
-$routes["add_commentaire"] = ["method" => "post",
+$routes["chapters"] = ["method" => "get",
+                "url" => "/chapters",
+                "controller" => "App:chapters"];
+$routes["chapter"] = ["method" => "get",
+                "url" => "/chapter/:id",
+                "controller" => "App:chapter"];
+$routes["chapter_post"] = ["method" => "post",
+                "url" => "/chapter/:id",
+                "controller" => "App:chapter"];
+$routes["add_comment"] = ["method" => "post",
                 "url" => "/commetaire",
                 "controller" => "App:add"];
 $routes["login_get"] = ["method" => "get",
@@ -57,42 +57,42 @@ $routes["admin_login_post"] = ["method" => "post",
 $routes["admin_index"] = ["method" => "get",
                 "url" => "/admin/",
                 "controller"=> "Admin:index"];
-$routes["admin_chapitres"] = ["method" =>"get",
-                "url" => "/admin/chapitres",
-                "controller" => "Admin:chapitres"];
-$routes["admin_add_chapitre"] = ["method" =>"get",
-                "url" => "/admin/chapitre/add",
-                "controller" => "Admin:addChapitre"];
-$routes["admin_add_chapitre_post"] = ["method" =>"post",
-                "url" => "/admin/chapitre/add",
-                "controller" => "Admin:addChapitre"];
-$routes["admin_edit_chapitre"] = ["method" =>"get",
-                "url" => "/admin/chapitre/edit/:id",
-                "controller" => "Admin:editChapitre"];
-$routes["admin_edit_chapitre_post"] = ["method" =>"post",
-                "url" => "/admin/chapitre/edit/:id",
-                "controller" => "Admin:editChapitre"];
-$routes["admin_delete_chapitre"] = ["method" =>"get",
-                "url" => "/admin/chapitre/delete/:id",
-                "controller" => "Admin:deleteChapitre"];
-$routes["admin_delete_chapitre_post"] = ["method" =>"post",
-                "url" => "/admin/chapitre/delete/:id",
-                "controller" => "Admin:deleteChapitre"];
-$routes["admin_commentaires"] = ["method" => "get",
-                "url" => "/admin/commentaires",
-                "controller" => "Admin:commentaires"];
-$routes["admin_banished_commentaires"] = ["method" => "get",
+$routes["admin_chapters"] = ["method" =>"get",
+                "url" => "/admin/chapters",
+                "controller" => "Admin:chapters"];
+$routes["admin_add_chapter"] = ["method" =>"get",
+                "url" => "/admin/chapter/add",
+                "controller" => "Admin:addChapter"];
+$routes["admin_add_chapter_post"] = ["method" =>"post",
+                "url" => "/admin/chapter/add",
+                "controller" => "Admin:addChapter"];
+$routes["admin_edit_chapter"] = ["method" =>"get",
+                "url" => "/admin/chapter/edit/:id",
+                "controller" => "Admin:editChapter"];
+$routes["admin_edit_chapter_post"] = ["method" =>"post",
+                "url" => "/admin/chapter/edit/:id",
+                "controller" => "Admin:editChapter"];
+$routes["admin_delete_chapter"] = ["method" =>"get",
+                "url" => "/admin/chapter/delete/:id",
+                "controller" => "Admin:deleteChapter"];
+$routes["admin_delete_chapter_post"] = ["method" =>"post",
+                "url" => "/admin/chapter/delete/:id",
+                "controller" => "Admin:deleteChapter"];
+$routes["admin_comments"] = ["method" => "get",
+                "url" => "/admin/comments",
+                "controller" => "Admin:comments"];
+$routes["admin_banished_comments"] = ["method" => "get",
                 "url" => "/admin/comments/banished",
-                "controller" => "Admin:banishedCommentaires"];
-$routes["admin_signaled_commentaires"] = ["method" => "get",
+                "controller" => "Admin:banishedComments"];
+$routes["admin_signaled_comments"] = ["method" => "get",
                 "url" => "/admin/comments/signaled",
-                "controller" => "Admin:signaledCommentaires"];
-$routes["admin_edit_commentaire"] = ["method" => "get",
-                "url" => "/admin/commentaire/edit/:id",
-                "controller" => "Admin:editCommentaire"];
-$routes["admin_edit_commentaire_post"] = ["method" => "post",
-                "url" => "/admin/commentaire/edit/:id",
-                "controller" => "Admin:editCommentaire"];
+                "controller" => "Admin:signaledComments"];
+$routes["admin_edit_comment"] = ["method" => "get",
+                "url" => "/admin/comment/edit/:id",
+                "controller" => "Admin:editComment"];
+$routes["admin_edit_comment_post"] = ["method" => "post",
+                "url" => "/admin/comment/edit/:id",
+                "controller" => "Admin:editComment"];
 $routes["admin_logout"] = ["method" => "get",
                 "url" => "/admin/login",
                 "controller" => "Admin:logout"];

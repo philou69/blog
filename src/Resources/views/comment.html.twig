@@ -1,0 +1,20 @@
+<p class="well" id="comment_{{ comment.id }}">
+    {% if comment.banished == true %}
+        Commentaire modéré.
+    {% elseif comment.signaled == true %}
+        Commentaire signaler. En attente de moderation.
+
+    {% else %}
+        {{ comment.user.username }} : <br/>
+        {{ comment.comment }}<br/>
+        <small>paru le : {{ comment.created_at|date("d/m/Y") }} <a href="/signal/{{ comment.id }}">
+                Signaler
+            </a>
+            {% if session.isconnected == true %}
+                <a href="#" class="response" id="{{ comment.id }}">
+                    Répondre
+                </a>
+            {% endif %}
+        </small>
+    {% endif %}
+</p>

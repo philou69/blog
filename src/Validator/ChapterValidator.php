@@ -4,7 +4,7 @@
 namespace App\Validator;
 
 
-class ChapitreValidator
+class ChapterValidator
 {
     private $regexTitle;
     private $regexDate;
@@ -22,7 +22,7 @@ class ChapitreValidator
         }
         return false;
     }
-    public function isChapitre($chapitre){
+    public function isChapter($chapter){
         return true;
     }
 

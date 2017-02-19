@@ -4,17 +4,17 @@
 namespace App\Entity;
 
 
-class Commentaire
+class Comment
 {
     private $id;
     private $user;
-    private $commentaire;
+    private $comment;
     private $chapitre;
-    private $commentaireParent = null;
+    private $commentParent = null;
     private $signaled = false;
     private $banished = false;
     private $created_at;
-    private $commentaires = null;
+    private $comments = null;
     private $place = 1;
 
     public function __construct(array $data = null)
@@ -81,19 +81,19 @@ class Commentaire
     /**
      * @return mixed
      */
-    public function getCommentaire()
+    public function getComment()
     {
-        return $this->commentaire;
+        return $this->comment;
     }
 
     /**
-     * @param mixed $commentaire
+     * @param mixed $comment
      * @return $this
      */
-    public function setCommentaire($commentaire)
+    public function setComment($comment)
     {
-        if (is_string($commentaire)) {
-            $this->commentaire = $commentaire;
+        if (is_string($comment)) {
+            $this->comment = $comment;
         }
 
         return $this;
@@ -121,18 +121,18 @@ class Commentaire
     /**
      * @return null
      */
-    public function getCommentaireParent()
+    public function getCommentParent()
     {
-        return $this->commentaireParent;
+        return $this->commentParent;
     }
 
     /**
      * @param null $commentireParent
      * @return $this
      */
-    public function setCommentaireParent(Commentaire $commentaireParent)
+    public function setCommentParent(Comment $commentParent)
     {
-        $this->commentaireParent = $commentaireParent;
+        $this->commentParent = $commentParent;
 
         return $this;
     }
@@ -199,25 +199,25 @@ class Commentaire
     /**
      * @return mixed
      */
-    public function getCommentaires()
+    public function getComments()
     {
-        return $this->commentaires;
+        return $this->comments;
     }
 
     /**
-     * @param array $commentaires
+     * @param array $comments
      * @return $this
      */
-    public function setCommentaires($commentaires)
+    public function setComments($comments)
     {
-        $this->commentaires = $commentaires;
+        $this->comments = $comments;
 
         return $this;
     }
 
-    public function addCommentaire(Commentaire $commentaire)
+    public function addComment(Comment $comment)
     {
-        $this->commentaires[] = $commentaire;
+        $this->comments[] = $comment;
 
         return $this;
     }

@@ -4,13 +4,13 @@
 namespace App\Controller;
 
 
-use App\Entity\Chapitre;
-use App\Manager\ChapitreManager;
-use App\Manager\CommentaireManager;
+use App\Entity\Chapter;
+use App\Manager\ChapterManager;
+use App\Manager\CommentManager;
 use App\Manager\ContentManager;
 use App\Manager\PageManager;
 use App\Manager\UserManager;
-use App\Validator\ChapitreValidator;
+use App\Validator\ChapterValidator;
 use App\Validator\UserValidator;
 
 class AdminController extends Controller
@@ -19,7 +19,7 @@ class AdminController extends Controller
     {
         session_start();
 
-        $erreurs = [];
+        $errors = [];
         // On vérifie qe la methode est post et donc que le formulaire est passé
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // On vérifie la présence de données username et password en post
@@ -29,17 +29,17 @@ class AdminController extends Controller
                 // Les regex sont gérer dans le validator
                 $userValidator = new UserValidator();
                 if (!$userValidator->isUsername($_POST['username'])) {
-                    $erreurs[] = ["erreur" => "username", "message" => "Erreur sur le format du nom"];
+                    $errors[] = ["error" => "username", "message" => "Erreur sur le format du nom"];
                 }
                 if (!$userValidator->isPassword($_POST['password'])) {
-                    $erreurs[] = ["erreur" => "password", "message" => "Erreur sur le format du mot de passe"];
+                    $errors[] = ["error" => "password", "message" => "Erreur sur le format du mot de passe"];
                 }
             } else {
-                $erreurs[] = ["erreur" => "formulaire", "message" => "Il faut un nom et un mot de passe!"];
+                $errors[] = ["error" => "formulaire", "message" => "Il faut un nom et un mot de passe!"];
             }
-            // Si $erreurs est vide, cela signifie que tous est ok
+            // Si $errors est vide, cela signifie que tous est ok
             // Et on connect l'utilisateur
-            if (empty($erreurs)) {
+            if (empty($errors)) {
                 // On va chercher un utilisateur correspondant au username et password
                 // Il n'est pas utile de protege les POST car password est  hashé et username est protéger automatiquement dans la requête
                 $password = hash("sha512", $_POST["password"]);
@@ -50,7 +50,7 @@ class AdminController extends Controller
                     throw new \Exception("L'user n'existe pas ou mauvais mot de passe");
                 }
                 if(!in_array("ROLE_ADMIN", $user->getRoles())){
-                    $erreurs[] = ['erreur' => 'formulaire', 'message' => "L'utilisateur n'a pas accès à cette zone."];
+                    $errors[] = ['error' => 'formulaire', 'message' => "L'utilisateur n'a pas accès à cette zone."];
                 }else{
                     // On enregistre l'utilisateur dans une session
                     $this->fillSession($user);
@@ -60,7 +60,7 @@ class AdminController extends Controller
 
             }
         }
-        $this->render('admin/login.html.twig', array('erreurs' => $erreurs), $_SESSION);
+        $this->render('admin/login.html.twig', array('errors' => $errors), $_SESSION);
     }
 
     public function indexAction(){
@@ -77,195 +77,195 @@ class AdminController extends Controller
         }
     }
 
-    public function chapitresAction(){
+    public function chaptersAction(){
         $this->isAuthorized();
-        $chapitreManager = new ChapitreManager();
-        $listChapitre = $chapitreManager->findAll();
+        $chapterManager = new ChapterManager();
+        $chapters = $chapterManager->findAll();
 
-        $this->render('admin/chapitres.html.twig', array('listChapitre' => $listChapitre), $_SESSION);
+        $this->render('admin/chapters.html.twig', array('chapters' => $chapters), $_SESSION);
     }
 
-    public function addChapitreAction(){
+    public function addChapterAction(){
         $this->isAuthorized();
         $errors = [];
         if($_SERVER['REQUEST_METHOD'] == "POST"){
-            $chapitreValidator = new  ChapitreValidator();
+            $chapterValidator = new  ChapterValidator();
             if(empty(htmlspecialchars($_POST['title']))){
                 $errors[] = ['error' => "title", "message" => "Le titre ne peut être vide"];
-            }else if(!$chapitreValidator->isTitle(htmlspecialchars($_POST['title']))){
+            }else if(!$chapterValidator->isTitle(htmlspecialchars($_POST['title']))){
                 $errors[] = ['error' => "title", "message" => "Le titre n'est pas au bon format!"];
             }
-            if(empty(htmlspecialchars($_POST['chapitre']))){
-                $errors[] = ['error' => "chapitre", "message" => "Le chapitre ne peut être vide"];
-            }elseif (!$chapitreValidator->isChapitre(htmlspecialchars($_POST['chapitre']))){
-                $errors[] = ['error' => "chapitre", "message" => "Le chapitre n'est pas au bon format!"];
+            if(empty(htmlspecialchars($_POST['chapter']))){
+                $errors[] = ['error' => "chapter", "message" => "Le chapter ne peut être vide"];
+            }elseif (!$chapterValidator->isChapter(htmlspecialchars($_POST['chapter']))){
+                $errors[] = ['error' => "chapter", "message" => "Le chapter n'est pas au bon format!"];
             }
             if(empty(htmlspecialchars($_POST['published_at']))){
                 $errors[] = ['error' => "published_at", "message" => "La date de publication ne peut être vide!"];
-            }elseif(!$chapitreValidator->isDate(htmlspecialchars($_POST['published_at']))){
+            }elseif(!$chapterValidator->isDate(htmlspecialchars($_POST['published_at']))){
                 $errors[]= ['error' => "published_at", "message" => "La date n'est pas valide!"];
             }
             if(!isset($_POST['published'])){
                 $errors[] = ['error' => "published", "message" => "Le statut de la publication ne peut être vide"];
-            }elseif (!$chapitreValidator->isPublished(htmlspecialchars($_POST['published']))){
+            }elseif (!$chapterValidator->isPublished(htmlspecialchars($_POST['published']))){
                 $errors[] = ['erro' => "published", "message" => "Le statut de publication n'est pas valide"];
             }
 
             if(empty($errors)){
-                $chapitreManager = new ChapitreManager();
-                $chapitre = new Chapitre();
-                $chapitre->setTitle(htmlspecialchars($_POST['title']))
-                    ->setChapitre($_POST['chapitre'])
+                $chapterManager = new ChapterManager();
+                $chapter = new Chapter();
+                $chapter->setTitle(htmlspecialchars($_POST['title']))
+                    ->setChapter($_POST['chapter'])
                     ->setPublished_at(htmlspecialchars($_POST['published_at']))
                     ->setPublished(htmlspecialchars($_POST['published']));
 
-                $chapitreManager->add($chapitre);
+                $chapterManager->add($chapter);
 
-                $this->redirectTo('/admin/chapitres');
+                $this->redirectTo('/admin/chapters');
             }
 
         }
-        $this->render("admin/chapitre.html.twig", array('errors' => $errors));
+        $this->render("admin/chapter.html.twig", array('errors' => $errors));
     }
 
-    public function editChapitreAction($id){
+    public function editChapterAction($id){
         $this->isAuthorized();
         if(!is_numeric($id)){
             throw new \Exception("Page introuvable!");
         }
-        $chapitreManager = new ChapitreManager();
-        $chapitre = $chapitreManager->findOneById($id);
-        if(!$chapitre){
+        $chapterManager = new ChapterManager();
+        $chapter = $chapterManager->findOneById($id);
+        if(!$chapter){
             throw new \Exception("Page introuvable");
         }
         $errors = [];
         if($_SERVER['REQUEST_METHOD'] == "POST"){
-            $chapitreValidator = new  ChapitreValidator();
+            $chapterValidator = new  ChapterValidator();
             if(empty(htmlspecialchars($_POST['title']))){
                 $errors[] = ['error' => "title", "message" => "Le titre ne peut être vide"];
-            }else if(!$chapitreValidator->isTitle(htmlspecialchars($_POST['title']))){
+            }else if(!$chapterValidator->isTitle(htmlspecialchars($_POST['title']))){
                 $errors[] = ['error' => "title", "message" => "Le titre n'est pas au bon format!"];
             }
-            if(empty(htmlspecialchars($_POST['chapitre']))){
-                $errors[] = ['error' => "chapitre", "message" => "Le chapitre ne peut être vide"];
-            }elseif (!$chapitreValidator->isChapitre(htmlspecialchars($_POST['chapitre']))){
-                $errors[] = ['error' => "chapitre", "message" => "Le chapitre n'est pas au bon format!"];
+            if(empty(htmlspecialchars($_POST['chapter']))){
+                $errors[] = ['error' => "chapter", "message" => "Le chapter ne peut être vide"];
+            }elseif (!$chapterValidator->isChapter(htmlspecialchars($_POST['chapter']))){
+                $errors[] = ['error' => "chapter", "message" => "Le chapter n'est pas au bon format!"];
             }
             if(empty(htmlspecialchars($_POST['published_at']))){
                 $errors[] = ['error' => "published_at", "message" => "La date de publication ne peut être vide!"];
-            }elseif(!$chapitreValidator->isDate(htmlspecialchars($_POST['published_at']))){
+            }elseif(!$chapterValidator->isDate(htmlspecialchars($_POST['published_at']))){
                 $errors[]= ['error' => "published_at", "message" => "La date n'est pas valide!"];
             }
             if(!isset($_POST['published'])){
                 $errors[] = ['error' => "published", "message" => "Le statut de la publication ne peut être vide"];
-            }elseif (!$chapitreValidator->isPublished(htmlspecialchars($_POST['published']))){
+            }elseif (!$chapterValidator->isPublished(htmlspecialchars($_POST['published']))){
                 $errors[] = ['erro' => "published", "message" => "Le statut de publication n'est pas valide"];
             }
 
             if(empty($errors)){
                 var_dump($_POST['published']);
                 exit;
-                $chapitreManager = new ChapitreManager();
-                $chapitre = new Chapitre();
-                $chapitre->setTitle(htmlspecialchars($_POST['title']))
-                    ->setChapitre($_POST['chapitre'])
+                $chapterManager = new ChapterManager();
+                $chapter = new Chapter();
+                $chapter->setTitle(htmlspecialchars($_POST['title']))
+                    ->setChapter($_POST['chapter'])
                     ->setPublished_at(htmlspecialchars($_POST['published_at']))
                     ->setPublished(htmlspecialchars($_POST['published']));
 
-                $chapitreManager->add($chapitre);
+                $chapterManager->add($chapter);
 
-                $this->redirectTo('/admin/chapitres');
+                $this->redirectTo('/admin/chapters');
             }
 
         }
-        $this->render("admin/chapitre.html.twig", array('errors' => $errors, 'chapitre' => $chapitre));
+        $this->render("admin/chapter.html.twig", array('errors' => $errors, 'chapter' => $chapter));
     }
 
-    public function deleteChapitreAction($id){
+    public function deleteChapterAction($id){
         $this->isAuthorized();
         if(!is_numeric($id)){
             throw new \Exception("Page introuvable");
         }
 
-        $chapitreManager = new ChapitreManager();
-        $chapitre = $chapitreManager->findOneById($id);
-        if(!$chapitre){
+        $chapterManager = new ChapterManager();
+        $chapter = $chapterManager->findOneById($id);
+        if(!$chapter){
             throw new \Exception("Page introuvable");
         }
         if($_SERVER['REQUEST_METHOD'] == "POST"){
-            var_dump($_POST);
             if(htmlspecialchars($_POST['delete']) == 'Supprimer'){
-                $chapitreManager->delete($chapitre);
+                $chapterManager->delete($chapter);
+                $this->redirectTo("/admin/chapters");
             }
         }
 
-        $this->render("admin/delete_chapitre.html.twig", array('chapitre' => $chapitre));
+        $this->render("admin/delete_chapter.html.twig", array('chapter' => $chapter));
     }
 
-    public function commentairesAction(){
+    public function commentsAction(){
         $this->isAuthorized();
-        $commentaireManager = new CommentaireManager();
+        $commentManager = new CommentManager();
 
-        $listCommentaires = $commentaireManager->findAll();
-        $this->render('admin/commentaires.html.twig', array('listCommentaire' => $listCommentaires), $_SESSION);
+        $comments = $commentManager->findAll();
+        $this->render('admin/comments.html.twig', array('comments' => $comments), $_SESSION);
     }
 
-    public function editCommentaireAction($id){
+    public function editCommentAction($id){
         $this->isAuthorized();
         if(!is_numeric($id)){
             throw new \Exception("Page introuvable");
         }
-        $commentaireManager = new CommentaireManager();
-        $commentaire = $commentaireManager->findOneById($id);
-        if(!$commentaire){
+        $commentManager = new CommentManager();
+        $comment = $commentManager->findOneById($id);
+        if(!$comment){
             throw new \Exception("Page introuvable");
         }
         $errors = [];
 
         if($_SERVER['REQUEST_METHOD'] == "POST"){
             if(!isset($_POST['etat'])){
-                $errors[] = ["error" => "etat", "message" => "L'etat du commentaire ne peut être vide"];
+                $errors[] = ["error" => "etat", "message" => "L'etat du comment ne peut être vide"];
             }elseif (htmlspecialchars($_POST['etat']) != "normal" && htmlspecialchars($_POST['etat']) != "signaled" &&htmlspecialchars($_POST['etat']) != "banished" ){
-                $errors[] = ["error" => "etat", "message" =>"L'eta du commentaire n'est pas au bon format"];
+                $errors[] = ["error" => "etat", "message" =>"L'eta du comment n'est pas au bon format"];
             }
 
             if(empty($errors)){
                 if($_POST['etat'] == "normal"){
-                    $commentaire->setSignaled(false)
+                    $comment->setSignaled(false)
                         ->setBanished(false);
                 }elseif ($_POST['etat'] == "signaled"){
-                    $commentaire->setSignaled(true)
+                    $comment->setSignaled(true)
                         ->setBanished(false);
                 }elseif($_POST['etat'] == "banished"){
-                    $commentaire->setSignaled(false)
+                    $comment->setSignaled(false)
                         ->setBanished(true);
                 }
-                $commentaireManager->update($commentaire);
-                $this->redirectTo('/admin/commentaires');
+                $commentManager->update($comment);
+                $this->redirectTo('/admin/comments');
             }
 
         }
 
-        $this->render("admin/commentaire.html.twig", array('commentaire' => $commentaire, 'errors' => $errors));
+        $this->render("admin/comment.html.twig", array('comment' => $comment, 'errors' => $errors));
 
     }
 
-    public function signaledCommentairesAction(){
+    public function signaledCommentsAction(){
         $this->isAuthorized();
 
-        $commentaireManager = new CommentaireManager();
-        $listCommentaire = $commentaireManager->findAllSignaled();
+        $commentManager = new CommentManager();
+        $comments = $commentManager->findAllSignaled();
 
-        $this->render("admin/commentaires_signaled.html.twig",array('listCommentaire' => $listCommentaire));
+        $this->render("admin/comments_signaled.html.twig",array('comments' => $comments));
     }
 
-    public function banishedCommentairesAction(){
+    public function banishedCommentsAction(){
         $this->isAuthorized();
 
-        $commentaireManager = new CommentaireManager();
-        $listCommentaire = $commentaireManager->findAllBanished();
+        $commentManager = new CommentManager();
+        $comments = $commentManager->findAllBanished();
 
-        $this->render("admin/commentaires_banished.html.twig",array('listCommentaire' => $listCommentaire));
+        $this->render("admin/comments_banished.html.twig",array('comments' => $comments));
     }
 
     public function usersAction(){

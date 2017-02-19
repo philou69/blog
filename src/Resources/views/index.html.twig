@@ -13,16 +13,16 @@
         </p>
     </div>
     <div class="well">
-        {% if chapitre.published_at < "now" |date('Y-m-d') %}
-            <h2 class="text-center">{{ chapitre.title }}</h2>
+        {% if chapter.published_at < "now" |date('Y-m-d') %}
+            <h2 class="text-center">{{ chapter.title }}</h2>
             <p>
-                {{ chapitre.title }} n'est pas encore diffuser. Vous pourrez connaître
-                la suite des aventures le {{ chapitre.published_at|date('d/m/Y') }}
+                {{ chapter.title }} n'est pas encore diffuser. Vous pourrez connaître
+                la suite des aventures le {{ chapter.published_at|date('d/m/Y') }}
             </p>
         {% else %}
-            <h2 class="text-center"><a href="chapitre/{{ chapitre.id }}">{{ chapitre.title }}</a></h2>
+            <h2 class="text-center"><a href="chapter/{{ chapter.id }}">{{ chapter.title }}</a></h2>
             <p>
-                {{ chapitre.chapitre|slice(0,3) }}...
+                {{ chapter.chapter|slice(0,3) }}...
             </p>
         {% endif %}
     </div>

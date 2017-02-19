@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    #chapitre {
+    #chapter {
     margin-left: 40px;
     color: blue;
     }
@@ -12,26 +12,26 @@
 
 {% block body %}
     <div>
-        <h2 id="chapitre">Les chapitres</h2>
+        <h2 id="chapter">Les chapitres</h2>
         <ul class="list-unstyled">
-            {% for chapitre in listChapitres %}
-                {% if chapitre.published_at > "now"|date("Y-m-d") %}
+            {% for chapter in chapters %}
+                {% if chapter.published_at > "now"|date("Y-m-d") %}
                     <li class="well">
-                        <h4>{{ chapitre.title }}</h4>
+                        <h4>{{ chapter.title }}</h4>
 
                         <p>
                             Le prochain chapitre est en cours d'écriture. Il sera diffusé
-                            le {{ chapitre.published_at| date('d/m/Y') }}.<br>
+                            le {{ chapter.published_at| date('d/m/Y') }}.<br>
                             En attendant n'hesiter pas à lire les autres chapitres.
                         </p>
                     </li>
                 {% else %}
                     <li class="well">
-                        <h4><a href="/chapitre/{{ chapitre.id }}">{{ chapitre.title }}</a></h4>
+                        <h4><a href="/chapter/{{ chapter.id }}">{{ chapter.title }}</a></h4>
                         <p>
-                            {{ chapitre.chapitre | slice(0,5) }}...
+                            {{ chapter.chapter | slice(0,5) }}...
                         </p>
-                        <small>Paru le : {{ chapitre.published_at | date("d/m/Y") }}</small>
+                        <small>Paru le : {{ chapter.published_at | date("d/m/Y") }}</small>
                     </li>
                 {% endif %}
             {% endfor %}

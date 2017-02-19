@@ -14,7 +14,7 @@
     </script>
 {% endblock %}
 {% block chapitres %}
-    {% include "admin/chapitresbar.html.twig" %}
+    {% include "admin/chaptersbar.html.twig" %}
 
 {% endblock %}
 {% block body %}
@@ -24,7 +24,7 @@
             <div class="form-group">
                 <label for="title" class="col-sm-2 control-label">Titre :</label>
                 <div class="col-sm-5">
-                    <input type="text" name="title" id="title" class="form-control" value="{{ chapitre.title }}">
+                    <input type="text" name="title" id="title" class="form-control" value="{{ chapter.title }}">
                 </div>
                 {% for error in errors if error.error == "title" %}
                     <div class="alert alert-danger col-sm-4">
@@ -33,11 +33,11 @@
                 {% endfor %}
             </div>
             <div class="form-group">
-                <label for="chapitre" class="col-sm-2 control-label">Text :</label>
+                <label for="chapter" class="col-sm-2 control-label">Text :</label>
                 <div class="col-sm-8">
-                    <textarea name="chapitre" id="chapitre">{{ chapitre.chapitre }}</textarea>
+                    <textarea name="chapter" id="chapter">{{ chapter.chapter }}</textarea>
                 </div>
-                {% for error in errors if error.error == "chapitre" %}
+                {% for error in errors if error.error == "chapter" %}
                     <div class="alert alert-danger col-sm-2">
                         {{ error.message }}
                     </div>
@@ -46,7 +46,7 @@
             <div class="form-group">
                 <label for="published_at" class="col-sm-2 control-label">publier le :</label>
                 <div class="col-sm-5">
-                    <input type="date" name="published_at" id="published_at" class="form-control" value="{{ chapitre.published_at|date("Y-m-d") }}">
+                    <input type="date" name="published_at" id="published_at" class="form-control" value="{{ chapter.published_at|date("Y-m-d") }}">
                 </div>
                 {% for error in errors if error.error == "published_at" %}
                     <div class="alert alert-danger col-sm-4">
@@ -58,10 +58,10 @@
                 <label for="published" class="col-sm-2 control-label">Publiable</label>
                 <div class="col-sm-5">
                     <div class="btn-group" data-toggle="buttons" aria-required="true">
-                        <label id="true" class="btn published btn-default {% if chapitre.published == true %}active {% endif %} ">
-                            <input type="radio" name="published" value="true">oui
+                        <label id="true" class="btn published btn-default {% if chapter.published == true %}active {% endif %} ">
+                            <input type="radio" name="published" value="true" {% if chapter.published == true %}checked {% endif %} >oui
                         </label>
-                        <label id="false" class="btn btn-default published {% if chapitre.published == false %}active{% endif %}">
+                        <label id="false" class="btn btn-default published {% if chapter.published == false %}checked{% endif %}">
                             <input type="radio" name="published" value="false"  >non
                         </label>
                     </div>

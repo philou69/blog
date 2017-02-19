@@ -1,6 +1,6 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %} {{ chapitre.tilte }} {% endblock %}
+{% block title %} {{ chapter.tilte }} {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -12,13 +12,13 @@
     }
 {% endblock %}
 {% block body %}
-    <h1 class="center">{{ chapitre.title }}</h1>
-    {% if chapitre.published >= "now"|date("Y-m-d") %}
-        <p>{{ chapitre.chapitre | raw }}</p>
+    <h1 class="center">{{ chapter.title }}</h1>
+    {% if chapter.published >= "now"|date("Y-m-d") %}
+        <p>{{ chapter.chapter | raw }}</p>
         {% else %}
         <p>
             Le chapitre n'est pas encore publié.<br/>
-            Revenez le {{ chapitre.published_at }}
+            Revenez le {{ chapter.published_at }}
         </p>
     {% endif %}
 
@@ -32,12 +32,12 @@
         <form action="" method="post" class="form-horizontal well">
             <h2>{{ session.name }} laissez votre avis sur ce chapitre.</h2>
             <div class="form-group">
-                <label for="commentaire" class="control-label col-sm-3"> Votre commentaire :</label>
+                <label for="comment" class="control-label col-sm-3"> Votre commentaire :</label>
                 <div class="col-sm-7">
-                    <textarea class="form-control" name="commentaire" id="commentaire" cols="30" rows="10"
+                    <textarea class="form-control" name="comment" id="comment" cols="30" rows="10"
                               required></textarea>
                 </div>
-                <input type="hidden" name="chapitre" id="chapitre" value="{{ chapitre.id }}" required>
+                <input type="hidden" name="chapter" id="chapter" value="{{ chapter.id }}" required>
             </div>
             <div class="text-center">
                 <input type="submit" value="Envoyer" class="btn btn-info btn-xs">
@@ -46,21 +46,21 @@
 
     {% endif %}
     <ul class="list-unstyled row">
-        {% for commentaire in listCommentaires %}
+        {% for comment in comments %}
             <li>
-                {%  include 'commentaire.html.twig'  %}
-                {% for commentaire2 in commentaire.commentaires %}
+                {%  include 'comment.html.twig'  %}
+                {% for comment2 in comment.comments %}
                     {% if loop.first %}
                         <ul class="list-unstyled push-1">
                     {% endif %}
                     <li>
-                        {%  include 'commentaire.html.twig' with {'commentaire': commentaire2} %}
-                        {% for commentaire3 in commentaire2.commentaires %}
+                        {%  include 'comment.html.twig' with {'comment': comment2} %}
+                        {% for comment3 in comment2.comments %}
                             {% if loop.first %}
                                 <ul class="list-unstyled push-2">
                             {% endif %}
                             <li>
-                                {%  include 'commentaire.html.twig' with {'commentaire': commentaire3} %}
+                                {%  include 'comment.html.twig' with {'comment': comment3} %}
                             </li>
                             {% if loop.last %}
                                 </ul>

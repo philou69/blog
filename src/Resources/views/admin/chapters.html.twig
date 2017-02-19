@@ -1,0 +1,41 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}les chapitres{% endblock %}
+
+{% block chapters %}
+    {% include 'admin/chaptersbar.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <div class="well">
+        <h1 class="text-center">Les chapitres</h1>
+        <div class="text-right">
+            <a href="/admin/chapter/add" class="btn btn-xs btn-info">Ecrire un chapitre</a>
+        </div>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr class="succes row">
+                    <th class="col-sm-1">id</th>
+                    <th class="col-sm-3">Titre</th>
+                    <th class="col-sm-3">Texte</th>
+                    <th class="col-sm-1">Publiable</th>
+                    <th class="col-sm-2">Date de publication</th>
+                    <th class="col-sm-1">Editer Supprimer</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for chapter in chapters %}
+                    <tr class="row">
+                        <th class="col-sm-1">{{ chapter.id }}</th>
+                        <th class="col-sm-3">{{ chapter.title }}</th>
+                        <th class="col-sm-3">{{ chapter.chapter | slice(0,10) }}...</th>
+                        <th class="col-sm-1">{{  chapter.published ? "Oui" : "Non"}}</th>
+                        <th class="col-sm-2">{{ chapter.published_at | date('d/m/Y') }}</th>
+                        <th class="col-sm-1"><a href="/admin/chapter/edit/{{ chapter.id }}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i></a>    <a href="/admin/chapter/delete/{{ chapter.id }}" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-trash"></i></a></th>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+{% endblock %}

@@ -4,11 +4,11 @@
 namespace App\Entity;
 
 
-class Chapitre
+class Chapter
 {
     private $id;
     private $title;
-    private $chapitre;
+    private $chapter;
     private $published_at;
     private $published;
 
@@ -74,19 +74,19 @@ class Chapitre
     /**
      * @return mixed
      */
-    public function getChapitre()
+    public function getChapter()
     {
-        return $this->chapitre;
+        return $this->chapter;
     }
 
     /**
-     * @param mixed $chapitre
+     * @param mixed $chapter
      * @return $this
      */
-    public function setChapitre($chapitre)
+    public function setChapter($chapter)
     {
-        if (is_string($chapitre)) {
-            $this->chapitre = $chapitre;
+        if (is_string($chapter)) {
+            $this->chapter = $chapter;
         }
         return $this;
     }
