@@ -60,6 +60,12 @@ $routes["admin_index"] = ["method" => "get",
 $routes["admin_chapters"] = ["method" =>"get",
                 "url" => "/admin/chapters",
                 "controller" => "Admin:chapters"];
+$routes["admin_chapters_draft"] = ["method" =>"get",
+                "url" => "/admin/chapters/draft",
+                "controller" => "Admin:chaptersDraft"];
+$routes["admin_chapters_published"] = ["method" =>"get",
+                "url" => "/admin/chapters/published",
+                "controller" => "Admin:chaptersPublished"];
 $routes["admin_add_chapter"] = ["method" =>"get",
                 "url" => "/admin/chapter/add",
                 "controller" => "Admin:addChapter"];
@@ -99,6 +105,9 @@ $routes["admin_logout"] = ["method" => "get",
 $routes["admin_users"] = ["method" => "get",
                 "url" => "/admin/users",
                 "controller" => "Admin:users"];
+$routes["admin_users_banished"] = ["method" => "get",
+                "url" => "/admin/users/banished",
+                "controller" => "Admin:usersBanished"];
 $routes["admin_user"] = ["method" => "get",
                 "url" => "/admin/user/:id",
                 "controller" => "Admin:user"];

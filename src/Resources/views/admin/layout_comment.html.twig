@@ -1,0 +1,14 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block title %}Commentaires{% endblock %}
+
+{% block comments %}
+    {% include "admin/comments_bar.html.twig" %}
+{% endblock %}
+
+{% block body %}
+    <div class="well">
+        {% block body_comment %}
+        {% endblock %}
+    </div>
+{% endblock %}

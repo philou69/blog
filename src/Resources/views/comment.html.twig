@@ -7,13 +7,16 @@
     {% else %}
         {{ comment.user.username }} : <br/>
         {{ comment.comment }}<br/>
-        <small>paru le : {{ comment.created_at|date("d/m/Y") }} <a href="/signal/{{ comment.id }}">
-                Signaler
-            </a>
+        <small>paru le : {{ comment.created_at|date("d/m/Y") }}
             {% if session.isconnected == true %}
+                <a href="/signal/{{ comment.id }}">
+                    Signaler
+                </a>
                 <a href="#" class="response" id="{{ comment.id }}">
                     Répondre
                 </a>
+                {% else %}
+                    <a href="/login">Connectez</a> vous ou <a href="/inscription">inscrivez</a> vous.
             {% endif %}
         </small>
     {% endif %}

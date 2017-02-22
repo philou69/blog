@@ -1,4 +1,3 @@
-
 var btnsResponse = document.querySelectorAll("a.response");
 btnsResponse.forEach(function (btn) {
 

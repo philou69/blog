@@ -1,11 +1,8 @@
-{% extends "admin/layout.html.twig" %}
+{% extends "admin/layout_comment.html.twig" %}
 
-{% block title %}Commentaire{%endblock %}
-
-{% block comments %}{% include "admin/comments_bar.html.twig" %}{% endblock %}
+{% block title %}Commentaire{% endblock %}
 
 {% block body %}
-    <div class="well">
     {% if comment.signaled == true %}
         {% set etat = "signaled" %}
     {% elseif comment.banished == true %}
@@ -14,55 +11,61 @@
         {% set etat = "normal" %}
     {% endif %}
 
-        <h2>Commentaire {{ comment.id }}</h2>
-        <form action="" method="post" class="form-horizontal">
-            <div class="form-group">
-                <label for="id" class="col-sm-3 control-label">Id :</label>
-                <div class="col-sm-5">
-                    <input type="text" id="id" value="{{ comment.id }}" class="form-control" readonly="readonly">
-                </div>
+    <h2>Commentaire {{ comment.id }}</h2>
+    <form action="" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label for="id" class="col-sm-3 control-label">Id :</label>
+            <div class="col-sm-5">
+                <input type="text" id="id" value="{{ comment.id }}" class="form-control" readonly="readonly">
             </div>
-            <div class="form-group">
-                <label for="comment" class="col-sm-3 control-label">Commentaire :</label>
-                <div class="col-sm-5">
-                    <textarea id="comment" class="form-control" readonly="readonly">{{ comment.comment }}</textarea>
-                </div>
+        </div>
+        <div class="form-group">
+            <label for="comment" class="col-sm-3 control-label">Commentaire :</label>
+            <div class="col-sm-5">
+                <textarea id="comment" class="form-control" readonly="readonly">{{ comment.comment }}</textarea>
             </div>
-            <div class="form-group">
-                <label for="etat" class="col-sm-3 control-label">Etat : </label>
-                <div class="col-sm-4">
-                    <div class="radio">
-                        <label><input type="radio" name="etat" value="normal" {% if etat == "normal"%} checked="true" {% endif %} >Normal</label>
-                    </div>
-                    <div class="radio">
-                        <label><input type="radio" name="etat" value="signaled"  {% if etat == "signaled"%} checked="true" {% endif %} >Signaler</label>
-                    </div>
-                    <div class="radio ">
-                        <label><input type="radio" name="etat" value="banished"  {% if etat == "banished"%} checked="true" {% endif %} >Banni</label>
-                    </div>
+        </div>
+        <div class="form-group">
+            <label for="etat" class="col-sm-3 control-label">Etat : </label>
+            <div class="col-sm-4">
+                <div class="radio">
+                    <label><input type="radio" name="etat"
+                                  value="normal" {% if etat == "normal" %} checked="true" {% endif %} >Normal</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="etat"
+                                  value="signaled" {% if etat == "signaled" %} checked="true" {% endif %} >Signaler{% if etat == "signaled" %} par {{ comment.signaledBy.username }} le {{ comment.signaledAt| date('d/m/Y') }}{% endif %}
+                    </label>
+                </div>
+                <div class="radio ">
+                    <label><input type="radio" name="etat"
+                                  value="banished" {% if etat == "banished" %} checked="true" {% endif %} >Banni {% if etat == "banished" %}par {{ comment.banishedBy.username }} le {{ comment.banishedAt }}{% endif %}
+                    </label>
+                </div>
 
-                </div>
-                {% for error in errors if error.error == "etat"%}
+            </div>
+            {% for error in errors if error.error == "etat" %}
                 <div class="alert alert-danger col-sm-5">
                     {{ error.message }}
                 </div>
-                {% endfor %}
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label for="created_at" class="col-sm-3 control-label">Posté le :</label>
+            <div class="col-sm-5">
+                <input type="date" id="created_at" value="{{ comment.created_at| date("Y-m-d") }}" class="form-control"
+                       readonly="readonly">
             </div>
-            <div class="form-group">
-                <label for="created_at" class="col-sm-3 control-label">Posté le :</label>
-                <div class="col-sm-5">
-                    <input type="date" id="created_at" value="{{ comment.created_at| date("Y-m-d")}}" class="form-control" readonly="readonly">
-                </div>
+        </div>
+        <div class="form-group">
+            <label for="user" class="col-sm-3 control-label">publié par :</label>
+            <div class="col-sm-5">
+                <input type="text" id="user" value="{{ comment.user.username }}" class="form-control"
+                       readonly="readonly">
             </div>
-            <div class="form-group">
-                <label for="user" class="col-sm-3 control-label">publié par :</label>
-                <div class="col-sm-5">
-                    <input type="text" id="user" value="{{ comment.user.username }}" class="form-control" readonly="readonly">
-                </div>
-            </div>
-            <div class="text-center">
-                <input type="submit" value="Envoyer" class="btn btn-xs btn-info">
-            </div>
-        </form>
-    </div>
-{% endblock%}
+        </div>
+        <div class="text-center">
+            <input type="submit" value="Envoyer" class="btn btn-xs btn-info">
+        </div>
+    </form>
+{% endblock %}

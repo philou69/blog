@@ -273,16 +273,25 @@ class AppController extends Controller
 
     public function signalAction($id)
     {
+        session_start();
+        if($_SESSION['isconnected'] == false){
+            throw new \Exception("Page introuvable");
+        }
         if (!is_numeric($id)) {
             throw new \Exception("Page introuvable!");
         }
         $commentManager = new CommentManager();
         $comment = $commentManager->findOneById($id);
+        var_dump($comment);
         if ($comment == false) {
             throw new \Exception("Page Introuvable");
         }
-
-        $comment->setSignaled(true);
+        $now = new \DateTime();
+        $user = new User();
+        $user->setId($_SESSION['id']);
+        $comment->setSignaled(true)
+            ->setSignaledBy($user)
+            ->setSignaledAt($now);
         $commentManager->signaled($comment);
         $idChapter = $comment->getChapter()->getId();
         $this->redirectTo("/chapter/$idChapter");

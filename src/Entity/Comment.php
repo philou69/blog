@@ -4,18 +4,25 @@
 namespace App\Entity;
 
 
+use App\Manager\UserManager;
+
 class Comment
 {
     private $id;
     private $user;
     private $comment;
-    private $chapitre;
+    private $chapter;
     private $commentParent = null;
     private $signaled = false;
     private $banished = false;
     private $created_at;
     private $comments = null;
     private $place = 1;
+    private $signaledBy;
+    private $signaledAt;
+    private $banishedBy;
+    private $banishedAt;
+
 
     public function __construct(array $data = null)
     {
@@ -100,20 +107,20 @@ class Comment
     }
 
     /**
-     * @return mixed
+     * @return Chapter
      */
-    public function getChapitre()
+    public function getChapter()
     {
-        return $this->chapitre;
+        return $this->chapter;
     }
 
     /**
-     * @param mixed $chapitre
+     * @param Chapter $chapter
      * @return $this
      */
-    public function setChapitre(Chapitre $chapitre)
+    public function setChapter(Chapter $chapter)
     {
-        $this->chapitre = $chapitre;
+        $this->chapter = $chapter;
 
         return $this;
     }
@@ -127,7 +134,7 @@ class Comment
     }
 
     /**
-     * @param null $commentireParent
+     * @param Comment $commentParent
      * @return $this
      */
     public function setCommentParent(Comment $commentParent)
@@ -182,7 +189,7 @@ class Comment
      */
     public function getCreatedAt()
     {
-        return $this->created_at->format('Y-m-d H:i:s');
+        return $this->created_at;
     }
 
     /**
@@ -276,6 +283,76 @@ class Comment
     {
         $this->place = intval($place);
         return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getSignaledBy()
+    {
+        return $this->signaledBy;
+    }
+
+    /**
+     * @param User  $user
+     * @return $this
+     */
+    public function setSignaledBy(User $user = null)
+    {
+        $this->signaledBy = $user;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSignaledAt()
+    {
+        return $this->signaledAt;
+    }
+
+    /**
+     * @param mixed $signaledAt
+     * @return $this
+     */
+    public function setSignaledAt($signaledAt = null)
+    {
+            $this->signaledAt = $signaledAt;
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getBanishedBy()
+    {
+        return $this->banishedBy;
+    }
+
+    /**
+     * @param User $user
+     * @return $this
+     */
+    public function setBanishedBy(User $user = null)
+    {
+        $this->banishedBy = $user;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBanishedAt()
+    {
+        return $this->banishedAt;
+    }
+
+    /**
+     * @param mixed $banishedAt
+     */
+    public function setBanishedAt($banishedAt = null)
+    {
+        $this->banishedAt = $banishedAt;
     }
 
 

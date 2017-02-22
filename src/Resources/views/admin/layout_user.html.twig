@@ -1,0 +1,14 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block title %}Liste visiteurs{% endblock %}
+
+{% block visiteurs %}
+    {% include "admin/users_bar.html.twig" %}
+{% endblock %}
+
+{% block body %}
+    <div class="well">
+        {% block body_user %}
+        {% endblock %}
+    </div>
+{% endblock %}

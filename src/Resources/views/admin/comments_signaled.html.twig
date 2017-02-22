@@ -1,12 +1,8 @@
-{% extends "admin/layout.html.twig" %}
+{% extends "admin/layout_comment.html.twig" %}
 
 {% block title %}Commentaires signalés{% endblock %}
 
-{% block comments %}
-    {% include 'admin/comments_bar.html.twig' %}
-{% endblock %}
-
-{% block body %}
+{% block body_comment %}
     <div class="well">
         <h1>Les commentaires</h1>
         <div id="signaled">
@@ -19,7 +15,7 @@
                     <th class="col-sm-3">publié par </th>
                     <th class="col-sm-2">Date du post</th>
                     <th class="col-sm-2">Etat </th>
-                    <th class="col-sm-1">Editer Supprimer</th>
+                    <th class="col-sm-1">Editer</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -34,8 +30,11 @@
                         <th class="col-sm-3">{{ comment.comment | slice(0,50)}}...</th>
                         <th class="col-sm-3">{{ comment.user.username }}</th>
                         <th class="col-sm-2">{{ comment.published_at | date('d/m/Y') }}</th>
-                        <th class="col-sm-2">{% if comment.signaled == true %}Signaler{% elseif  comment.banished == true%}Bannie{% else %}Normal{% endif %}</th>
-                        <th class="col-sm-1"><a href="/admin/comment/edit/{{ comment.id }}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i></a></th>
+                        <th class="col-sm-2">
+                            par : {{ comment.signaledBy.username }}<br/>
+                            le : {{ comment.signaledAt }}
+                        </th>
+                        <th class="col-sm-1"><a href="/admin/comment/edit/{{ comment.id }}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-pencil"></i></a></th>
                     </tr>
                 {% endfor %}
                 </tbody>

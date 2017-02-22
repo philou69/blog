@@ -1,0 +1,14 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}les chapitres{% endblock %}
+
+{% block chapters %}
+    {% include 'admin/chapters_bar.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <div class="well">
+        {% block body_chapter %}
+        {% endblock %}
+    </div>
+{% endblock %}

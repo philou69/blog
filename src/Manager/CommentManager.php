@@ -78,8 +78,10 @@ class CommentManager
     public function signaled(Comment $comment)
     {
         // Fonction mettant à jour le status de signaled
-        $q = $this->db->prepare("UPDATE Comment SET signaled = :signaled WHERE id = :id");
+        $q = $this->db->prepare("UPDATE Comment SET signaled = :signaled, signaledBy = :signaledBy, signaledAt = :signaledAt WHERE id = :id");
         $q->bindValue(":signaled", $comment->isSignaled(), \PDO::PARAM_BOOL);
+        $q->bindValue(":signaledBy", $comment->getSignaledBy()->getId(), \PDO::PARAM_INT);
+        $q->bindValue(":signaledAt", $comment->getSignaledAt(), \PDO::PARAM_STR);
         $q->bindValue(":id", $comment->getId(), \PDO::PARAM_INT);
         $q->execute();
     }
@@ -89,7 +91,7 @@ class CommentManager
     {
         // Fonction cherchant un comment par son id
         $q = $this->db->prepare(
-            "SELECT id, comment, id_chapter, id_parent, id_user, signaled, banished, created_at, place, lastChild FROM Comment WHERE  id = :id"
+            "SELECT id, comment, id_chapter, id_parent, id_user, signaled, banished, created_at, place, lastChild, signaledBy, signaledAt, banishedBy, banishedAt FROM Comment WHERE  id = :id"
         );
         $q->bindValue(":id", $id, \PDO::PARAM_INT);
         $q->execute();
@@ -111,7 +113,12 @@ class CommentManager
             $commentsEnfant = $this->findChildrenForOneComment($data['id']);
             $data["comments"] = $commentsEnfant;
         }
-
+        if($data['signaledBy'] != null){
+            $data['signaledBy'] = $this->addUser($data['signaledBy']);
+        }
+        if($data['banishedBy'] != null){
+            $data['banishedBy'] = $this->addUser($data['banishedBy']);
+        }
         // On retourne le comment
         return new Comment($data);
     }
@@ -123,7 +130,7 @@ class CommentManager
         // Tableau contenant les comments
         $comments = [];
         $q = $this->db->query(
-            "SELECT id,comment, id_chapter, id_parent, id_user, signaled, banished, created_at, place FROM Comment"
+            "SELECT id,comment, id_chapter, id_parent, id_user, signaled, banished, created_at, place, signaledBy, signaledAt, banishedBy, banishedAt FROM Comment"
         );
         // On vérifie avoir au moins une entrée
         if ($q->rowCount() == 0) {
@@ -143,6 +150,12 @@ class CommentManager
                 // Si la place est 3, on a pas de comment enfants
                 $commentsEnfants = $this->findChildrenForOneComment($data['id']);
                 $data['comments'] = $commentsEnfants;
+            }
+            if($data['signaledBy'] != null){
+                $data['signaledBy'] = $this->addUser($data['signaledBy']);
+            }
+            if($data['banishedBy'] != null){
+                $data['banishedBy'] = $this->addUser($data['banishedBy']);
             }
             $comments[] = new Comment($data);
         }
