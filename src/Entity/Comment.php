@@ -1,5 +1,9 @@
 <?php
-
+/*
+ * PDO::FETCH_OBJECT
+ * createdAt
+ *
+ */
 
 namespace App\Entity;
 
@@ -24,17 +28,19 @@ class Comment
     private $banishedAt;
 
 
-    public function __construct(array $data = null)
+    public function __construct()
     {
+        /*
         $this->setCreatedAt(new \DateTime());
         if(is_array($data)){
             foreach ($data as $key => $value) {
                 $method = 'set'.ucfirst($key);
                 if (method_exists($this, $method)) {
+                    echo $method . "#" . gettype($value);
                     $this->$method($value);
                 }
             }
-        }
+        }*/
     }
 
     public function hydrate(array $data)
@@ -315,7 +321,7 @@ class Comment
      * @param mixed $signaledAt
      * @return $this
      */
-    public function setSignaledAt($signaledAt = null)
+    public function setSignaledAt(\DateTime $signaledAt = null)
     {
             $this->signaledAt = $signaledAt;
         return $this;
