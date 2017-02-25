@@ -9,7 +9,7 @@ class Chapter
     private $id;
     private $title;
     private $chapter;
-    private $published_at;
+    private $publishedAt;
     private $published;
 
     public function __construct(array $data = null)
@@ -94,18 +94,23 @@ class Chapter
     /**
      * @return mixed
      */
-    public function getPublished_at()
+    public function getPublishedAt()
     {
-        return $this->published_at;
+        return $this->publishedAt;
     }
 
     /**
-     * @param mixed $published_at
+     * @param mixed $publishedAt
      * @return $this
      */
-    public function setPublished_at($published_at)
+    public function setPublishedAt($publishedAt)
     {
-        $this->published_at = $published_at;
+        if(is_string($publishedAt) AND $this->publishedAt != null){
+            $this->publishedAt = new \DateTime($publishedAt);
+        }
+        elseif (is_a($publishedAt, 'DateTime')){
+            $this->publishedAt = $publishedAt;
+        }
         return $this;
     }
 

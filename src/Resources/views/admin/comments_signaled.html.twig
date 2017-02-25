@@ -32,7 +32,7 @@
                         <th class="col-sm-2">{{ comment.published_at | date('d/m/Y') }}</th>
                         <th class="col-sm-2">
                             par : {{ comment.signaledBy.username }}<br/>
-                            le : {{ comment.signaledAt }}
+                            le : {{ comment.signaledAt | date('d/m/Y') }}
                         </th>
                         <th class="col-sm-1"><a href="/admin/comment/edit/{{ comment.id }}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-pencil"></i></a></th>
                     </tr>

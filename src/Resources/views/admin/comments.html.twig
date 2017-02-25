@@ -31,7 +31,7 @@
                     <th class="col-sm-2">
                         Signaler<br/>
                         par : {{ comment.signaledBy.username }}<br/>
-                        le : {{ comment.signaledAt }}
+                        le : {{ comment.signaledAt | date('d/m/Y') }}
 
                     </th>
                     <th class="col-sm-1"><a href="/admin/comment/edit/{{ comment.id }}"
@@ -48,7 +48,7 @@
                     <th class="col-sm-2">
                         Bannie
                         par : {{ comment.banishedBy.username }}<br/>
-                        le : {{ comment.banishedAt }}
+                        le : {{ comment.banishedAt | date('d/m/Y') }}
                     </th>
                     <th class="col-sm-1"><a href="/admin/comment/edit/{{ comment.id }}"
                                             class="btn btn-default btn-xs"><i

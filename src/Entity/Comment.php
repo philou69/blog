@@ -19,7 +19,7 @@ class Comment
     private $commentParent = null;
     private $signaled = false;
     private $banished = false;
-    private $created_at;
+    private $createdAt;
     private $comments = null;
     private $place = 1;
     private $signaledBy;
@@ -195,17 +195,24 @@ class Comment
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
-     * @param mixed $created_at
+     * @param mixed $createdAt
      * @return $this
      */
-    public function setCreatedAt(\DateTime $created_at)
+    public function setCreatedAt($createdAt)
     {
-        $this->created_at = $created_at;
-
+        if ($createdAt == null){
+            $this->createdAt = $createdAt;
+        }
+        if(is_string($createdAt)){
+            $this->createdAt = new \DateTime($createdAt);
+        }
+        if(is_a($createdAt, 'DateTime')){
+            $this->createdAt = $createdAt;
+        }
         return $this;
     }
 
@@ -323,7 +330,15 @@ class Comment
      */
     public function setSignaledAt(\DateTime $signaledAt = null)
     {
+        if($signaledAt == null){
+            $this->signaledAt = null;
+        }
+        if(is_string($signaledAt)){
+            $this->signaledAt =new \DateTime($signaledAt);
+        }
+        if(is_a($signaledAt, 'DateTime')){
             $this->signaledAt = $signaledAt;
+        }
         return $this;
     }
 
@@ -355,10 +370,22 @@ class Comment
 
     /**
      * @param mixed $banishedAt
+     *
+     * @return $this
      */
     public function setBanishedAt($banishedAt = null)
     {
-        $this->banishedAt = $banishedAt;
+        if($banishedAt == null){
+            $this->banishedAt = null;
+        }
+        if(is_string($banishedAt)){
+            $this->banishedAt = new \DateTime($banishedAt);
+        }
+        if(is_a($banishedAt, 'DateTime')){
+            $this->banishedAt = $banishedAt;
+        }
+
+        return $this;
     }
 
 
