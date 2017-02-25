@@ -23,12 +23,12 @@ class CommentManager
         // Fonction pour ajouter un comment
         if ($comment->getCommentParent() != null) {
             $q = $this->db->prepare(
-                "INSERT INTO Comment(comment, id_chapter, id_user, id_parent, signaled, banished, created_at, place) VALUES (:comment, :id_chapter, :id_user, :id_parent, :signaled, :banished, :created_at, :place)"
+                "INSERT INTO Comment(comment, id_chapter, id_user, id_parent, signaled, banished, createdAt, place) VALUES (:comment, :id_chapter, :id_user, :id_parent, :signaled, :banished, :createdAt, :place)"
             );
             $q->bindValue(":id_parent", $comment->getCommentParent()->getId(), \PDO::PARAM_INT);
         } else {
             $q = $this->db->prepare(
-                "INSERT INTO Comment(comment, id_chapter, id_user, id_parent, signaled, banished, created_at, place) VALUES (:comment, :id_chapter, :id_user, null, :signaled, :banished, :created_at, :place)"
+                "INSERT INTO Comment(comment, id_chapter, id_user, id_parent, signaled, banished, createdAt, place) VALUES (:comment, :id_chapter, :id_user, null, :signaled, :banished, :createdAt, :place)"
             );
         }
         $q->bindValue(":comment", $comment->getComment(), \PDO::PARAM_STR);
@@ -36,7 +36,7 @@ class CommentManager
         $q->bindValue(":id_user", $comment->getUser()->getId(), \PDO::PARAM_INT);
         $q->bindValue(":signaled", $comment->isSignaled(), \PDO::PARAM_BOOL);
         $q->bindValue(":banished", $comment->isBanished(), \PDO::PARAM_BOOL);
-        $q->bindValue(":created_at", $comment->getCreatedAt(), \PDO::PARAM_STR);
+        $q->bindValue(":createdAt", $comment->getCreatedAt(), \PDO::PARAM_STR);
         $q->bindValue(":place", $comment->getPlace(), \PDO::PARAM_INT);
         $q->execute();
     }
@@ -46,12 +46,12 @@ class CommentManager
         // Fonction pour mettre à jour un comment
         if ($comment->getCommentParent() != null) {
             $q = $this->db->prepare(
-                "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, id_parent = :id_parent, signaled = :signaled, banished = :banished, created_at = :created_at, place = :place WHERE id = :id"
+                "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, id_parent = :id_parent, signaled = :signaled, banished = :banished, createdAt = :createdAt, place = :place WHERE id = :id"
             );
             $q->bindValue(":id_parent", $comment->getCommentParent()->getId(), \PDO::PARAM_INT);
         } else {
             $q = $this->db->prepare(
-                "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, signaled = :signaled, banished = :banished, created_at = :created_at, place = :place WHERE id = :id"
+                "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, signaled = :signaled, banished = :banished, createdAt = :createdAt, place = :place WHERE id = :id"
             );
         }
         $q->bindValue(":comment", $comment->getComment(), \PDO::PARAM_STR);
@@ -59,7 +59,7 @@ class CommentManager
         $q->bindValue(":id_user", $comment->getUser()->getId(), \PDO::PARAM_INT);
         $q->bindValue(":signaled", $comment->isSignaled(), \PDO::PARAM_BOOL);
         $q->bindValue(":banished", $comment->isBanished(), \PDO::PARAM_BOOL);
-        $q->bindValue(":created_at", $comment->getCreatedAt(), \PDO::PARAM_STR);
+        $q->bindValue(":createdAt", $comment->getCreatedAt(), \PDO::PARAM_STR);
         $q->bindValue(":place", $comment->getPlace(), \PDO::PARAM_INT);
         $q->bindValue(":id", $comment->getId(), \PDO::PARAM_INT);
         $q->execute();
@@ -91,7 +91,7 @@ class CommentManager
     {
         // Fonction cherchant un comment par son id
         $q = $this->db->prepare(
-            "SELECT id, comment, id_chapter, id_parent, id_user, signaled, banished, created_at, place, lastChild, signaledBy, signaledAt, banishedBy, banishedAt FROM Comment WHERE  id = :id"
+            "SELECT id, comment, id_chapter, id_parent, id_user, signaled, banished, createdAt, place, lastChild, signaledBy, signaledAt, banishedBy, banishedAt FROM Comment WHERE  id = :id"
         );
         $q->bindValue(":id", $id, \PDO::PARAM_INT);
         $q->execute();
@@ -115,9 +115,13 @@ class CommentManager
         }
         if($data['signaledBy'] != null){
             $data['signaledBy'] = $this->addUser($data['signaledBy']);
+        }else{
+            unset($data['signaledAt']);
         }
         if($data['banishedBy'] != null){
             $data['banishedBy'] = $this->addUser($data['banishedBy']);
+        }else{
+            unset($data['banishedAt']);
         }
         // On retourne le comment
         return new Comment($data);
@@ -130,7 +134,7 @@ class CommentManager
         // Tableau contenant les comments
         $comments = [];
         $q = $this->db->query(
-            "SELECT id,comment, id_chapter, id_parent, id_user, signaled, banished, created_at, place, signaledBy, signaledAt, banishedBy, banishedAt FROM Comment"
+            "SELECT id,comment, id_chapter, id_parent, id_user, signaled, banished, createdAt, place, signaledBy, signaledAt, banishedBy, banishedAt FROM Comment"
         );
         // On vérifie avoir au moins une entrée
         if ($q->rowCount() == 0) {
@@ -153,9 +157,13 @@ class CommentManager
             }
             if($data['signaledBy'] != null){
                 $data['signaledBy'] = $this->addUser($data['signaledBy']);
+            }else{
+                unset($data['signaledAt']);
             }
             if($data['banishedBy'] != null){
                 $data['banishedBy'] = $this->addUser($data['banishedBy']);
+            }else{
+                unset($data['banishedAt']);
             }
             $comments[] = new Comment($data);
         }
@@ -172,7 +180,7 @@ class CommentManager
         $comments = [];
 
         $q = $this->db->prepare(
-            "SELECT id, comment, id_user, signaled, banished, created_at, id_parent, place FROM Comment WHERE id_chapter = :id AND place = 1"
+            "SELECT id, comment, id_user, signaled, banished, createdAt, id_parent, place, signaledBy, signaledAt, banishedBy, banishedAt FROM Comment WHERE id_chapter = :id AND place = 1"
         );
         $q->bindValue(":id", $id, \PDO::PARAM_INT);
         $q->execute();
@@ -188,6 +196,16 @@ class CommentManager
             if($commentsEnfants){
                 $data['comments'] = $commentsEnfants;
             }
+            if($data['signaledBy'] != null){
+                $data['signaledBy'] = $this->addUser($data['signaledBy']);
+            }else{
+                unset($data['signaledAt']);
+            }
+            if($data['banishedBy'] != null){
+                $data['banishedBy'] = $this->addUser($data['banishedBy']);
+            }else{
+                unset($data['banishedAt']);
+            }
             $comments[] = new Comment($data);
         }
 
@@ -201,7 +219,7 @@ class CommentManager
         // Tableau contenant les comments
         $comments = [];
         $q = $this->db->prepare(
-            "SELECT id, comment, id_user, banished, signaled, id_chapter FROM Comment WHERE id_parent = :id AND place = 2"
+            "SELECT id, comment, id_user, banished, signaled, id_chapter, banishedBy, banishedAt, signaledAt, signaledBy FROM Comment WHERE id_parent = :id AND place = 2"
         );
         $q->bindValue(":id", $id, \PDO::PARAM_INT);
         $q->execute();
@@ -215,7 +233,7 @@ class CommentManager
             $data['user'] = $this->addUser($data['id_user']);
             $commentsEnfants = [];
             $nq = $this->db->prepare(
-                "SELECT id, comment, id_user, place, banished, signaled, id_chapter FROM Comment WHERE id_parent = :id AND place = 3"
+                "SELECT id, comment, id_user, place, banished, signaled, id_chapter, banishedBy, banishedAt, signaledAt, signaledBy FROM Comment WHERE id_parent = :id AND place = 3"
             );
             $nq->bindValue(":id", $data['id'], \PDO::PARAM_INT);
             $nq->execute();
@@ -226,8 +244,29 @@ class CommentManager
                     $dataEnfants['chapter'] = $this->addChapter($dataEnfants['id_chapter']);
                     $dataEnfants['user'] = $this->addUser($dataEnfants['id_user']);
                     $commentsEnfants[] = new Comment($dataEnfants);
+                    if($dataEnfants['signaledBy'] != null){
+                        $dataEnfants['signaledBy'] = $this->addUser($dataEnfants['signaledBy']);
+                    }else{
+                        unset($dataEnfants['signaledAt']);
+                    }
+                    if($dataEnfants['banishedBy'] != null){
+                        $dataEnfants['banishedBy'] = $this->addUser($dataEnfants['banishedBy']);
+                    }else{
+                        unset($dataEnfants['banishedAt']);
+                    }
                 }
                 $data['comments'] = $commentsEnfants;
+
+                if($data['signaledBy'] != null){
+                    $data['signaledBy'] = $this->addUser($data['signaledBy']);
+                }else{
+                    unset($data['signaledAt']);
+                }
+                if($data['banishedBy'] != null){
+                    $data['banishedBy'] = $this->addUser($data['banishedBy']);
+                }else{
+                    unset($data['banishedAt']);
+                }
             }
             $comments[] = new Comment($data);
         }
