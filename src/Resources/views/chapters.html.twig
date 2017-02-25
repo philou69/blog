@@ -15,13 +15,13 @@
         <h2 id="chapter">Les chapitres</h2>
         <ul class="list-unstyled">
             {% for chapter in chapters %}
-                {% if chapter.published_at > "now"|date("Y-m-d") %}
+                {% if chapter.publishedAt|date('Y-m-d') > "now"|date("Y-m-d") %}
                     <li class="well">
                         <h4>{{ chapter.title }}</h4>
 
                         <p>
                             Le prochain chapitre est en cours d'écriture. Il sera diffusé
-                            le {{ chapter.published_at| date('d/m/Y') }}.<br>
+                            le {{ chapter.publishedAt| date('d/m/Y') }}.<br>
                             En attendant n'hesiter pas à lire les autres chapitres.
                         </p>
                     </li>
@@ -31,7 +31,7 @@
                         <p>
                             {{ chapter.chapter | slice(0,5) }}...
                         </p>
-                        <small>Paru le : {{ chapter.published_at | date("d/m/Y") }}</small>
+                        <small>Paru le : {{ chapter.publishedAt | date("d/m/Y") }}</small>
                     </li>
                 {% endif %}
             {% endfor %}

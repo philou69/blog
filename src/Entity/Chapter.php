@@ -105,7 +105,7 @@ class Chapter
      */
     public function setPublishedAt($publishedAt)
     {
-        if(is_string($publishedAt) AND $this->publishedAt != null){
+        if(is_string($publishedAt)){
             $this->publishedAt = new \DateTime($publishedAt);
         }
         elseif (is_a($publishedAt, 'DateTime')){

@@ -28,19 +28,19 @@ class Comment
     private $banishedAt;
 
 
-    public function __construct()
+    public function __construct(array $data = null)
     {
-        /*
-        $this->setCreatedAt(new \DateTime());
         if(is_array($data)){
             foreach ($data as $key => $value) {
                 $method = 'set'.ucfirst($key);
                 if (method_exists($this, $method)) {
-                    echo $method . "#" . gettype($value);
                     $this->$method($value);
                 }
             }
-        }*/
+        }
+        if($this->createdAt == null){
+            $this->createdAt = new \DateTime();
+        }
     }
 
     public function hydrate(array $data)
@@ -206,11 +206,9 @@ class Comment
     {
         if ($createdAt == null){
             $this->createdAt = $createdAt;
-        }
-        if(is_string($createdAt)){
+        }elseif(is_string($createdAt)){
             $this->createdAt = new \DateTime($createdAt);
-        }
-        if(is_a($createdAt, 'DateTime')){
+        }elseif(is_a($createdAt, 'DateTime')){
             $this->createdAt = $createdAt;
         }
         return $this;
@@ -328,15 +326,13 @@ class Comment
      * @param mixed $signaledAt
      * @return $this
      */
-    public function setSignaledAt(\DateTime $signaledAt = null)
+    public function setSignaledAt($signaledAt = null)
     {
         if($signaledAt == null){
             $this->signaledAt = null;
-        }
-        if(is_string($signaledAt)){
+        }elseif(is_string($signaledAt)){
             $this->signaledAt =new \DateTime($signaledAt);
-        }
-        if(is_a($signaledAt, 'DateTime')){
+        }elseif(is_a($signaledAt, 'DateTime')){
             $this->signaledAt = $signaledAt;
         }
         return $this;

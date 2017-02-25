@@ -13,16 +13,47 @@
 {% endblock %}
 {% block body %}
     <h1 class="center">{{ chapter.title }}</h1>
-    {% if chapter.published >= "now"|date("Y-m-d") %}
+    {% if chapter.publishedAt >= "now"|date("Y-m-d") %}
         <p>{{ chapter.chapter | raw }}</p>
-        {% else %}
+    {% else %}
         <p>
             Le chapitre n'est pas encore publié.<br/>
-            Revenez le {{ chapter.published_at }}
+            Revenez le {{ chapter.publishedAt  | date('d/m/Y') }}
         </p>
     {% endif %}
 
     <h2>Commentaires</h2>
+
+
+    <ul class="list-unstyled row">
+        {% for comment in comments %}
+            <li>
+                {% include 'comment.html.twig' %}
+                {% for comment2 in comment.comments %}
+                    {% if loop.first %}
+                        <ul class="list-unstyled push-1">
+                    {% endif %}
+                    <li>
+                        {% include 'comment.html.twig' with {'comment': comment2} %}
+                        {% for comment3 in comment2.comments %}
+                            {% if loop.first %}
+                                <ul class="list-unstyled push-2">
+                            {% endif %}
+                            <li>
+                                {% include 'comment.html.twig' with {'comment': comment3} %}
+                            </li>
+                            {% if loop.last %}
+                                </ul>
+                            {% endif %}
+                        {% endfor %}
+                    </li>
+                    {% if loop.last %}
+                        </ul>
+                    {% endif %}
+                {% endfor %}
+            </li>
+        {% endfor %}
+    </ul>
     {# le visiteur est connecter ?#}
     {% if session.isconnected == false %}
         <p>
@@ -45,42 +76,9 @@
         </form>
 
     {% endif %}
-
-
-
-    <ul class="list-unstyled row">
-        {% for comment in comments %}
-            <li>
-                {%  include 'comment.html.twig'  %}
-                {% for comment2 in comment.comments %}
-                    {% if loop.first %}
-                        <ul class="list-unstyled push-1">
-                    {% endif %}
-                    <li>
-                        {%  include 'comment.html.twig' with {'comment': comment2} %}
-                        {% for comment3 in comment2.comments %}
-                            {% if loop.first %}
-                                <ul class="list-unstyled push-2">
-                            {% endif %}
-                            <li>
-                                {%  include 'comment.html.twig' with {'comment': comment3} %}
-                            </li>
-                            {% if loop.last %}
-                                </ul>
-                            {% endif %}
-                        {% endfor %}
-                    </li>
-                    {% if loop.last %}
-                        </ul>
-                    {% endif %}
-                {% endfor %}
-            </li>
-        {% endfor %}
-    </ul>
-
 {% endblock %}
 
 {% block javascript %}
     {{ parent() }}
-    <script type="text/javascript" src="../src/Resources/js/addForm.js" ></script>
+    <script type="text/javascript" src="../src/Resources/js/addForm.js"></script>
 {% endblock %}

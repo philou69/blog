@@ -74,7 +74,7 @@ class AppController extends Controller
         $comments = $commentManager->findAllForAChapter($id);
         // On vérifie la présence du chapter
         // Comme les comments ne sont pas obligatoire, on ne vérifie pas
-        if (!$chapter) {
+        if (!$chapter || $chapter->getPublishedAt() > new \DateTime() || !$chapter->isPublished()) {
             throw new \Exception("Page Introuvable");
         }
 

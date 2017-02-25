@@ -116,11 +116,9 @@ class AdminController extends Controller
                 $chapter = new Chapter();
                 $chapter->setTitle(htmlspecialchars($_POST['title']))
                     ->setChapter($_POST['chapter'])
-                    ->setPublished_at(htmlspecialchars($_POST['published_at']))
+                    ->setPublishedAt(htmlspecialchars($_POST['published_at']))
                     ->setPublished(htmlspecialchars($_POST['published']));
-
                 $chapterManager->add($chapter);
-
                 $this->redirectTo('/admin/chapters');
             }
 
@@ -163,17 +161,13 @@ class AdminController extends Controller
             }
 
             if(empty($errors)){
-                var_dump($_POST['published']);
-                exit;
                 $chapterManager = new ChapterManager();
-                $chapter = new Chapter();
                 $chapter->setTitle(htmlspecialchars($_POST['title']))
                     ->setChapter($_POST['chapter'])
-                    ->setPublished_at(htmlspecialchars($_POST['published_at']))
+                    ->setPublishedAt(htmlspecialchars($_POST['published_at']))
                     ->setPublished(htmlspecialchars($_POST['published']));
 
-                $chapterManager->add($chapter);
-
+                $chapterManager->update($chapter);
                 $this->redirectTo('/admin/chapters');
             }
 

@@ -20,15 +20,15 @@ class ChapterManager
     {
         // Fonction pour ajouter un chapter
         // On s'assure que le chapter passer en paramètre est bien remplie
-        if($chapter->getTitle() == null || $chapter->getChapter() == null || $chapter->getPublished_at() == null || $chapter->isPublished() == null){
+        if($chapter->getTitle() == null || $chapter->getChapter() == null || $chapter->getPublishedAt() == null || $chapter->isPublished() == null){
             return false;
         }
         $q = $this->db->prepare(
-            'INSERT INTO Chapter(title, chapter, published_at,published) VALUES(:title, :chapter, :published_at, :published)'
+            'INSERT INTO Chapter(title, chapter, publishedAt,published) VALUES(:title, :chapter, :publishedAt, :published)'
         );
         $q->bindValue(':title', $chapter->getTitle(), \PDO::PARAM_STR);
         $q->bindValue(':chapter', $chapter->getChapter(), \PDO::PARAM_STR);
-        $q->bindValue(':published_at', $chapter->getPublished_at(), \PDO::PARAM_STR);
+        $q->bindValue(':publishedAt', $chapter->getPublishedAt()->format("Y-m-d"), \PDO::PARAM_STR);
         $q->bindValue(':published', $chapter->isPublished(), \PDO::PARAM_BOOL);
         $q->execute();
 
@@ -38,16 +38,17 @@ class ChapterManager
     {
         // Fonction pour mettre à jour un chapter
         // On s'assure que le chapter passer en paramètre est bien remplie
-        if($chapter->getTitle() == null || $chapter->getChapter() == null || $chapter->getPublished_at() == null || $chapter->isPublished() == null){
+        if($chapter->getTitle() == null || $chapter->getChapter() == null || $chapter->getPublishedAt() == null || $chapter->isPublished() == null){
             return false;
         }
         $q = $this->db->prepare(
-            "UPDATE Chapter SET title = :title, chapter = :chapter, published_at = :published_at, published = :published WHERE id = :id"
+            "UPDATE Chapter SET title = :title, chapter = :chapter, publishedAt = :publishedAt, published = :published WHERE id = :id"
         );
         $q->bindValue(':title', $chapter->getTitle(), \PDO::PARAM_STR);
         $q->bindValue(':chapter', $chapter->getChapter(), \PDO::PARAM_STR);
-        $q->bindValue(':published_at', date("Y-m-d H:i:s", strtotime($chapter->getPublishedAt())), \PDO::PARAM_STR);
+        $q->bindValue(':publishedAt', $chapter->getPublishedAt()->format("Y-m-d"), \PDO::PARAM_STR);
         $q->bindValue(':published', $chapter->isPublished(), \PDO::PARAM_BOOL);
+        $q->bindValue(':id', $chapter->getId(), \PDO::PARAM_INT);
         $q->execute();
 
     }
@@ -59,7 +60,7 @@ class ChapterManager
     public function findOneById($id)
     {
         // Fonction  cherchant un chapter par son identifiant
-        $q = $this->db->prepare("SELECT id, title, chapter, published_at, published FROM Chapter WHERE id = :id");
+        $q = $this->db->prepare("SELECT id, title, chapter, publishedAt, published FROM Chapter WHERE id = :id");
         $q->bindValue(":id", $id, \PDO::PARAM_INT);
         $q->execute();
         // vérification du nombre d'entrée retourné
@@ -79,7 +80,7 @@ class ChapterManager
         // Tableau prévue pour contenir tous les chapters
         $chapters = [];
         $q = $this->db->query(
-            'SELECT id, title, chapter, published_at, published FROM Chapter ORDER BY published_at DESC '
+            'SELECT id, title, chapter, publishedAt, published FROM Chapter ORDER BY publishedAt DESC '
         );
         if ($q->rowCount() < 1) {
             return false;
@@ -99,7 +100,7 @@ class ChapterManager
         // Tableau prévue pour contenir les chapters
         $chapters = [];
         $q = $this->db->query(
-            "SELECT id , title, chapter, published_at FROM Chapter WHERE published = 1 ORDER BY published_at DESC"
+            "SELECT id , title, chapter, publishedAt FROM Chapter WHERE published = 1 ORDER BY publishedAt DESC"
         );
 
         // On vérifie le nombre d'entrées retourné
@@ -116,7 +117,7 @@ class ChapterManager
     }
 
     public function findLastPublished(){
-        $q = $this->db->query("SELECT id,title, chapter, published_at FROM Chapter WHERE published = true ORDER BY published_at DESC  LIMIT 0, 1");
+        $q = $this->db->query("SELECT id,title, chapter, publishedAt FROM Chapter WHERE published = true ORDER BY publishedAt DESC  LIMIT 0, 1");
         if($q->rowCount() != 1){
             return false;
         }

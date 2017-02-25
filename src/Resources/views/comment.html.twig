@@ -7,7 +7,7 @@
     {% else %}
         {{ comment.user.username }} : <br/>
         {{ comment.comment }}<br/>
-        <small>paru le : {{ comment.created_at|date("d/m/Y") }}
+        <small>paru le : {{ comment.createdAt|date("d/m/Y") }}
             {% if session.isconnected == true %}
                 <a href="/signal/{{ comment.id }}">
                     Signaler

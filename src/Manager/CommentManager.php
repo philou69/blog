@@ -36,7 +36,7 @@ class CommentManager
         $q->bindValue(":id_user", $comment->getUser()->getId(), \PDO::PARAM_INT);
         $q->bindValue(":signaled", $comment->isSignaled(), \PDO::PARAM_BOOL);
         $q->bindValue(":banished", $comment->isBanished(), \PDO::PARAM_BOOL);
-        $q->bindValue(":createdAt", $comment->getCreatedAt(), \PDO::PARAM_STR);
+        $q->bindValue(":createdAt", $comment->getCreatedAt()->format("Y-m-d"));
         $q->bindValue(":place", $comment->getPlace(), \PDO::PARAM_INT);
         $q->execute();
     }
@@ -59,7 +59,7 @@ class CommentManager
         $q->bindValue(":id_user", $comment->getUser()->getId(), \PDO::PARAM_INT);
         $q->bindValue(":signaled", $comment->isSignaled(), \PDO::PARAM_BOOL);
         $q->bindValue(":banished", $comment->isBanished(), \PDO::PARAM_BOOL);
-        $q->bindValue(":createdAt", $comment->getCreatedAt(), \PDO::PARAM_STR);
+        $q->bindValue(":createdAt", $comment->getCreatedAt()->format('Y-m-d'), \PDO::PARAM_STR);
         $q->bindValue(":place", $comment->getPlace(), \PDO::PARAM_INT);
         $q->bindValue(":id", $comment->getId(), \PDO::PARAM_INT);
         $q->execute();
@@ -81,7 +81,7 @@ class CommentManager
         $q = $this->db->prepare("UPDATE Comment SET signaled = :signaled, signaledBy = :signaledBy, signaledAt = :signaledAt WHERE id = :id");
         $q->bindValue(":signaled", $comment->isSignaled(), \PDO::PARAM_BOOL);
         $q->bindValue(":signaledBy", $comment->getSignaledBy()->getId(), \PDO::PARAM_INT);
-        $q->bindValue(":signaledAt", $comment->getSignaledAt(), \PDO::PARAM_STR);
+        $q->bindValue(":signaledAt", $comment->getSignaledAt()->format('Y-m-d'), \PDO::PARAM_STR);
         $q->bindValue(":id", $comment->getId(), \PDO::PARAM_INT);
         $q->execute();
     }
