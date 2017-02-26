@@ -60,6 +60,12 @@ $routes["admin_index"] = ["method" => "get",
 $routes["admin_chapters"] = ["method" =>"get",
                 "url" => "/admin/chapters",
                 "controller" => "Admin:chapters"];
+$routes["admin_chapters_"] = ["method" =>"get",
+                "url" => "/admin/chapters",
+                "controller" => "Admin:chapters"];
+$routes["admin_chapters"] = ["method" =>"get",
+                "url" => "/admin/chapters",
+                "controller" => "Admin:chapters"];
 $routes["admin_chapters_draft"] = ["method" =>"get",
                 "url" => "/admin/chapters/draft",
                 "controller" => "Admin:chaptersDraft"];
@@ -120,7 +126,7 @@ $routes["admin_content"] = ["method" => "get",
 $routes["admin_content_post"] = ["method" => "post",
                 "url" => "/admin/content/:id",
                 "controller" => "Admin:content"];
-$routes["admin_user_post"] = ["method" => "post",
+$routes["admin_user"] = ["method" => "post",
                 "url" => "/admin/user/:id",
                 "controller" => "Admin:user"];
 

@@ -126,4 +126,16 @@ class ChapterManager
         return new Chapter($data);
     }
 
+    public function findAllDraft(){
+        $q = $this->db->query('SELECT id, title, chapter, publishedAt FROM Chapter WHERE published = false');
+        if($q->rowCount() == 0){
+            return false;
+        }
+        $chapters = [];
+        while($chapter = $q->fetchObject(Chapter::class)){
+            $chapters[] = $chapter;
+        }
+        return $chapters;
+    }
+
 }

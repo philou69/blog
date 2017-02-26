@@ -1,0 +1,35 @@
+{% extends 'admin/layout_chapter.html.twig' %}
+
+{% block title %}Chapitres brouillon{% endblock %}
+
+{% block body_chapter %}
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Texte</th>
+                <th>Status</th>
+                <th>Date de publication</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chapter in chapters %}
+                <tr>
+                    <th>{{ chapter.title }}</th>
+                    <th>{{ chapter.chapter | slice(0,50) }}</th>
+                    <th>Brouillon</th>
+                    <th>{{ chapter.publishedAt | date('d/m/Y') }}</th>
+                    <th>
+                        <a href="/admin/chapter/edit/{{ chapter.id }}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-pencil"></i></a>
+                        <a href="/admin/chapter/delete/{{ chapter.id }}" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-trash"></i></a>
+                    </th>
+                </tr>
+                {% else %}
+                <tr>
+                    <th colspan="5" class="text-center">Aucun chapitre</th>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

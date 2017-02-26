@@ -349,4 +349,17 @@ class AdminController extends Controller
         }
         $this->render("admin/content.html.twig", array("content" => $content));
     }
+
+    public function chaptersDraftAction(){
+        $this->isAuthorized();
+
+        $chapterManager = new ChapterManager();
+        $chapters = $chapterManager->findAllDraft();
+
+        if(!$chapters){
+            throw new \Exception("Page Introuvable");
+        }
+
+        $this->render("admin/chapters.draft.html.twig", array('chapters' => $chapters));
+    }
 }
