@@ -375,4 +375,11 @@ class AdminController extends Controller
 
         $this->render("admin/chapters.draft.html.twig", array('chapters' => $chapters));
     }
+
+    public function logoutAction(){
+        $this->isAuthorized();
+
+        session_unset();
+        $this->redirectTo('/');
+    }
 }

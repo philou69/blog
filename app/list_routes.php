@@ -106,7 +106,7 @@ $routes["admin_edit_comment_post"] = ["method" => "post",
                 "url" => "/admin/comment/edit/:id",
                 "controller" => "Admin:editComment"];
 $routes["admin_logout"] = ["method" => "get",
-                "url" => "/admin/login",
+                "url" => "/admin/logout",
                 "controller" => "Admin:logout"];
 $routes["admin_users"] = ["method" => "get",
                 "url" => "/admin/users",
