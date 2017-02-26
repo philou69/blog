@@ -138,4 +138,16 @@ class ChapterManager
         return $chapters;
     }
 
+    public function findAllPublished(){
+        $q = $this->db->query('SELECT id, title, chapter, publishedAt FROM Chapter WHERE published = true');
+        if($q->rowCount() == 0){
+            return false;
+        }
+        $chapters = [];
+        while($chapter = $q->fetchObject(Chapter::class)){
+            $chapters[] = $chapter;
+        }
+        return $chapters;
+    }
+
 }
