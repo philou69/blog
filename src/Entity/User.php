@@ -14,7 +14,7 @@ class User
 
     function __construct(array $data = null)
     {
-        if (isset($data)) {
+        if (is_array($data)) {
             foreach ($data as $key => $value) {
                 $method = 'set'.ucfirst($key);
                 if (method_exists($this, $method)) {

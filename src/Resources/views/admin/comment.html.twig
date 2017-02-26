@@ -39,7 +39,7 @@
                 </div>
                 <div class="radio ">
                     <label><input type="radio" name="etat"
-                                  value="banished" {% if etat == "banished" %} checked="true" {% endif %} >Banni {% if etat == "banished" %}par {{ comment.banishedBy.username }} le {{ comment.banishedAt }}{% endif %}
+                                  value="banished" {% if etat == "banished" %} checked="true" {% endif %} >Banni {% if etat == "banished" %}par {{ comment.banishedBy.username }} le {{ comment.banishedAt | date('d/m/Y') }}{% endif %}
                     </label>
                 </div>
 

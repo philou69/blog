@@ -5,6 +5,7 @@ namespace App\Controller;
 
 
 use App\Entity\Chapter;
+use App\Entity\User;
 use App\Manager\ChapterManager;
 use App\Manager\CommentManager;
 use App\Manager\ContentManager;
@@ -200,6 +201,7 @@ class AdminController extends Controller
         $this->isAuthorized();
         $commentManager = new CommentManager();
 
+
         $comments = $commentManager->findAll();
         $this->render('admin/comments.html.twig', array('comments' => $comments), $_SESSION);
     }
@@ -224,17 +226,33 @@ class AdminController extends Controller
             }
 
             if(empty($errors)){
+                $user = new User();
+                $user->setId($_SESSION['id']);
                 if($_POST['etat'] == "normal"){
                     $comment->setSignaled(false)
-                        ->setBanished(false);
+                        ->setSignaledBy(null)
+                        ->setSignaledAt(null)
+                        ->setBanished(false)
+                        ->setSignaledBy(null)
+                        ->setBanishedAt(null);
+                    $commentManager->update($comment);
                 }elseif ($_POST['etat'] == "signaled"){
                     $comment->setSignaled(true)
+                        ->setSignaledBy($user)
+                        ->setSignaledAt(new \DateTime())
+                        ->setBanishedBy(null)
+                        ->setBanishedAt(null)
                         ->setBanished(false);
+                    $commentManager->signaled($comment);
                 }elseif($_POST['etat'] == "banished"){
                     $comment->setSignaled(false)
+                        ->setBanishedBy($user)
+                        ->setBanishedAt(new \DateTime())
+                        ->setSignaledBy(null)
+                        ->setSignaledAt(null)
                         ->setBanished(true);
+                    $commentManager->bannish($comment);
                 }
-                $commentManager->update($comment);
                 $this->redirectTo('/admin/comments');
             }
 

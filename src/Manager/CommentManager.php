@@ -46,12 +46,12 @@ class CommentManager
         // Fonction pour mettre à jour un comment
         if ($comment->getCommentParent() != null) {
             $q = $this->db->prepare(
-                "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, id_parent = :id_parent, signaled = :signaled, banished = :banished, createdAt = :createdAt, place = :place WHERE id = :id"
+                "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, id_parent = :id_parent, signaled = :signaled, banished = :banished, createdAt = :createdAt, place = :place, signaledBy = :signaledBy, signaledAt = :signaledAt, banishedBy = :banishedAt WHERE id = :id"
             );
             $q->bindValue(":id_parent", $comment->getCommentParent()->getId(), \PDO::PARAM_INT);
         } else {
             $q = $this->db->prepare(
-                "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, signaled = :signaled, banished = :banished, createdAt = :createdAt, place = :place WHERE id = :id"
+                "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, signaled = :signaled, banished = :banished, createdAt = :createdAt, place = :place, signaledBy = :signaledBy, signaledAt = :signaledAt, banishedBy = :banishedBt, banihsedAt = :banishedAt WHERE id = :id"
             );
         }
         $q->bindValue(":comment", $comment->getComment(), \PDO::PARAM_STR);
@@ -61,6 +61,10 @@ class CommentManager
         $q->bindValue(":banished", $comment->isBanished(), \PDO::PARAM_BOOL);
         $q->bindValue(":createdAt", $comment->getCreatedAt()->format('Y-m-d'), \PDO::PARAM_STR);
         $q->bindValue(":place", $comment->getPlace(), \PDO::PARAM_INT);
+        $q->bindValue(":signaledBy", $comment->getSignaledBy());
+        $q->bindValue(":singaledAt", $comment->getSignaledAt()->format("Y-m-d"), \PDO::PARAM_STR);
+        $q->bindValue(":banishedBy", $comment->getBanishedBy());
+        $q->bindValue(":banishedAt", $comment->getBanishedAt()->format('Y-m-d'), \PDO::PARAM_STR);
         $q->bindValue(":id", $comment->getId(), \PDO::PARAM_INT);
         $q->execute();
     }
@@ -69,8 +73,13 @@ class CommentManager
     {
         // Fonction mettant à jour le status banished
 
-        $q = $this->db->prepare("UPDATE Comment SET banished = :banished WHERE id = :id");
+        $q = $this->db->prepare("UPDATE Comment SET banished = :banished, signaled = :signaled, signaledBy = :signaledBy, signaledAt = :signaledAt, banishedBy = :banishedBy, banishedAt = :banishedBy  WHERE id = :id");
         $q->bindValue(":banished", $comment->isBanished(), \PDO::PARAM_BOOL);
+        $q->bindValue(":signaled", $comment->isSignaled(), \PDO::PARAM_BOOL);
+        $q->bindValue(":signaledBy", $comment->getSignaledBy());
+        $q->bindValue(":signaledAt", $comment->getSignaledAt());
+        $q->bindValue(":banishedBy", $comment->getBanishedBy()->getId(), \PDO::PARAM_INT);
+        $q->bindValue(":banishedAt", $comment->getBanishedAt()->format('Y-m-d'), \PDO::PARAM_STR);
         $q->bindValue(":id", $comment->getId(), \PDO::PARAM_INT);
         $q->execute();
     }
@@ -78,10 +87,13 @@ class CommentManager
     public function signaled(Comment $comment)
     {
         // Fonction mettant à jour le status de signaled
-        $q = $this->db->prepare("UPDATE Comment SET signaled = :signaled, signaledBy = :signaledBy, signaledAt = :signaledAt WHERE id = :id");
+        $q = $this->db->prepare("UPDATE Comment SET signaled = :signaled, banished = :banished, signaledBy = :signaledBy, signaledAt = :signaledAt, banishedBy = :banishedBy, banishedAt = :banishedAt WHERE id = :id");
         $q->bindValue(":signaled", $comment->isSignaled(), \PDO::PARAM_BOOL);
+        $q->bindValue(":banished", $comment->isBanished());
         $q->bindValue(":signaledBy", $comment->getSignaledBy()->getId(), \PDO::PARAM_INT);
         $q->bindValue(":signaledAt", $comment->getSignaledAt()->format('Y-m-d'), \PDO::PARAM_STR);
+        $q->bindValue(":banishedBy", $comment->getBanishedBy());
+        $q->bindValue(":banishedAt", $comment->getBanishedAt());
         $q->bindValue(":id", $comment->getId(), \PDO::PARAM_INT);
         $q->execute();
     }
@@ -274,26 +286,28 @@ class CommentManager
 
     public function findAllSignaled(){
         $comments =[];
-        $q = $this->db->query("SELECT id, comment, id_user, place, banished, signaled, id_chapter FROM Comment WHERE signaled is true");
+        $q = $this->db->query("SELECT id, comment, id_user, place, banished, signaled, id_chapter, signaledBy, signaledAt FROM Comment WHERE signaled is true");
         if($q->rowCount() == 0){
             return false;
         }
         while ($data =$q->fetch(\PDO::FETCH_ASSOC)){
             $data['user'] = $this->addUser($data['id_user']);
             $data['chapter'] = $this->addChapter($data['id_chapter']);
+            $data['signaledBy'] = $this->addUser($data['signaledBy']);
             $comments[] =  new Comment($data);
         }
         return $comments;
     }
     public function findAllBanished(){
         $comments =[];
-        $q = $this->db->query("SELECT id, comment, id_user, place, banished, signaled, id_chapter FROM Comment WHERE banished is true");
+        $q = $this->db->query("SELECT id, comment, id_user, place, banished, signaled, id_chapter, banishedBy, banishedAt FROM Comment WHERE banished is true");
         if($q->rowCount() == 0){
             return false;
         }
         while ($data =$q->fetch(\PDO::FETCH_ASSOC)){
             $data['user'] = $this->addUser($data['id_user']);
             $data['chapter'] = $this->addChapter($data['id_chapter']);
+            $data['banishedBy'] = $this->addUser($data['banishedBy']);
             $comments[] =  new Comment($data);
         }
         return $comments;

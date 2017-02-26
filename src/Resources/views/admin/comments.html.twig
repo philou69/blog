@@ -10,7 +10,7 @@
             <tr class="succes row">
                 <th class="col-sm-1">id</th>
                 <th class="col-sm-3">commentaire</th>
-                <th class="col-sm-3">publié par</th>
+                <th class="col-sm-2">publié par</th>
                 <th class="col-sm-2">Date du post</th>
                 <th class="col-sm-2">Etat</th>
                 <th class="col-sm-1">Editer</th>
@@ -26,7 +26,7 @@
                 <tr class="row">
                     <th class="col-sm-1">{{ comment.id }}</th>
                     <th class="col-sm-3">{{ comment.comment | slice(0,50) }}...</th>
-                    <th class="col-sm-3">{{ comment.user.username }}</th>
+                    <th class="col-sm-2">{{ comment.user.username }}</th>
                     <th class="col-sm-2">{{ comment.published_at | date('d/m/Y') }}</th>
                     <th class="col-sm-2">
                         Signaler<br/>
@@ -43,7 +43,7 @@
                 <tr class="row">
                     <th class="col-sm-1">{{ comment.id }}</th>
                     <th class="col-sm-3">{{ comment.comment | slice(0,50) }}...</th>
-                    <th class="col-sm-3">{{ comment.user.username }}</th>
+                    <th class="col-sm-2">{{ comment.user.username }}</th>
                     <th class="col-sm-2">{{ comment.published_at | date('d/m/Y') }}</th>
                     <th class="col-sm-2">
                         Bannie
@@ -59,7 +59,7 @@
                 <tr class="row">
                     <th class="col-sm-1">{{ comment.id }}</th>
                     <th class="col-sm-3">{{ comment.comment | slice(0,50) }}...</th>
-                    <th class="col-sm-3">{{ comment.user.username }}</th>
+                    <th class="col-sm-2">{{ comment.user.username }}</th>
                     <th class="col-sm-2">{{ comment.published_at | date('d/m/Y') }}</th>
                     <th class="col-sm-2">
                         Normal
