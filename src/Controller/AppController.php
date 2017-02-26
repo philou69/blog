@@ -61,11 +61,12 @@ class AppController extends Controller
         $chapter = $chapterManager->findOneById($id);
         if($_SERVER['REQUEST_METHOD'] == "POST"){
             if(isset($_POST['comment']) && !empty($_POST['comment'])){
+                $commentPosted = htmlspecialchars($_POST['comment']);
                 $userManager = new UserManager();
                 $user = $userManager->findOneById($_SESSION['id']);
                 $comment = new Comment();
                 $now = new \DateTime();
-                $comment->setComment(htmlspecialchars($_POST['comment']))
+                $comment->setComment($commentPosted)
                     ->setChapter($chapter)
                     ->setUser($user);
                 $commentManager->add($comment);
@@ -77,8 +78,6 @@ class AppController extends Controller
         if (!$chapter || $chapter->getPublishedAt() > new \DateTime() || !$chapter->isPublished()) {
             throw new \Exception("Page Introuvable");
         }
-
-
 
         $this->render(
             'chapter.html.twig',
@@ -99,11 +98,13 @@ class AppController extends Controller
             if (isset($_POST['username']) && isset($_POST['password'])) {
                 // On va vérifier les données avec un validator
                 // Les regex sont gérer dans le validator
+                $username = htmlspecialchars($_POST['username']);
+                $password = htmlspecialchars($_POST['password']);
                 $userValidator = new UserValidator();
-                if (!$userValidator->isUsername($_POST['username'])) {
+                if (!$userValidator->isUsername($username)) {
                     $errors[] = ["error" => "username", "message" => "Erreur sur le format du nom"];
                 }
-                if (!$userValidator->isPassword(htmlspecialchars($_POST['password']))) {
+                if (!$userValidator->isPassword($password)) {
                     $errors[] = ["error" => "password", "message" => "Erreur sur le format du mot de passe"];
                 }
             } else {
@@ -114,9 +115,9 @@ class AppController extends Controller
             if (empty($errors)) {
                 // On va chercher un utilisateur correspondant au username et password
                 // Il n'est pas utile de protege les POST car password est  hashé et username est protéger automatiquement dans la requête
-                $password = hash("sha512", htmlspecialchars($_POST["password"]));
+                $password = hash("sha512", $password);
                 $userManager = new UserManager();
-                $user = $userManager->findOneByUserNameAndPassword($_POST["username"], $password);
+                $user = $userManager->findOneByUserNameAndPassword($username, $password);
                 // on vérifie l'existance de l'user
                 if (!$user) {
                     throw new \Exception("L'user n'existe pas ou mauvais mot de passe");
@@ -124,8 +125,7 @@ class AppController extends Controller
                 // On enregistre l'utilisateur dans une session
                 $this->fillSession($user);
                 // L'utilisateur étant enrgistrer on le renvoye vers la page d'accueil
-                header("Location : /");
-                echo "<META HTTP-EQUIV='refresh' CONTENT='0;URL=/'>";
+                $this->redirectTo('/');
             }
         }
         $this->render('login.html.twig', array('errors' => $errors), $_SESSION);
@@ -136,8 +136,7 @@ class AppController extends Controller
         session_start();
         $this->fillSession();
         // Puis, on redirige vers la page d'accueil
-        header("Locate : http://blog.fr");
-        echo "<META HTTP-EQUIV='refresh' CONTENT='0;URL=http://blog.fr'>";
+        $this->redirectTo('/');
     }
 
     public function inscriptionAction()
@@ -146,37 +145,40 @@ class AppController extends Controller
         $errors = [];
         // On vérifie si le formulaire a bien été envoyé
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
-            // On vérifie la presence des éléments post username, mail, password et password2
-            if (isset($_POST['username']) && isset($_POST['mail']) && isset($_POST['password']) && isset($_POST['passwordConfirmation'])) {
+            $username = htmlspecialchars($_POST['username']);
+            $mail = htmlspecialchars($_POST['mail']);
+            $password = htmlspecialchars($_POST['password']);
+            $passwordConfirmation = htmlspecialchars($_POST['passwordConfirmation']);
 
+            // On vérifie la presence des éléments post username, mail, password et passwordConfirmation
+            if (isset($username) && isset($mail) && isset($password) && isset($passwordConfirmation)) {
                 // Ils sont tous remplient
                 // On utilise le userValidator
                 $userValidator = new UserValidator();
                 // le prénoms d'abord
-                if (!$userValidator->isUsername($_POST['username'])) {
+                if (!$userValidator->isUsername($username)) {
                     $errors[] = ["error" => "username", "message" => "Le nom n'est pas du format"];
                 }
                 // le mail
-                if (!$userValidator->isMail($_POST['mail'])) {
+                if (!$userValidator->isMail($mail)) {
                     $errors[] = ["error" => "mail", "message" => "Le mail n'est pas du format"];
                 }
                 // les mots de passe
-                if ($_POST['password'] !== $_POST['passwordConfirmation']) {
+                if ($password !== $passwordConfirmation) {
                     $errors[] = ["error" => "passwords", "message" => "Les mots de passe ne sont pas identique"];
                 }
-                if (!$userValidator->isPassword($_POST['password'])) {
+                if (!$userValidator->isPassword($password)) {
                     $errors[] = ["error" => "password", "message" => "Le mot de passe n'est pas du format"];
                 }
                 // On va s'assurer que l'username et mail n'est pas déjà utilise
-                $user = new User(
-                    [
-                        "username" => htmlspecialchars($_POST['username']),
-                        "mail" => htmlspecialchars($_POST['mail']),
-                        "password" => hash("sha512", $_POST['password']),
-                        "roles" => ['ROLE_USER'],
-                    ]
-                );
+                $user = new User();
+                $user->setUsername($username)
+                    ->setMail($mail)
+                    ->setPassword(hash("sha512", $password))
+                    ->setRoles(['ROLE_USER']);
+
                 $userConstraint = new UserConstraint($user);
+
                 if (!$userConstraint->isNotOtherUser()) {
                     $errors[] = [
                         "error" => "user",
@@ -195,8 +197,7 @@ class AppController extends Controller
                 $user = $userManager->create($user);
                 $this->fillSession($user);
                 // On renvoye vers la page d'accueil
-                header("Location : http://blog.fr");
-                echo "<META HTTP-EQUIV='refresh' CONTENT='0;URL=http://blog.fr'>";
+                $this->redirectTo('/');
             }
         }
         // On affiche la vue du formulaire
@@ -218,41 +219,44 @@ class AppController extends Controller
 
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             // On crée un tableau d'errors et un vérificateur
+            $username = htmlspecialchars($_POST['username']);
+            $mail = htmlspecialchars($_POST['mail']);
+            $password = htmlspecialchars($_POST['password']);
+            $passwordConfirmation = htmlspecialchars($_POST['passwordConfirmation']);
             $userValidator = new UserValidator();
-            if (isset($_POST['username'])) {
+            if (isset($username)) {
                 //username n'est pas vide.
-                if (!$userValidator->isUsername($_POST['username'])) {
+                if (!$userValidator->isUsername($username)) {
                     // ce n'est pas un username, on remplie le tableau
                     $errors[] = ["error" => "username", "message" => "Le nom n'a pas un bon format"];
                 }
-                if (!$userConstraint->isNotOtherUserName($_POST['username']) && $user->getUsername(
-                    ) != $_POST['username']
-                ) {
+                if (!$userConstraint->isNotOtherUserName($username) && $user->getUsername(
+                    ) != $username ) {
                     $errors[] = ["error" => "formulaire", "message" => "Modification 1 impossible"];
                 }
-                $user->setUsername(htmlspecialchars($_POST['username']));
+                $user->setUsername($username);
             }
-            if (isset($_POST['mail'])) {
+            if (isset($mail)) {
                 // mail n'est pas vide.
-                if (!$userValidator->isMail($_POST['mail'])) {
+                if (!$userValidator->isMail($mail)) {
                     $errors[] = ["error" => "mail", "message" => "Le mail n'est pas au bon format!"];
                 }
-                if (!$userConstraint->isNotOtherMail($_POST['mail']) && $user->getMail() != $_POST['mail']) {
+                if (!$userConstraint->isNotOtherMail($mail) && $user->getMail() != $mail) {
                     $errors[] = ["error" => "formulaire", "message" => "Modification 2 impossible"];
                 }
-                $user->setMail(htmlspecialchars($_POST['mail']));
+                $user->setMail($mail);
             }
-            if (!empty($_POST['password']) && !empty($_POST['password_confirmation'])) {
+            if (!empty($password) && !empty($password_confirmation)) {
                 // password et password_confirmation ne sont pas vides
-                if ($_POST['password'] != $_POST['password_confirmation']) {
+                if ($password != $password_confirmation) {
                     // Les mots de passe ne sont pas identique
                     $errors[] = ["error" => "password", "message" => "Les mots de passe ne sont pas identiques"];
                 } else {
                     // Les mots sont identiques
-                    if (!$userValidator->isPassword($_POST['password'])) {
+                    if (!$userValidator->isPassword($password)) {
                         $errors[] = ["error" => "password", "message" => "Le mot de passe n'est pas au bon format!"];
                     }
-                    $user->setPassword(hash("sha512", $_POST['password']));
+                    $user->setPassword(hash("sha512", $password));
                 }
             }
             // Si le tableau est vide on update le user

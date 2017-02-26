@@ -117,6 +117,9 @@ $routes["admin_users_banished"] = ["method" => "get",
 $routes["admin_user"] = ["method" => "get",
                 "url" => "/admin/user/:id",
                 "controller" => "Admin:user"];
+$routes["admin_user_post"] = ["method" => "post",
+    "url" => "/admin/user/:id",
+    "controller" => "Admin:user"];
 $routes["admin_contents"] = ["method" => "get",
                 "url" => "/admin/contents",
                 "controller" => "Admin:contents"];
@@ -126,8 +129,5 @@ $routes["admin_content"] = ["method" => "get",
 $routes["admin_content_post"] = ["method" => "post",
                 "url" => "/admin/content/:id",
                 "controller" => "Admin:content"];
-$routes["admin_user"] = ["method" => "post",
-                "url" => "/admin/user/:id",
-                "controller" => "Admin:user"];
 
 

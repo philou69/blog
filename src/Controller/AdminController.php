@@ -23,16 +23,18 @@ class AdminController extends Controller
         $errors = [];
         // On vérifie qe la methode est post et donc que le formulaire est passé
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $username = htmlspecialchars($_POST['username']);
+            $password = htmlspecialchars($_POST['password']);
             // On vérifie la présence de données username et password en post
             // On va pour cela utiliser un validator
-            if (isset($_POST['username']) && isset($_POST['password'])) {
+            if (isset($username) && isset($password)) {
                 // On va vérifier les données avec un validator
                 // Les regex sont gérer dans le validator
                 $userValidator = new UserValidator();
-                if (!$userValidator->isUsername($_POST['username'])) {
+                if (!$userValidator->isUsername($username)) {
                     $errors[] = ["error" => "username", "message" => "Erreur sur le format du nom"];
                 }
-                if (!$userValidator->isPassword($_POST['password'])) {
+                if (!$userValidator->isPassword($password)) {
                     $errors[] = ["error" => "password", "message" => "Erreur sur le format du mot de passe"];
                 }
             } else {
@@ -43,9 +45,9 @@ class AdminController extends Controller
             if (empty($errors)) {
                 // On va chercher un utilisateur correspondant au username et password
                 // Il n'est pas utile de protege les POST car password est  hashé et username est protéger automatiquement dans la requête
-                $password = hash("sha512", $_POST["password"]);
+                $password = hash("sha512", $password);
                 $userManager = new UserManager();
-                $user = $userManager->findOneByUserNameAndPassword($_POST["username"], $password);
+                $user = $userManager->findOneByUserNameAndPassword($username, $password);
                 // on vérifie l'existance de l'user
                 if (!$user) {
                     throw new \Exception("L'user n'existe pas ou mauvais mot de passe");
@@ -90,35 +92,39 @@ class AdminController extends Controller
         $this->isAuthorized();
         $errors = [];
         if($_SERVER['REQUEST_METHOD'] == "POST"){
+            $title = htmlspecialchars($_POST['title']);
+            $text = htmlspecialchars($_POST['chapter']);
+            $publishedAt = htmlspecialchars($_POST['publishedAt']);
+            $published = htmlspecialchars($_POST['published']);
             $chapterValidator = new  ChapterValidator();
-            if(empty(htmlspecialchars($_POST['title']))){
+            if(empty($title)){
                 $errors[] = ['error' => "title", "message" => "Le titre ne peut être vide"];
-            }else if(!$chapterValidator->isTitle(htmlspecialchars($_POST['title']))){
+            }else if(!$chapterValidator->isTitle($title)){
                 $errors[] = ['error' => "title", "message" => "Le titre n'est pas au bon format!"];
             }
-            if(empty(htmlspecialchars($_POST['chapter']))){
+            if(empty($chapter)){
                 $errors[] = ['error' => "chapter", "message" => "Le chapter ne peut être vide"];
-            }elseif (!$chapterValidator->isChapter(htmlspecialchars($_POST['chapter']))){
+            }elseif (!$chapterValidator->isChapter($chapter)){
                 $errors[] = ['error' => "chapter", "message" => "Le chapter n'est pas au bon format!"];
             }
-            if(empty(htmlspecialchars($_POST['published_at']))){
+            if(empty($published_at)){
                 $errors[] = ['error' => "published_at", "message" => "La date de publication ne peut être vide!"];
-            }elseif(!$chapterValidator->isDate(htmlspecialchars($_POST['published_at']))){
+            }elseif(!$chapterValidator->isDate($published_at)){
                 $errors[]= ['error' => "published_at", "message" => "La date n'est pas valide!"];
             }
-            if(!isset($_POST['published'])){
+            if(!isset($published)){
                 $errors[] = ['error' => "published", "message" => "Le statut de la publication ne peut être vide"];
-            }elseif (!$chapterValidator->isPublished(htmlspecialchars($_POST['published']))){
+            }elseif (!$chapterValidator->isPublished($published)){
                 $errors[] = ['erro' => "published", "message" => "Le statut de publication n'est pas valide"];
             }
 
             if(empty($errors)){
                 $chapterManager = new ChapterManager();
                 $chapter = new Chapter();
-                $chapter->setTitle(htmlspecialchars($_POST['title']))
-                    ->setChapter($_POST['chapter'])
-                    ->setPublishedAt(htmlspecialchars($_POST['published_at']))
-                    ->setPublished(htmlspecialchars($_POST['published']));
+                $chapter->setTitle($title)
+                    ->setChapter($chapter)
+                    ->setPublishedAt($published_at)
+                    ->setPublished($published);
                 $chapterManager->add($chapter);
                 $this->redirectTo('/admin/chapters');
             }
@@ -139,34 +145,38 @@ class AdminController extends Controller
         }
         $errors = [];
         if($_SERVER['REQUEST_METHOD'] == "POST"){
+            $title = htmlspecialchars($_POST['title']);
+            $text = htmlspecialchars($_POST['chapter']);
+            $publishedAt = htmlspecialchars($_POST['publishedAt']);
+            $published = htmlspecialchars($_POST['published']);
             $chapterValidator = new  ChapterValidator();
-            if(empty(htmlspecialchars($_POST['title']))){
+            if(empty($title)){
                 $errors[] = ['error' => "title", "message" => "Le titre ne peut être vide"];
-            }else if(!$chapterValidator->isTitle(htmlspecialchars($_POST['title']))){
+            }else if(!$chapterValidator->isTitle($title)){
                 $errors[] = ['error' => "title", "message" => "Le titre n'est pas au bon format!"];
             }
-            if(empty(htmlspecialchars($_POST['chapter']))){
+            if(empty($text)){
                 $errors[] = ['error' => "chapter", "message" => "Le chapter ne peut être vide"];
-            }elseif (!$chapterValidator->isChapter(htmlspecialchars($_POST['chapter']))){
+            }elseif (!$chapterValidator->isChapter($text)){
                 $errors[] = ['error' => "chapter", "message" => "Le chapter n'est pas au bon format!"];
             }
-            if(empty(htmlspecialchars($_POST['published_at']))){
+            if(empty($publishedAt)){
                 $errors[] = ['error' => "published_at", "message" => "La date de publication ne peut être vide!"];
-            }elseif(!$chapterValidator->isDate(htmlspecialchars($_POST['published_at']))){
+            }elseif(!$chapterValidator->isDate($publishedAt)){
                 $errors[]= ['error' => "published_at", "message" => "La date n'est pas valide!"];
             }
-            if(!isset($_POST['published'])){
+            if(!isset($published)){
                 $errors[] = ['error' => "published", "message" => "Le statut de la publication ne peut être vide"];
-            }elseif (!$chapterValidator->isPublished(htmlspecialchars($_POST['published']))){
+            }elseif (!$chapterValidator->isPublished($published)){
                 $errors[] = ['erro' => "published", "message" => "Le statut de publication n'est pas valide"];
             }
 
             if(empty($errors)){
                 $chapterManager = new ChapterManager();
-                $chapter->setTitle(htmlspecialchars($_POST['title']))
-                    ->setChapter($_POST['chapter'])
-                    ->setPublishedAt(htmlspecialchars($_POST['published_at']))
-                    ->setPublished(htmlspecialchars($_POST['published']));
+                $chapter->setTitle($title)
+                    ->setChapter($text)
+                    ->setPublishedAt($publishedAt)
+                    ->setPublished($published);
 
                 $chapterManager->update($chapter);
                 $this->redirectTo('/admin/chapters');
@@ -219,16 +229,17 @@ class AdminController extends Controller
         $errors = [];
 
         if($_SERVER['REQUEST_METHOD'] == "POST"){
-            if(!isset($_POST['etat'])){
+            $etat = htmlspecialchars($_POST['etat']);
+            if(!isset($etat)){
                 $errors[] = ["error" => "etat", "message" => "L'etat du comment ne peut être vide"];
-            }elseif (htmlspecialchars($_POST['etat']) != "normal" && htmlspecialchars($_POST['etat']) != "signaled" &&htmlspecialchars($_POST['etat']) != "banished" ){
+            }elseif ($etat != "normal" && $etat != "signaled" && $etat != "banished" ){
                 $errors[] = ["error" => "etat", "message" =>"L'eta du comment n'est pas au bon format"];
             }
 
             if(empty($errors)){
                 $user = new User();
                 $user->setId($_SESSION['id']);
-                if($_POST['etat'] == "normal"){
+                if($etat == "normal"){
                     $comment->setSignaled(false)
                         ->setSignaledBy(null)
                         ->setSignaledAt(null)
@@ -236,7 +247,7 @@ class AdminController extends Controller
                         ->setSignaledBy(null)
                         ->setBanishedAt(null);
                     $commentManager->update($comment);
-                }elseif ($_POST['etat'] == "signaled"){
+                }elseif ($etat == "signaled"){
                     $comment->setSignaled(true)
                         ->setSignaledBy($user)
                         ->setSignaledAt(new \DateTime())
@@ -244,7 +255,7 @@ class AdminController extends Controller
                         ->setBanishedAt(null)
                         ->setBanished(false);
                     $commentManager->signaled($comment);
-                }elseif($_POST['etat'] == "banished"){
+                }elseif($etat == "banished"){
                     $comment->setSignaled(false)
                         ->setBanishedBy($user)
                         ->setBanishedAt(new \DateTime())
@@ -300,6 +311,7 @@ class AdminController extends Controller
             throw new \Exception("Page introuvable");
         }
         if($_SERVER['REQUEST_METHOD'] == "POST"){
+
             if(!isset($_POST['roles'])){
                 $errors[] = ["message" => "Il faut au minimum un role"];
             }else{
@@ -341,8 +353,9 @@ class AdminController extends Controller
         }
 
         if($_SERVER['REQUEST_METHOD'] == "POST"){
-            if(isset($_POST['content'])){
-                $content->setContent(htmlspecialchars($_POST['content']));
+            $text = htmlspecialchars($_POST['content']);
+            if(isset($text)){
+                $content->setContent($text);
                 $contentManager->update($content);
                 $this->redirectTo("/admin/contents");
             }
