@@ -151,7 +151,19 @@ class UserManager
 
     public function findAll(){
         $users = [];
-        $q = $this->db->query("SELECT id, username, mail, roles FROM User ");
+        $q = $this->db->query("SELECT id, username, firstname, mail, roles, banish FROM User ");
+        if($q->rowCount() == 0){
+            return false;
+        }
+        while ($data = $q->fetch(\PDO::FETCH_ASSOC)){
+            $users[] = new User($data);
+        }
+        return $users;
+    }
+
+    public function findAllBanish(){
+        $users = [];
+        $q = $this->db->query("SELECT id, username, firstname, mail, roles, banish FROM User WHERE banish = true");
         if($q->rowCount() == 0){
             return false;
         }

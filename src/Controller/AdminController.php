@@ -279,7 +279,7 @@ class AdminController extends Controller
         $commentManager = new CommentManager();
         $comments = $commentManager->findAllSignaled();
 
-        $this->render("admin/comments_signaled.html.twig",array('comments' => $comments));
+        $this->render("admin/comments.html.twig",array('comments' => $comments));
     }
 
     public function banishedCommentsAction(){
@@ -288,7 +288,7 @@ class AdminController extends Controller
         $commentManager = new CommentManager();
         $comments = $commentManager->findAllBanished();
 
-        $this->render("admin/comments_banished.html.twig",array('comments' => $comments));
+        $this->render("admin/comments.html.twig",array('comments' => $comments));
     }
 
     public function usersAction(){
@@ -331,7 +331,7 @@ class AdminController extends Controller
                 $this->redirectTo('/admin/users');
             }
         }
-        $this->render("admin/user.html.twig", array('user' => $user, 'errors' => $errors));
+        $this->render("admin/user.html.twig", array('user' => $user, 'errors' => $errors), $_SESSION);
     }
 
     public function contentsAction(){
@@ -373,7 +373,7 @@ class AdminController extends Controller
             throw new \Exception("Page Introuvable");
         }
 
-        $this->render("admin/chapters.draft.html.twig", array('chapters' => $chapters));
+        $this->render("admin/chapters.html.twig", array('chapters' => $chapters));
     }
 
     public function chaptersPublishedAction(){
@@ -386,7 +386,7 @@ class AdminController extends Controller
             throw new \Exception("Page Introuvable");
         }
 
-        $this->render("admin/chapters.draft.html.twig", array('chapters' => $chapters));
+        $this->render("admin/chapters.html.twig", array('chapters' => $chapters));
     }
 
     public function logoutAction(){

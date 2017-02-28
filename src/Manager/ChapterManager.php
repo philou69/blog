@@ -80,7 +80,7 @@ class ChapterManager
         // Tableau prévue pour contenir tous les chapters
         $chapters = [];
         $q = $this->db->query(
-            'SELECT id, title, chapter, publishedAt, published FROM Chapter ORDER BY publishedAt DESC '
+            'SELECT id, title, chapter, publishedAt, published FROM Chapter ORDER BY publishedAt DESC'
         );
         if ($q->rowCount() < 1) {
             return false;

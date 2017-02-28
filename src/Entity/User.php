@@ -8,8 +8,10 @@ class User
 {
     private $id;
     private $username;
+    private $firstname;
     private $mail;
     private $password;
+    private $banish;
     private $roles = [];
 
     function __construct(array $data = null)
@@ -148,5 +150,54 @@ class User
     {
         return serialize($this->roles);
     }
+
+    /**
+     * Get firstname
+     *
+     * @return mixed
+     */
+    public function getFirstname()
+    {
+        return $this->firstname;
+    }
+
+    /**
+     * Set firstname
+     *
+     * @param mixed $firstname
+     *
+     * @return $this
+     */
+    public function setFirstname($firstname)
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    /**
+     * Get banish
+     *
+     * @return mixed
+     */
+    public function getBanish()
+    {
+        return $this->banish;
+    }
+
+    /**
+     * Set banish
+     *
+     * @param mixed $banish
+     *
+     * @return $this
+     */
+    public function setBanish($banish)
+    {
+        $this->banish = $banish;
+
+        return $this;
+    }
+
 
 }
