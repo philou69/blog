@@ -134,6 +134,8 @@ class User
 
     /**
      * @param array $roles
+     *
+     * @return $this
      */
     public function setRoles($roles)
     {
@@ -144,6 +146,7 @@ class User
                 $this->roles = unserialize($roles);
             }
         }
+        return $this;
     }
 
     public function serializeRoles()

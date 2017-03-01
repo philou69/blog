@@ -39,7 +39,7 @@ class UserManager
     public function update(User $user)
     {
         $q = $this->db->prepare(
-            "UPDATE User SET username = :username, mail = :mail, password = :password, roles = :roles WHERE id = :id"
+            "UPDATE User SET username = :username, mail = :mail, password = :password, roles = :roles, banish = :banish WHERE id = :id"
         );
         $q->execute(
             array(
@@ -47,6 +47,7 @@ class UserManager
                 ":mail" => $user->getMail(),
                 ":password" => $user->getPassword(),
                 ":roles" => $user->serializeRoles(),
+                ":banish" =>$user->getBanish(),
                 ":id" => $user->getId(),
             )
         );
@@ -104,7 +105,7 @@ class UserManager
 
     public function findOneById($id)
     {
-        $q = $this->db->prepare("SELECT id, username, mail, password, roles FROM User WHERE id = :id");
+        $q = $this->db->prepare("SELECT id, username, mail, password, roles, banish FROM User WHERE id = :id");
         $q->execute(array(":id" => $id));
         $donnees = $q->fetch(\PDO::FETCH_ASSOC);
 

@@ -6,24 +6,22 @@
 {% block body %}
     <div class="well">
         <h1 class="text-center">Les contenus modifiables</h1>
-        <table class="table table-striped table-hover">
+        <table id="content-dataTables" class="table table-striped table-hover">
             <thead>
-            <tr class="succes row">
-                <th class="col-sm-1">id</th>
-                <th class="col-sm-3">titre</th>
-                <th class="col-sm-3">Contenu</th>
-                <th class="col-sm-1">Page</th>
-                <th class="col-sm-1">Editer</th>
+            <tr class="succes">
+                <th>titre</th>
+                <th>Contenu</th>
+                <th>Page</th>
+                <th>Editer</th>
             </tr>
             </thead>
             <tbody>
             {% for content in contents %}
-                <tr class="row">
-                    <th class="col-sm-1">{{ content.id }}</th>
-                    <th class="col-sm-3">{{ content.title }}</th>
-                    <th class="col-sm-3">{{ content.content | slice(0,50)| raw }}</th>
-                    <th class="col-sm-1">{{  content.page }}</th>
-                    <th class="col-sm-1"><a href="/admin/content/{{ content.id }}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i></a></th>
+                <tr>
+                    <th>{{ content.title }}</th>
+                    <th>{{ content.content | slice(0,50)| raw }}</th>
+                    <th>{{  content.page }}</th>
+                    <th><a href="/admin/content/{{ content.id }}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i></a></th>
                 </tr>
                 {% else %}
                 <tr>
@@ -34,4 +32,9 @@
 
         </table>
     </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript" src="../../src/Resources/js/content.dataTables.js"></script>
 {% endblock %}

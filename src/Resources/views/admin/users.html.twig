@@ -16,7 +16,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for user in listUser %}
+        {% for user in users %}
             <tr class="row">
                 <th class="col-sm-3">{{ user.username }}</th>
                 <th class="col-sm-3">{{ user.firstname }}</th>
@@ -31,6 +31,8 @@
                 <th class="col-sm-1"><a href="/admin/user/{{ user.id }}" class="btn btn-default btn-xs"><i
                                 class="glyphicon glyphicon-edit"></i></a></th>
             </tr>
+        {% else %}
+            Aucun visiteurs bani
         {% endfor %}
         </tbody>
     </table>
