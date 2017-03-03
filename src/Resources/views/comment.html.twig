@@ -1,7 +1,7 @@
 <p class="well" id="comment_{{ comment.id }}">
-    {% if comment.banished == true %}
+    {% if comment.status.id == "2" %}
         Commentaire modéré.
-    {% elseif comment.signaled == true %}
+    {% elseif comment.status.id == "1" %}
         Commentaire signaler. En attente de moderation.
 
     {% else %}

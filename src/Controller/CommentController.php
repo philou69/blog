@@ -21,17 +21,16 @@ class CommentController extends AdminController
         }
         $commentManager = new CommentManager();
         $comment = $commentManager->findOneById($id);
-        var_dump($comment);
         if ($comment == false) {
             throw new \Exception("Page Introuvable");
         }
         $now = new \DateTime();
         $user = new User();
         $user->setId($_SESSION['id']);
-        $comment->setSignaled(true)
-            ->setSignaledBy($user)
-            ->setSignaledAt($now);
-        $commentManager->signaled($comment);
+        $comment->getSstatus()->setId("1")
+            ->setStatusedBy($user)
+            ->setStatusedAt($now);
+        $commentManager->update($comment);
         $idChapter = $comment->getChapter()->getId();
         $this->redirectTo("/chapter/$idChapter");
     }
@@ -81,8 +80,6 @@ class CommentController extends AdminController
     public function commentsAction(){
         $this->isAuthorized();
         $commentManager = new CommentManager();
-
-
         $comments = $commentManager->findAll();
         $this->render('admin/comments.html.twig', array('comments' => $comments), $_SESSION);
     }
@@ -111,30 +108,19 @@ class CommentController extends AdminController
                 $user = new User();
                 $user->setId($_SESSION['id']);
                 if($etat == "normal"){
-                    $comment->setSignaled(false)
-                        ->setSignaledBy(null)
-                        ->setSignaledAt(null)
-                        ->setBanished(false)
-                        ->setSignaledBy(null)
-                        ->setBanishedAt(null);
-                    $commentManager->update($comment);
+                    $comment->getStatus()->setId("3")
+                        ->setStatusedBy(null)
+                        ->setStatusedAt(null);
                 }elseif ($etat == "signaled"){
-                    $comment->setSignaled(true)
-                        ->setSignaledBy($user)
-                        ->setSignaledAt(new \DateTime())
-                        ->setBanishedBy(null)
-                        ->setBanishedAt(null)
-                        ->setBanished(false);
-                    $commentManager->signaled($comment);
+                    $comment->getStatus()->setId("1")
+                        ->setStatusedBy($user)
+                        ->setStatusedAt(new \DateTime());
                 }elseif($etat == "banished"){
-                    $comment->setSignaled(false)
-                        ->setBanishedBy($user)
-                        ->setBanishedAt(new \DateTime())
-                        ->setSignaledBy(null)
-                        ->setSignaledAt(null)
-                        ->setBanished(true);
-                    $commentManager->bannish($comment);
+                    $comment->getStatus()->setId("1")
+                        ->setStatusedBy($user)
+                        ->setStatusedAt(new \DateTime());
                 }
+                $commentManager->update($comment);
                 $this->redirectTo('/admin/comments');
             }
 

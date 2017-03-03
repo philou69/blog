@@ -17,20 +17,18 @@ class Comment
     private $comment;
     private $chapter;
     private $commentParent = null;
-    private $signaled = false;
-    private $banished = false;
     private $createdAt;
     private $comments = null;
     private $place = 1;
-    private $signaledBy;
-    private $signaledAt;
-    private $banishedBy;
-    private $banishedAt;
+    private $statuseddBy;
+    private $statusedAt;
+    private $status;
 
 
     public function __construct(array $data = null)
     {
-        if(is_array($data)){
+        $this->status = new Status();
+        if (is_array($data)) {
             foreach ($data as $key => $value) {
                 $method = 'set'.ucfirst($key);
                 if (method_exists($this, $method)) {
@@ -38,7 +36,7 @@ class Comment
                 }
             }
         }
-        if($this->createdAt == null){
+        if ($this->createdAt == null) {
             $this->createdAt = new \DateTime();
         }
     }
@@ -151,46 +149,6 @@ class Comment
     }
 
     /**
-     * @return bool
-     */
-    public function isSignaled()
-    {
-        return $this->signaled;
-    }
-
-    /**
-     * @param bool $signaled
-     * @return $this
-     */
-    public function setSignaled($signaled)
-    {
-        $this->signaled = filter_var($signaled, FILTER_VALIDATE_BOOLEAN);
-
-        return $this;
-
-    }
-
-    /**
-     * @return bool
-     */
-    public function isBanished()
-    {
-        return $this->banished;
-    }
-
-    /**
-     * @param bool $banished
-     * @return $this
-     */
-    public function setBanished($banished)
-    {
-        $this->banished = filter_var($banished, FILTER_VALIDATE_BOOLEAN);
-
-        return $this;
-
-    }
-
-    /**
      * @return mixed
      */
     public function getCreatedAt()
@@ -204,13 +162,14 @@ class Comment
      */
     public function setCreatedAt($createdAt)
     {
-        if ($createdAt == null){
+        if ($createdAt == null) {
             $this->createdAt = $createdAt;
-        }elseif(is_string($createdAt)){
+        } elseif (is_string($createdAt)) {
             $this->createdAt = new \DateTime($createdAt);
-        }elseif(is_a($createdAt, 'DateTime')){
+        } elseif (is_a($createdAt, 'DateTime')) {
             $this->createdAt = $createdAt;
         }
+
         return $this;
     }
 
@@ -240,43 +199,6 @@ class Comment
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isParent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param bool $parent
-     * @return $this
-     */
-    public function setParent($parent)
-    {
-        $this->parent = $parent;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isLastChild()
-    {
-        return $this->lastChild;
-    }
-
-    /**
-     * @param bool $lastChild
-     * @return $this
-     */
-    public function setLastChild($lastChild)
-    {
-        $this->lastChild = $lastChild;
-
-        return $this;
-    }
 
     /**
      * @return int
@@ -293,96 +215,65 @@ class Comment
     public function setPlace($place)
     {
         $this->place = intval($place);
+
         return $this;
     }
 
     /**
      * @return User
      */
-    public function getSignaledBy()
+    public function getStatusedBy()
     {
-        return $this->signaledBy;
-    }
-
-    /**
-     * @param User  $user
-     * @return $this
-     */
-    public function setSignaledBy(User $user = null)
-    {
-        $this->signaledBy = $user;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSignaledAt()
-    {
-        return $this->signaledAt;
-    }
-
-    /**
-     * @param mixed $signaledAt
-     * @return $this
-     */
-    public function setSignaledAt($signaledAt = null)
-    {
-        if($signaledAt == null){
-            $this->signaledAt = null;
-        }elseif(is_string($signaledAt)){
-            $this->signaledAt =new \DateTime($signaledAt);
-        }elseif(is_a($signaledAt, 'DateTime')){
-            $this->signaledAt = $signaledAt;
-        }
-        return $this;
-    }
-
-    /**
-     * @return User
-     */
-    public function getBanishedBy()
-    {
-        return $this->banishedBy;
+        return $this->statuseddBy;
     }
 
     /**
      * @param User $user
      * @return $this
      */
-    public function setBanishedBy(User $user = null)
+    public function setStatusedBy(User $user = null)
     {
-        $this->banishedBy = $user;
+        $this->statuseddBy = $user;
+
         return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getBanishedAt()
+    public function getStatusedAt()
     {
-        return $this->banishedAt;
+        return $this->statusedAt;
     }
 
     /**
-     * @param mixed $banishedAt
-     *
+     * @param mixed $signaledAt
      * @return $this
      */
-    public function setBanishedAt($banishedAt = null)
+    public function setStatusedAt($statusedAt = null)
     {
-        if($banishedAt == null){
-            $this->banishedAt = null;
-        }
-        if(is_string($banishedAt)){
-            $this->banishedAt = new \DateTime($banishedAt);
-        }
-        if(is_a($banishedAt, 'DateTime')){
-            $this->banishedAt = $banishedAt;
+        if ($statusedAt == null) {
+            $this->statusedAt = null;
+        } elseif (is_string($statusedAt)) {
+            $this->statusedAt = new \DateTime($statusedAt);
+        } elseif (is_a($statusedAt, 'DateTime')) {
+            $this->statusedAt = $statusedAt;
         }
 
         return $this;
     }
 
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function setStatus(Status $status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
 
 }

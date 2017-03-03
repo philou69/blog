@@ -176,9 +176,9 @@ class UserController extends AdminController
                 }
                 $user->setMail($mail);
             }
-            if (!empty($password) && !empty($password_confirmation)) {
+            if (!empty($password) && !empty($passwordConfirmation)) {
                 // password et password_confirmation ne sont pas vides
-                if ($password != $password_confirmation) {
+                if ($password != $passwordConfirmation) {
                     // Les mots de passe ne sont pas identique
                     $errors[] = ["error" => "password", "message" => "Les mots de passe ne sont pas identiques"];
                 } else {
