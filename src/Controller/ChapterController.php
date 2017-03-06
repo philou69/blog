@@ -4,9 +4,13 @@
 namespace App\Controller;
 
 
+use App\Entity\Chapter;
+use App\Entity\Comment;
 use App\Manager\ChapterManager;
 use App\Manager\CommentManager;
+use App\Manager\UserManager;
 use App\Validator\ChapterValidator;
+use Exception;
 
 class ChapterController extends AdminController
 {
@@ -31,7 +35,7 @@ class ChapterController extends AdminController
     {
         session_start();
         if (!is_numeric($id)) {
-            throw new RouterException("$id has to be a number");
+            throw new \Exception("$id has to be a number");
         }
         $chapterManager = new ChapterManager();
         $commentManager = new CommentManager();

@@ -59,8 +59,8 @@ class CommentManager
         $q->bindValue(":id_user", $comment->getUser()->getId(), \PDO::PARAM_INT);
         $q->bindValue(":createdAt", $comment->getCreatedAt()->format('Y-m-d'), \PDO::PARAM_STR);
         $q->bindValue(":place", $comment->getPlace(), \PDO::PARAM_INT);
-        $q->bindValue(":statusedBy", $comment->getStatusedBy());
-        $q->bindValue(":singaledAt", $comment->getStatusedAt()->format("Y-m-d"), \PDO::PARAM_STR);
+        $q->bindValue(":statusedBy", $comment->getStatusedBy()->getId(), \PDO::PARAM_INT);
+        $q->bindValue(":statusedAt", $comment->getStatusedAt()->format("Y-m-d"), \PDO::PARAM_STR);
         $q->bindValue(":status", $comment->getStatus()->getId(), \PDO::PARAM_INT);
         $q->bindValue(":id", $comment->getId(), \PDO::PARAM_INT);
         $q->execute();
@@ -133,7 +133,7 @@ class CommentManager
         // Tableau contenant les comments
         $comments = [];
         $q = $this->db->query(
-            "SELECT Comment.id,comment, id_chapter, id_parent, id_user, createdAt, place, statusedBy, statusedAt, id_status FROM Comment"
+            "SELECT Comment.id,comment, id_chapter, id_parent, id_user, createdAt, place, statusedBy, statusedAt, id_status FROM Comment ORDER BY id_status"
         );
         // On vérifie avoir au moins une entrée
         if ($q->rowCount() == 0) {
@@ -186,16 +186,12 @@ class CommentManager
             $data['status'] = $this->addStatus($data['id_status']);
             $data['user'] = $this->addUser($data['id_user']);
             $data['chapter'] = $this->addChapter($id);
-            $commentsEnfants = $this->findChildrenForOneComment($data['id']);
-            if($commentsEnfants){
-                $data['comments'] = $commentsEnfants;
-            }
+            $data['comments'] = $this->findChildrenForOneComment($data['id']);
             if($data['statusedBy'] != null){
                 $data['statusedBy'] = $this->addUser($data['statusedBy']);
             }else{
                 unset($data['statusedAt']);
             }
-
             $comments[] = new Comment($data);
         }
         // On retourne le tableau de comments
@@ -208,52 +204,26 @@ class CommentManager
         // Tableau contenant les comments
         $comments = [];
         $q = $this->db->prepare(
-            "SELECT id, comment, id_user, id_chapter, banishedBy, banishedAt, statusedAt, statusedBy, id_status FROM Comment WHERE id_parent = :id AND place = 2"
+            "SELECT id, comment, id_user, id_chapter, banishedBy, banishedAt, statusedAt, statusedBy, id_status FROM Comment WHERE id_parent = :id"
         );
         $q->bindValue(":id", $id, \PDO::PARAM_INT);
         $q->execute();
         // On vérifie s'il y a des entrées
         if ($q->rowCount() < 1) {
-            return false;
+            return null;
         }
         while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
             // On ajoute le chapter et l'user
             $data['chapter'] = $this->addChapter($data['id_chapter']);
             $data['user'] = $this->addUser($data['id_user']);
             $data['status'] = $this->addStatus($data['id_status']);
-            $commentsEnfants = [];
-            $nq = $this->db->prepare(
-                "SELECT id, comment, id_user, place, id_chapter, banishedBy, banishedAt, statusedAt, statusedBy, id_status FROM Comment WHERE id_parent = :id AND place = 3"
-            );
-            $nq->bindValue(":id", $data['id'], \PDO::PARAM_INT);
-            $nq->execute();
-            // S'il y a au minimum 1 entrée on ajoute le(s) comment(s)
-            if ($nq->rowCount() > 0) {
-                while ($dataEnfants = $nq->fetch(\PDO::FETCH_ASSOC)) {
-                    // On ajoute le chapter et le user
-                    $dataEnfants['chapter'] = $this->addChapter($dataEnfants['id_chapter']);
-                    $dataEnfants['user'] = $this->addUser($dataEnfants['id_user']);
-                    $dataEnfants['status'] = $this->addStatus($dataEnfants['id_status']);
-                    $commentsEnfants[] = new Comment($dataEnfants);
-                    if($dataEnfants['statusedBy'] != null){
-                        $dataEnfants['statusedBy'] = $this->addUser($dataEnfants['statusedBy']);
-                    }else{
-                        unset($dataEnfants['statusedAt']);
-                    }
-                    if($dataEnfants['banishedBy'] != null){
-                        $dataEnfants['banishedBy'] = $this->addUser($dataEnfants['banishedBy']);
-                    }else{
-                        unset($dataEnfants['banishedAt']);
-                    }
-                }
-                $data['comments'] = $commentsEnfants;
-
-                if($data['statusedBy'] != null){
-                    $data['statusedBy'] = $this->addUser($data['statusedBy']);
-                }else{
-                    unset($data['statusedAt']);
-                }
+            if($data['statusedBy'] != null){
+                $data['statusedBy'] = $this->addUser($data['statusedBy']);
+            }else{
+                unset($data['statusedAt']);
             }
+            $data['comments'] = $this->findChildrenForOneComment($data['id']);
+
             $comments[] = new Comment($data);
         }
 

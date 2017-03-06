@@ -4,7 +4,7 @@ $(document).ready(function() {
             "language": {
                 "url": "../src/Resources/js/dataTables.french.json"
             },
-            "order": [[3, "desc"]]
+            "ordering": false,
         }
 
     );

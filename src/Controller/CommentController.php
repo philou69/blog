@@ -6,38 +6,46 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\User;
+use App\Manager\ChapterManager;
 use App\Manager\CommentManager;
+use App\Manager\ContentManager;
 
 class CommentController extends AdminController
 {
-    public function signalAction($id)
+    public function createAction($id)
     {
         session_start();
-        if($_SESSION['isconnected'] == false){
-            throw new \Exception("Page introuvable");
+        if (!is_numeric($id) || $_SESSION['id'] == null ) {
+            throw new \Exception("Page not found");
         }
-        if (!is_numeric($id)) {
-            throw new \Exception("Page introuvable!");
+        $chapterManager = new ChapterManager();
+        $chapter = $chapterManager->findOneById($id);
+        if (!$chapter) {
+            throw new \Exception("Page not found");
         }
-        $commentManager = new CommentManager();
-        $comment = $commentManager->findOneById($id);
-        if ($comment == false) {
-            throw new \Exception("Page Introuvable");
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $message = htmlspecialchars($_POST['comment']);
+            if (isset($message)) {
+                $comment = new Comment();
+                $user = new User();
+                $user->setId($_SESSION['id']);
+                $comment->setComment($message)
+                    ->setChapter($chapter)
+                    ->setUser($user)
+                    ->setCreatedAt(new \DateTime());
+                $commentManager = new CommentManager();
+                $commentManager->add($comment);
+                $this->redirectTo("/chapter/$id");
+            }
         }
-        $now = new \DateTime();
-        $user = new User();
-        $user->setId($_SESSION['id']);
-        $comment->getSstatus()->setId("1")
-            ->setStatusedBy($user)
-            ->setStatusedAt($now);
-        $commentManager->update($comment);
-        $idChapter = $comment->getChapter()->getId();
-        $this->redirectTo("/chapter/$idChapter");
+        $this->redirectTo('/');
     }
 
     public function responseAction($id)
     {
-        if (!is_numeric($id)) {
+        session_start();
+        if (!is_numeric($id) || $_SESSION['id'] == null ) {
             throw new \Exception("Page Introuvable");
         }
         $commentManager = new CommentManager();
@@ -45,7 +53,6 @@ class CommentController extends AdminController
         if (!$comment) {
             throw new \Exception("Page Introuvalbe");
         }
-        session_start();
         if (isset($_POST['response']) && !empty($_POST['response'])) {
             // on crée un comment qui contiendra la réponse
             $new_comment = new Comment();
@@ -58,12 +65,12 @@ class CommentController extends AdminController
                 // On passe à la reponse le comment parent  en parentet la place 3
                 $new_comment->setCommentParent($comment->getCommentParent())
                     ->setPlace(3);
-            }else{
+            } else {
                 // autrement, on prends simplement le message
                 $text = htmlspecialchars($_POST['response']);
                 // On passe le comment en parent et la place du comment plus 1
                 $new_comment->setCommentParent($comment)
-                    ->setPlace($comment->getPlace()+1);
+                    ->setPlace($comment->getPlace() + 1);
 
             }
             $user = new User(array('id' => $_SESSION['id']));
@@ -77,48 +84,77 @@ class CommentController extends AdminController
             $this->redirectTo("/chapter/".$comment->getChapter()->getId());
         }
     }
-    public function commentsAction(){
+
+    public function signalAction($id)
+    {
+        session_start();
+        if ($_SESSION['isconnected'] == false) {
+            throw new \Exception("Page introuvable");
+        }
+        if (!is_numeric($id)) {
+            throw new \Exception("Page introuvable!");
+        }
+        $commentManager = new CommentManager();
+        $comment = $commentManager->findOneById($id);
+        if ($comment == false) {
+            throw new \Exception("Page Introuvable");
+        }
+        $now = new \DateTime();
+        $user = new User();
+        $user->setId($_SESSION['id']);
+        $comment->setStatusedBy($user)
+            ->setStatusedAt($now)
+            ->getStatus()->setId("1");
+        $commentManager->update($comment);
+        $idChapter = $comment->getChapter()->getId();
+        $this->redirectTo("/chapter/$idChapter");
+    }
+
+
+    public function commentsAction()
+    {
         $this->isAuthorized();
         $commentManager = new CommentManager();
         $comments = $commentManager->findAll();
         $this->render('admin/comments.html.twig', array('comments' => $comments), $_SESSION);
     }
 
-    public function editCommentAction($id){
+    public function editCommentAction($id)
+    {
         $this->isAuthorized();
-        if(!is_numeric($id)){
+        if (!is_numeric($id)) {
             throw new \Exception("Page introuvable");
         }
         $commentManager = new CommentManager();
         $comment = $commentManager->findOneById($id);
-        if(!$comment){
+        if (!$comment) {
             throw new \Exception("Page introuvable");
         }
         $errors = [];
 
-        if($_SERVER['REQUEST_METHOD'] == "POST"){
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $etat = htmlspecialchars($_POST['etat']);
-            if(!isset($etat)){
+            if (!isset($etat)) {
                 $errors[] = ["error" => "etat", "message" => "L'etat du comment ne peut être vide"];
-            }elseif ($etat != "normal" && $etat != "signaled" && $etat != "banished" ){
-                $errors[] = ["error" => "etat", "message" =>"L'eta du comment n'est pas au bon format"];
+            } elseif ($etat != "normal" && $etat != "signaled" && $etat != "banished") {
+                $errors[] = ["error" => "etat", "message" => "L'eta du comment n'est pas au bon format"];
             }
 
-            if(empty($errors)){
+            if (empty($errors)) {
                 $user = new User();
                 $user->setId($_SESSION['id']);
-                if($etat == "normal"){
-                    $comment->getStatus()->setId("3")
-                        ->setStatusedBy(null)
-                        ->setStatusedAt(null);
-                }elseif ($etat == "signaled"){
-                    $comment->getStatus()->setId("1")
-                        ->setStatusedBy($user)
-                        ->setStatusedAt(new \DateTime());
-                }elseif($etat == "banished"){
-                    $comment->getStatus()->setId("1")
-                        ->setStatusedBy($user)
-                        ->setStatusedAt(new \DateTime());
+                if ($etat == "normal") {
+                    $comment->setStatusedBy(null)
+                        ->setStatusedAt(null)
+                        ->getStatus()->setId("3");
+                } elseif ($etat == "signaled") {
+                    $comment->setStatusedBy($user)
+                        ->setStatusedAt(new \DateTime())
+                        ->getStatus()->setId("1");
+                } elseif ($etat == "banished") {
+                    $comment->setStatusedBy($user)
+                        ->setStatusedAt(new \DateTime())
+                        ->getStatus()->setId("2");
                 }
                 $commentManager->update($comment);
                 $this->redirectTo('/admin/comments');
@@ -130,21 +166,23 @@ class CommentController extends AdminController
 
     }
 
-    public function signaledCommentsAction(){
+    public function signaledCommentsAction()
+    {
         $this->isAuthorized();
 
         $commentManager = new CommentManager();
         $comments = $commentManager->findAllSignaled();
 
-        $this->render("admin/comments.html.twig",array('comments' => $comments));
+        $this->render("admin/comments.html.twig", array('comments' => $comments));
     }
 
-    public function banishedCommentsAction(){
+    public function banishedCommentsAction()
+    {
         $this->isAuthorized();
 
         $commentManager = new CommentManager();
         $comments = $commentManager->findAllBanished();
 
-        $this->render("admin/comments.html.twig",array('comments' => $comments));
+        $this->render("admin/comments.html.twig", array('comments' => $comments));
     }
 }

@@ -1,0 +1,56 @@
+<ul class="list-unstyled row">
+    {% for comment in comments %}
+        <li>
+            <p class="well" id="comment_{{ comment.id }}">
+                {% if comment.status.id == "2" %}
+                    Commentaire modéré.
+                {% elseif comment.status.id == "1" %}
+                    Commentaire signaler. En attente de moderation.
+
+                {% else %}
+                    {{ comment.user.username }} : <br/>
+                    {{ comment.comment }}<br/>
+                    <small>paru le : {{ comment.createdAt|date("d/m/Y") }}
+                        {% if session.isconnected == true %}
+                            <a href="/signal/{{ comment.id }}">
+                                Signaler
+                            </a>
+                            <a href="#" class="response" id="{{ comment.id }}">
+                                Répondre
+                            </a>
+                        {% else %}
+                            <a href="/login">Connectez</a> vous ou <a href="/inscription">inscrivez</a> vous.
+                        {% endif %}
+                    </small>
+                {% endif %}
+            </p>
+            {% if comment.comments is not null %}
+                <ul class="list-unstyled push-1">
+                    {% include "comments.level.2.html.twig" %}
+                </ul>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+{# le visiteur est connecter ?#}
+{% if session.isconnected == false %}
+    <p>
+        <a href="/login">Connecter</a> vous pour laisser un commentaire sur ce chapitre.
+    </p>
+{% else %}
+    <form action="/comment/{{ chapter.id }}" method="post" class="form-horizontal well">
+        <h2>{{ session.name }} laissez votre avis sur ce chapitre.</h2>
+        <div class="form-group">
+            <label for="comment" class="control-label col-sm-3"> Votre commentaire :</label>
+            <div class="col-sm-7">
+                <textarea class="form-control" name="comment" id="comment" cols="30" rows="10"
+                          required></textarea>
+            </div>
+            <input type="hidden" name="chapter" id="chapter" value="{{ chapter.id }}" required>
+        </div>
+        <div class="text-center">
+            <input type="submit" value="Envoyer" class="btn btn-info btn-xs">
+        </div>
+    </form>
+
+{% endif %}

@@ -1,0 +1,33 @@
+{% for comment in comment.comments %}
+    <li>
+        <p class="well" id="comment_{{ comment.id }}">
+            {% if comment.status.id == "2" %}
+                Commentaire modéré.
+            {% elseif comment.status.id == "1" %}
+                Commentaire signaler. En attente de moderation.
+
+            {% else %}
+                {{ comment.user.username }} : <br/>
+                {{ comment.comment }}<br/>
+                <small>paru le : {{ comment.createdAt|date("d/m/Y") }}
+                    {% if session.isconnected == true %}
+                        <a href="/signal/{{ comment.id }}">
+                            Signaler
+                        </a>
+                        <a href="#" class="response" id="{{ comment.id }}">
+                            Répondre
+                        </a>
+                    {% else %}
+                        <a href="../../../index.php">Connectez</a> vous ou <a
+                            href="../../../index.php">inscrivez</a> vous.
+                    {% endif %}
+                </small>
+            {% endif %}
+        </p>
+        {% if comment.comments is not null %}
+            <ul class="list-unstyled push-2">
+                {% include "comments.level.3.html.twig" %}
+            </ul>
+        {% endif %}
+    </li>
+{% endfor %}

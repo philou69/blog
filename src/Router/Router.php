@@ -46,7 +46,6 @@ class Router
                 return$route->call();
             }
         }
-        var_dump($_SERVER['REQUEST_METHOD']);
         throw  new RouterException("No Matching routes");
     }
 

@@ -23,61 +23,8 @@
     {% endif %}
 
     <h2>Commentaires</h2>
-
-
-    <ul class="list-unstyled row">
-        {% for comment in comments %}
-            <li>
-                {% include 'comment.html.twig' %}
-                {% for comment2 in comment.comments %}
-                    {% if loop.first %}
-                        <ul class="list-unstyled push-1">
-                    {% endif %}
-                    <li>
-                        {% include 'comment.html.twig' with {'comment': comment2} %}
-                        {% for comment3 in comment2.comments %}
-                            {% if loop.first %}
-                                <ul class="list-unstyled push-2">
-                            {% endif %}
-                            <li>
-                                {% include 'comment.html.twig' with {'comment': comment3} %}
-                            </li>
-                            {% if loop.last %}
-                                </ul>
-                            {% endif %}
-                        {% endfor %}
-                    </li>
-                    {% if loop.last %}
-                        </ul>
-                    {% endif %}
-                {% endfor %}
-            </li>
-        {% endfor %}
-    </ul>
-    {# le visiteur est connecter ?#}
-    {% if session.isconnected == false %}
-        <p>
-            <a href="/login">Connecter</a> vous pour laisser un commentaire sur ce chapitre.
-        </p>
-    {% else %}
-        <form action="" method="post" class="form-horizontal well">
-            <h2>{{ session.name }} laissez votre avis sur ce chapitre.</h2>
-            <div class="form-group">
-                <label for="comment" class="control-label col-sm-3"> Votre commentaire :</label>
-                <div class="col-sm-7">
-                    <textarea class="form-control" name="comment" id="comment" cols="30" rows="10"
-                              required></textarea>
-                </div>
-                <input type="hidden" name="chapter" id="chapter" value="{{ chapter.id }}" required>
-            </div>
-            <div class="text-center">
-                <input type="submit" value="Envoyer" class="btn btn-info btn-xs">
-            </div>
-        </form>
-
-    {% endif %}
+    {% include "comments.level.1.html.twig" %}
 {% endblock %}
-
 {% block javascript %}
     {{ parent() }}
     <script type="text/javascript" src="../src/Resources/js/addForm.js"></script>

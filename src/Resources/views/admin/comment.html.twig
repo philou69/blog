@@ -3,9 +3,9 @@
 {% block title %}Commentaire{% endblock %}
 
 {% block body %}
-    {% if comment.signaled == true %}
+    {% if comment.status.id == 1 %}
         {% set etat = "signaled" %}
-    {% elseif comment.banished == true %}
+    {% elseif comment.status.id == 2 %}
         {% set etat = "banished" %}
     {% else %}
         {% set etat = "normal" %}

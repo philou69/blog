@@ -50,9 +50,12 @@ $routes["admin_delete_chapter_post"] = ["method" =>"post",
     "controller" => "Chapter:deleteChapter"];
 
 // Route des Comments
-$routes["add_comment"] = ["method" => "post",
-                "url" => "/commentaire",
-                "controller" => "Comment:add"];
+$routes["create_comment"] = ["method" => "get",
+                "url" => "/comment/:id",
+                "controller" => "Comment:create"];
+$routes["create_comment_post"] = ["method" => "post",
+                "url" => "/comment/:id",
+                "controller" => "Comment:create"];
 $routes["signal"] = ["method" => "get",
     "url" => "/signal/:id",
     "controller" => "Comment:signal"];
