@@ -150,6 +150,15 @@ class UserManager
         return false;
     }
 
+    public function getByMail($mail){
+        $q = $this->db->prepare("SELECT id, username, firstname, mail, password, roles, banish FROM User WHERE mail = :mail");
+        $q->execute(array(":mail" => $mail));
+        $data = $q->fetch(\PDO::FETCH_ASSOC);
+        if (is_bool($data)) {
+            return false;
+        }
+        return new User($data);
+}
     public function findAll(){
         $users = [];
         $q = $this->db->query("SELECT id, username, firstname, mail, roles, banish FROM User ");

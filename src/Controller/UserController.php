@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Constraint\UserConstraint;
 use App\Entity\User;
+use App\Mailer\Mailer;
 use App\Manager\UserManager;
 use App\Validator\UserValidator;
 
@@ -16,7 +17,7 @@ class UserController extends AdminController
         $userManager = new UserManager();
         $users = $userManager->findAll();
 
-        $this->render('admin/users.html.twig', array("users" => $users));
+        echo $this->render('admin/users.html.twig', array("users" => $users));
     }
 
     public function usersBanishedAction(){
@@ -25,7 +26,7 @@ class UserController extends AdminController
         $userManager = new UserManager();
         $users = $userManager->findAllBanish();
 
-        $this->render('admin/users.html.twig', array('users' => $users));
+        echo $this->render('admin/users.html.twig', array('users' => $users));
     }
 
     public function userAction($id){
@@ -66,7 +67,7 @@ class UserController extends AdminController
                 $this->redirectTo('/admin/users');
             }
         }
-        $this->render("admin/user.html.twig", array('user' => $user, 'errors' => $errors), $_SESSION);
+        echo $this->render("admin/user.html.twig", array('user' => $user, 'errors' => $errors), $_SESSION);
     }
 
     public function inscriptionAction()
@@ -131,7 +132,7 @@ class UserController extends AdminController
             }
         }
         // On affiche la vue du formulaire
-        $this->render('connect.html.twig', array("errors" => $errors), $_SESSION);
+        echo $this->render('connect.html.twig', array("errors" => $errors), $_SESSION);
     }
 
     public function profilAction()
@@ -198,7 +199,7 @@ class UserController extends AdminController
         }
         // Si la méthode est post, on vérifie les données du formulaire
 
-        $this->render(
+        echo $this->render(
             'profil.html.twig',
             array('user' => $user, 'errors' => $errors, 'success' => $success),
             $_SESSION
@@ -259,7 +260,8 @@ class UserController extends AdminController
 
             }
         }
-        $this->render('admin/login.html.twig', array('errors' => $errors), $_SESSION);
+
+        echo $this->render('admin/login.html.twig', array('errors' => $errors), $_SESSION);
     }
 
 
@@ -305,7 +307,8 @@ class UserController extends AdminController
                 $this->redirectTo('/');
             }
         }
-        $this->render('login.html.twig', array('errors' => $errors), $_SESSION);
+
+        echo $this->render('login.html.twig', array('errors' => $errors), $_SESSION);
     }
 
     public function logoutAction()
@@ -316,4 +319,32 @@ class UserController extends AdminController
         $this->redirectTo('/');
     }
 
+    public function resetAction(){
+        $errors = [];
+        $infos = [];
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $email = htmlspecialchars($_POST['email']);
+            if(isset($email)){
+                $userValidator = new UserValidator();
+                if(!$userValidator->isMail($email)){
+                    $errors['message'] = "Email au mauvais format";
+                }else{
+                    $userManager = new UserManager();
+                    $user = $userManager->getByMail($email);
+                    if($user){
+                        $password = uniqid();
+                        $view = $this->render('email.password.html.twig', array('user' => $user, 'password' => $password));
+                        $mailer = new Mailer();
+                        $mailer->sendMail($user, $password, $view);
+                        $succes['messages'] = "Un email a été envoyer à l'adresse mail";
+                        $userManager->update($user);
+
+                    }
+                    $infos[] = "Nous avons bien enregistrez votre demande.<br/> Si l'adresse mail $email correspond à un visiteur, un mail sera envoyer à cette adresse !";
+                }
+            }
+        }
+
+        echo $this->render('reset.password.html.twig', array('errors' => $errors, 'infos' => $infos));
+    }
 }

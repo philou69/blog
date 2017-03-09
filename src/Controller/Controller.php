@@ -33,7 +33,7 @@ class Controller
         $this->twig->addGlobal('session', $session);
         $this->twig->addGlobal('contents', $contents);
         $this->template = $this->twig->load($view);
-        echo $this->template->render($params);
+        return $this->template->render($params);
     }
 
     protected function redirectTo($string){

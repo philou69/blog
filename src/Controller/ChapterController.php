@@ -24,7 +24,7 @@ class ChapterController extends AdminController
         if (!$chapters) {
             throw new \Exception("Page introuvable");
         }
-        $this->render(
+        echo $this->render(
             'chapters.html.twig',
             array('chapters' => $chapters),
             $_SESSION
@@ -60,7 +60,7 @@ class ChapterController extends AdminController
             throw new \Exception("Page Introuvable");
         }
 
-        $this->render(
+        echo $this->render(
             'chapter.html.twig',
             array('chapter' => $chapter, 'comments' => $comments),
             $_SESSION
@@ -72,7 +72,7 @@ class ChapterController extends AdminController
         $chapterManager = new ChapterManager();
         $chapters = $chapterManager->findAll();
 
-        $this->render('admin/chapters.html.twig', array('chapters' => $chapters), $_SESSION);
+        echo $this->render('admin/chapters.html.twig', array('chapters' => $chapters), $_SESSION);
     }
 
     public function addChapterAction(){
@@ -117,7 +117,7 @@ class ChapterController extends AdminController
             }
 
         }
-        $this->render("admin/chapter.html.twig", array('errors' => $errors));
+        echo $this->render("admin/chapter.html.twig", array('errors' => $errors));
     }
 
     public function editChapterAction($id){
@@ -170,7 +170,7 @@ class ChapterController extends AdminController
             }
 
         }
-        $this->render("admin/chapter.html.twig", array('errors' => $errors, 'chapter' => $chapter));
+        echo $this->render("admin/chapter.html.twig", array('errors' => $errors, 'chapter' => $chapter));
     }
 
     public function deleteChapterAction($id){
@@ -191,7 +191,7 @@ class ChapterController extends AdminController
             }
         }
 
-        $this->render("admin/delete_chapter.html.twig", array('chapter' => $chapter));
+        echo $this->render("admin/delete_chapter.html.twig", array('chapter' => $chapter));
     }
 
     public function chaptersDraftAction(){
@@ -204,7 +204,7 @@ class ChapterController extends AdminController
             throw new \Exception("Page Introuvable");
         }
 
-        $this->render("admin/chapters.html.twig", array('chapters' => $chapters));
+        echo $this->render("admin/chapters.html.twig", array('chapters' => $chapters));
     }
 
     public function chaptersPublishedAction(){
@@ -217,7 +217,7 @@ class ChapterController extends AdminController
             throw new \Exception("Page Introuvable");
         }
 
-        $this->render("admin/chapters.html.twig", array('chapters' => $chapters));
+        echo $this->render("admin/chapters.html.twig", array('chapters' => $chapters));
     }
 
 }

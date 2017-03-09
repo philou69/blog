@@ -15,6 +15,7 @@
     "require": {
         "twig/twig": "~2.0",
         "phpunit/phpunit": "^5.2",
-        "tinymce/tinymce": "^4.5"
+        "tinymce/tinymce": "^4.5",
+        "Swiftmailer/swiftmailer": "^5.4"
     }
 }

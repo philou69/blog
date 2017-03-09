@@ -26,10 +26,11 @@
                 <label for="password" class="control-label col-sm-2">Mot de passe :</label>
                 <div class="col-sm-5">
                     <input type="password" class="form-control" name="password" id="password">
-                </div>{% for erreur in erreurs if erreur.erreur == "password" %}
-                <div class="alert alert-danger col-sm-5">
-                    {{ erreur.message }}
                 </div>
+                {% for erreur in erreurs if erreur.erreur == "password" %}
+                    <div class="alert alert-danger col-sm-5">
+                        {{ erreur.message }}
+                    </div>
                 {% endfor %}
             </div>
             <div class="text-center">

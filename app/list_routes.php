@@ -123,6 +123,12 @@ $routes["admin_user"] = ["method" => "get",
 $routes["admin_user_post"] = ["method" => "post",
     "url" => "/admin/user/:id",
     "controller" => "User:user"];
+$routes["areset_password"] = ["method" => "get",
+    "url" => "/user/reset",
+    "controller" => "User:reset"];
+$routes["reset_password_post"] = ["method" => "post",
+    "url" => "/user/reset",
+    "controller" => "User:reset"];
 
 // Routes des Contents
 $routes["admin_contents"] = ["method" => "get",

@@ -21,7 +21,7 @@ class AdminController extends Controller
     public function indexAction(){
         $this->isAuthorized();
 
-        $this->render('admin/index.html.twig');
+        echo $this->render('admin/index.html.twig');
     }
 
     protected function isAuthorized(){

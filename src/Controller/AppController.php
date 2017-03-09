@@ -27,7 +27,7 @@ class AppController extends Controller
         if (!$listContent || !$chapter) {
             throw new \Exception("Page introuvable");
         }
-        $this->render(
+        echo $this->render(
             'index.html.twig',
             array('listContent' => $listContent, 'chapter' => $chapter),
             $_SESSION
@@ -78,7 +78,7 @@ class AppController extends Controller
                 $this->redirectTo('/');
             }
         }
-        $this->render('login.html.twig', array('errors' => $errors), $_SESSION);
+        echo $this->render('login.html.twig', array('errors' => $errors), $_SESSION);
     }
 
     public function logoutAction()

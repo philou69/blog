@@ -116,7 +116,7 @@ class CommentController extends AdminController
         $this->isAuthorized();
         $commentManager = new CommentManager();
         $comments = $commentManager->findAll();
-        $this->render('admin/comments.html.twig', array('comments' => $comments), $_SESSION);
+        echo $this->render('admin/comments.html.twig', array('comments' => $comments), $_SESSION);
     }
 
     public function editCommentAction($id)
@@ -162,7 +162,7 @@ class CommentController extends AdminController
 
         }
 
-        $this->render("admin/comment.html.twig", array('comment' => $comment, 'errors' => $errors));
+        echo $this->render("admin/comment.html.twig", array('comment' => $comment, 'errors' => $errors));
 
     }
 
@@ -173,7 +173,7 @@ class CommentController extends AdminController
         $commentManager = new CommentManager();
         $comments = $commentManager->findAllSignaled();
 
-        $this->render("admin/comments.html.twig", array('comments' => $comments));
+        echo $this->render("admin/comments.html.twig", array('comments' => $comments));
     }
 
     public function banishedCommentsAction()
@@ -183,6 +183,6 @@ class CommentController extends AdminController
         $commentManager = new CommentManager();
         $comments = $commentManager->findAllBanished();
 
-        $this->render("admin/comments.html.twig", array('comments' => $comments));
+        echo $this->render("admin/comments.html.twig", array('comments' => $comments));
     }
 }

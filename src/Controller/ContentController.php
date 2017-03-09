@@ -12,7 +12,7 @@ class ContentController extends AdminController
         $this->isAuthorized();
         $contentManager = new ContentManager();
         $contents = $contentManager->findAll();
-        $this->render("admin/contents.html.twig", array('contents' => $contents));
+        echo $this->render("admin/contents.html.twig", array('contents' => $contents));
     }
 
     public function contentAction($id){
@@ -34,6 +34,6 @@ class ContentController extends AdminController
                 $this->redirectTo("/admin/contents");
             }
         }
-        $this->render("admin/content.html.twig", array("content" => $content));
+        echo $this->render("admin/content.html.twig", array("content" => $content));
     }
 }
