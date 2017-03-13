@@ -110,11 +110,9 @@ class UserController extends AdminController
                     // ce n'est pas un username, on remplie le tableau
                     $errors[] = ["error" => "username", "message" => "Le nom n'a pas un bon format"];
                 }
-                if (!$userConstraint->isNotOtherUserName($username) && $user->getUsername(
-                    ) != $username ) {
-                    $errors[] = ["error" => "formulaire", "message" => "Modification 1 impossible"];
+                if($user->getUsername() != $username){
+                    $user->setUsername($username);
                 }
-                $user->setUsername($username);
             }
             if (isset($firstname)) {
                 //username n'est pas vide.
@@ -122,8 +120,7 @@ class UserController extends AdminController
                     // ce n'est pas un username, on remplie le tableau
                     $errors[] = ["error" => "username", "message" => "Le nom n'a pas un bon format"];
                 }
-                if (!$userConstraint->isNotOtherUserName($firstname) && $user->getUsername(
-                    ) != $firstname ) {
+                if (!$userConstraint->isNotOtherFirstName($firstname) && $user->getUsername() != $firstname ) {
                     $errors[] = ["error" => "formulaire", "message" => "Modification 1 impossible"];
                 }
                 $user->setFirstname($firstname);

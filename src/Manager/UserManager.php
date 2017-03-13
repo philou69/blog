@@ -85,7 +85,7 @@ class UserManager
         return false;
     }
 
-    public function findByFisrtname($firstname)
+    public function findByFirstname($firstname)
     {
         $q = $this->db->prepare("SELECT id, firstname FROM User WHERE firstname = :firstname");
         $q->bindValue(':firstname', $firstname, \PDO::PARAM_STR);

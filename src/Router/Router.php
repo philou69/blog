@@ -46,12 +46,12 @@ class Router
                 return$route->call();
             }
         }
-        throw  new RouterException("No Matching routes");
+        throw  new RouterException("No Matching routes $this->url");
     }
 
     public function url($name, $params = []){
         if(!isset($this->namedRoutes[$name])){
-            throw new RouterException('No route matches this name');
+            throw new RouterException("No route matches this name $name");
         }
         return $this->namedRoutes[$name]->getUrl($params);
     }
