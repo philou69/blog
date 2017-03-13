@@ -19,7 +19,7 @@ class CommentManager
         $this->db = PDO::get();
     }
 
-    public function add(Comment $comment)
+    public function create(Comment $comment)
     {
         // Fonction pour ajouter un comment
         if ($comment->getCommentParent() != null) {
@@ -50,20 +50,27 @@ class CommentManager
             );
             $q->bindValue(":id_parent", $comment->getCommentParent()->getId(), \PDO::PARAM_INT);
         } else {
-            $q = $this->db->prepare(
-                "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, createdAt = :createdAt, place = :place, statusedBy = :statusedBy, statusedAt = :statusedAt,  id_status = :status WHERE id = :id"
-            );
+            if($comment->getStatusedBy() != null){
+                $q = $this->db->prepare(
+                    "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, createdAt = :createdAt, place = :place, statusedBy = :statusedBy, statusedAt = :statusedAt,  id_status = :status WHERE id = :id"
+                );
+                $q->bindValue(":statusedBy", $comment->getStatusedBy()->getId(), \PDO::PARAM_INT);
+                $q->bindValue(":statusedAt", $comment->getStatusedAt()->format("Y-m-d"), \PDO::PARAM_STR);
+            }else{
+                $q = $this->db->prepare(
+                    "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, createdAt = :createdAt, place = :place,  id_status = :status WHERE id = :id"
+                );
+            }
+            $q->bindValue(":comment", $comment->getComment(), \PDO::PARAM_STR);
+            $q->bindValue(":id_chapter", $comment->getChapter()->getId(), \PDO::PARAM_STR);
+            $q->bindValue(":id_user", $comment->getUser()->getId(), \PDO::PARAM_INT);
+            $q->bindValue(":createdAt", $comment->getCreatedAt()->format('Y-m-d'), \PDO::PARAM_STR);
+            $q->bindValue(":place", $comment->getPlace(), \PDO::PARAM_INT);
+            $q->bindValue(":status", $comment->getStatus()->getId(), \PDO::PARAM_INT);
+            $q->bindValue(":id", $comment->getId(), \PDO::PARAM_INT);
+            $q->execute();
         }
-        $q->bindValue(":comment", $comment->getComment(), \PDO::PARAM_STR);
-        $q->bindValue(":id_chapter", $comment->getChapter()->getId(), \PDO::PARAM_STR);
-        $q->bindValue(":id_user", $comment->getUser()->getId(), \PDO::PARAM_INT);
-        $q->bindValue(":createdAt", $comment->getCreatedAt()->format('Y-m-d'), \PDO::PARAM_STR);
-        $q->bindValue(":place", $comment->getPlace(), \PDO::PARAM_INT);
-        $q->bindValue(":statusedBy", $comment->getStatusedBy()->getId(), \PDO::PARAM_INT);
-        $q->bindValue(":statusedAt", $comment->getStatusedAt()->format("Y-m-d"), \PDO::PARAM_STR);
-        $q->bindValue(":status", $comment->getStatus()->getId(), \PDO::PARAM_INT);
-        $q->bindValue(":id", $comment->getId(), \PDO::PARAM_INT);
-        $q->execute();
+
     }
 
     public function bannish(Comment $comment)
@@ -118,9 +125,11 @@ class CommentManager
         }
         if($data['statusedBy'] != null){
             $data['statusedBy'] = $this->addUser($data['statusedBy']);
+            $data['statusedAt'] = $this->datification($data['statusedAt']);
         }else{
             unset($data['statusedAt']);
         }
+        $data['createdAt'] = $this->datification($data['createdAt']);
         $data['status'] = $this->addStatus($data['id_status']);
         // On retourne le comment
         return new Comment($data);
@@ -157,9 +166,11 @@ class CommentManager
             }
             if($data['statusedBy'] != null){
                 $data['statusedBy'] = $this->addUser($data['statusedBy']);
+                $data['statusedAt'] = $this->datification($data['statusedAt']);
             }else{
                 unset($data['statusedAt']);
             }
+            $data['createdAt'] = $this->datification($data['createdAt']);
             $comments[] = new Comment($data);
         }
         return $comments;
@@ -173,7 +184,7 @@ class CommentManager
         $comments = [];
 
         $q = $this->db->prepare(
-            "SELECT id, comment, id_user, signaled, banished, createdAt, id_parent, place, statusedBy, statusedAt, id_status FROM Comment WHERE id_chapter = :id AND place = 1"
+            "SELECT id, comment, id_user, createdAt, place, statusedBy, statusedAt, id_status FROM Comment WHERE id_chapter = :id AND place = 1"
         );
         $q->bindValue(":id", $id, \PDO::PARAM_INT);
         $q->execute();
@@ -187,11 +198,14 @@ class CommentManager
             $data['user'] = $this->addUser($data['id_user']);
             $data['chapter'] = $this->addChapter($id);
             $data['comments'] = $this->findChildrenForOneComment($data['id']);
-            if($data['statusedBy'] != null){
+            if($data['id_status'] != 3){
                 $data['statusedBy'] = $this->addUser($data['statusedBy']);
+                $data['statusedAt'] = $this->datification($data['statusedAt']);
             }else{
                 unset($data['statusedAt']);
             }
+
+            $data['createdAt'] = $this->datification($data['createdAt']);
             $comments[] = new Comment($data);
         }
         // On retourne le tableau de comments
@@ -204,7 +218,7 @@ class CommentManager
         // Tableau contenant les comments
         $comments = [];
         $q = $this->db->prepare(
-            "SELECT id, comment, id_user, id_chapter, banishedBy, banishedAt, statusedAt, statusedBy, id_status FROM Comment WHERE id_parent = :id"
+            "SELECT id, comment, id_user, id_chapter, createdAt, statusedAt, statusedBy, id_status FROM Comment WHERE id_parent = :id"
         );
         $q->bindValue(":id", $id, \PDO::PARAM_INT);
         $q->execute();
@@ -217,11 +231,13 @@ class CommentManager
             $data['chapter'] = $this->addChapter($data['id_chapter']);
             $data['user'] = $this->addUser($data['id_user']);
             $data['status'] = $this->addStatus($data['id_status']);
-            if($data['statusedBy'] != null){
+            if($data['id_status'] != 3){
                 $data['statusedBy'] = $this->addUser($data['statusedBy']);
+                $data['statusedAt'] = $this->datification($data['statusedAt']);
             }else{
                 unset($data['statusedAt']);
             }
+            $data['createdAt'] = $this->datification($data['createdAt']);
             $data['comments'] = $this->findChildrenForOneComment($data['id']);
 
             $comments[] = new Comment($data);
@@ -242,6 +258,7 @@ class CommentManager
             $data['user'] = $this->addUser($data['id_user']);
             $data['chapter'] = $this->addChapter($data['id_chapter']);
             $data['statusedBy'] = $this->addUser($data['statusedBy']);
+            $data['statusedAt'] = $this->datification($data['statusedAt']);
             $comments[] =  new Comment($data);
         }
         return $comments;
@@ -257,6 +274,7 @@ class CommentManager
             $data['user'] = $this->addUser($data['id_user']);
             $data['chapter'] = $this->addChapter($data['id_chapter']);
             $data['statusedBy'] = $this->addUser($data['statusedBy']);
+            $data['statusedAt'] = $this->datification($data['statusedAt']);
             $comments[] =  new Comment($data);
         }
         return $comments;
@@ -265,8 +283,9 @@ class CommentManager
     {
         $userManager = new UserManager();
         $user = $userManager->findOneById($id);
-
-        return $user;
+        if($user != null){
+            return $user;
+        }
     }
 
     public function addChapter($id)
@@ -284,5 +303,9 @@ class CommentManager
             return;
         }
         return $status;
+    }
+
+    public function datification($date){
+        return new \DateTime($date);
     }
 }

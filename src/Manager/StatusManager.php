@@ -21,7 +21,7 @@ class StatusManager
         $query->bindValue(":id", $id, \PDO::PARAM_INT);
         $query->execute();
         if($query->rowCount() == 0){
-            return false;
+            return null;
         }
 
         return $query->fetchObject(Status::class);

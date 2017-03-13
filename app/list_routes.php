@@ -7,138 +7,276 @@
 $routes = [];
 
 // Route Principale
+/*
+ * Route de la page d'accueil
+ */
 $routes["index"] = ["method" => "get",
                 "url" => "/",
                 "controller" => "App:index"];
-$routes["admin_index"] = ["method" => "get",
+
+/*
+ * Route de la page d'accueil de la zone admin
+ */
+$routes["index_admin"] = ["method" => "get",
     "url" => "/admin/",
     "controller"=> "Admin:index"];
 
 // Route des Chapters
+/*
+ * Route de la liste des chapitres
+ */
 $routes["chapters"] = ["method" => "get",
                 "url" => "/chapters",
                 "controller" => "Chapter:chapters"];
+
+/*
+ * Route affichant un chapitre
+ */
 $routes["chapter"] = ["method" => "get",
                 "url" => "/chapter/:id",
                 "controller" => "Chapter:chapter"];
-$routes["admin_chapters"] = ["method" =>"get",
+/*
+ * Route affichant les chapitres dans la zone admin
+ */
+$routes["chapters_admin"] = ["method" =>"get",
     "url" => "/admin/chapters",
-    "controller" => "Chapter:chaptersAdmin"];
-$routes["admin_chapters_draft"] = ["method" =>"get",
+    "controller" => "ChapterAdmin:chapters"];
+
+/*
+ * Route affichant les chapitres en cours d'écriture dans la zone admin
+ */
+$routes["chapters_draft"] = ["method" =>"get",
     "url" => "/admin/chapters/draft",
-    "controller" => "Chapter:chaptersDraft"];
-$routes["admin_chapters_published"] = ["method" =>"get",
+    "controller" => "ChapterAdmin:chaptersDraft"];
+
+/*
+ * Route affichant les chapitres publiés dans la zone admin
+ */
+$routes["chapters_published"] = ["method" =>"get",
     "url" => "/admin/chapters/published",
-    "controller" => "Chapter:chaptersPublished"];
-$routes["admin_add_chapter"] = ["method" =>"get",
+    "controller" => "ChapterAdmin:chaptersPublished"];
+/*
+ * Route permettant d'ajouter un chapitre par le biais de la zone admin
+ */
+$routes["chapter_add"] = ["method" =>"get",
     "url" => "/admin/chapter/add",
-    "controller" => "Chapter:addChapter"];
-$routes["admin_add_chapter_post"] = ["method" =>"post",
+    "controller" => "ChapterAdmin:add"];
+/*
+ * Version post de la route précédente
+ */
+$routes["chapter_add_post"] = ["method" =>"post",
     "url" => "/admin/chapter/add",
-    "controller" => "Chapter:addChapter"];
-$routes["admin_edit_chapter"] = ["method" =>"get",
+    "controller" => "ChapterAdmin:add"];
+
+/*
+ * Route permettant de modifier un chapitre dans la zone admin
+ */
+$routes["chapter_edit"] = ["method" =>"get",
     "url" => "/admin/chapter/edit/:id",
-    "controller" => "Chapter:editChapter"];
-$routes["admin_edit_chapter_post"] = ["method" =>"post",
+    "controller" => "ChapterAdmin:edit"];
+/*
+ * Version post de la route précédente
+ */
+$routes["chapter_edit_post"] = ["method" =>"post",
     "url" => "/admin/chapter/edit/:id",
-    "controller" => "Chapter:editChapter"];
-$routes["admin_delete_chapter"] = ["method" =>"get",
+    "controller" => "ChapterAdmin:edit"];
+
+/*
+ * Route permettant de supprimer un chapitre dans la zone admin
+ */
+$routes["chapter_delete"] = ["method" =>"get",
     "url" => "/admin/chapter/delete/:id",
-    "controller" => "Chapter:deleteChapter"];
-$routes["admin_delete_chapter_post"] = ["method" =>"post",
+    "controller" => "ChapterAdmin:delete"];
+/*
+ * Version post de la route précédente
+ */
+$routes["chapter_delete_post"] = ["method" =>"post",
     "url" => "/admin/chapter/delete/:id",
-    "controller" => "Chapter:deleteChapter"];
+    "controller" => "ChapterAdmin:delete"];
 
 // Route des Comments
-$routes["create_comment"] = ["method" => "get",
+/*
+ * Route permettant de créer un commentaire
+ */
+$routes["comment_create"] = ["method" => "get",
                 "url" => "/comment/:id",
                 "controller" => "Comment:create"];
-$routes["create_comment_post"] = ["method" => "post",
+/*
+ * Version post
+ */
+$routes["comment_create_post"] = ["method" => "post",
                 "url" => "/comment/:id",
                 "controller" => "Comment:create"];
-$routes["signal"] = ["method" => "get",
+/*
+ * Route pour signaler un comment
+ */
+$routes["comment_signal"] = ["method" => "get",
     "url" => "/signal/:id",
     "controller" => "Comment:signal"];
+/*
+ * Route pour répondre à un comment
+ */
 $routes["response"] = ["method" => "post",
     "url" => "/response/:id",
     "controller" => "Comment:response"];
-$routes["admin_comments"] = ["method" => "get",
+
+/*
+ * Route de la liste des comments dans la zone admin
+ */
+$routes["comments_admin"] = ["method" => "get",
     "url" => "/admin/comments",
-    "controller" => "Comment:comments"];
-$routes["admin_banished_comments"] = ["method" => "get",
+    "controller" => "CommentAdmin:comments"];
+
+/*
+ * Route de la liste des comments banish dans la zone admin
+ */
+$routes["comments_banished"] = ["method" => "get",
     "url" => "/admin/comments/banished",
-    "controller" => "Comment:banishedComments"];
-$routes["admin_signaled_comments"] = ["method" => "get",
+    "controller" => "CommentAdmin:banishedComments"];
+
+/*
+ * Route de la liste des comments signaled dans la zone admin
+ */
+$routes["comments_signaled"] = ["method" => "get",
     "url" => "/admin/comments/signaled",
-    "controller" => "Comment:signaledComments"];
-$routes["admin_edit_comment"] = ["method" => "get",
+    "controller" => "CommentAdmin:signaledComments"];
+
+/*
+ * Route de modification du status d'un comment
+ */
+$routes["comment_edit"] = ["method" => "get",
     "url" => "/admin/comment/edit/:id",
-    "controller" => "Comment:editComment"];
-$routes["admin_edit_comment_post"] = ["method" => "post",
+    "controller" => "CommentAdmin:edit"];
+/*
+ * version post de la route précédente
+ */
+$routes["comment_edit_post"] = ["method" => "post",
     "url" => "/admin/comment/edit/:id",
-    "controller" => "Comment:editComment"];
+    "controller" => "CommentAdmin:edit"];
 
 // Route des Users
-$routes["login_get"] = ["method" => "get",
+/*
+ * Route de connexion
+ */
+$routes["login"] = ["method" => "get",
                 "url" => "/login",
                 "controller" => "User:login"];
+/*
+ * Version post de la route précédente
+ */
 $routes["login_post"] = ["method" => "post",
                 "url" => "/login",
                 "controller" => "User:login"];
+
+/*
+ * Route de deconnection
+ */
 $routes["logout"] = ["method" => "get",
                 "url" => "/logout",
                 "controller" => "user:logout"];
+
+/*
+ * Route d'inscription
+ */
 $routes["inscription"] = ["method" => "get",
                 "url" => "/inscription",
                 "controller" => "User:inscription"];
+/*
+ * Version post de la route précédente
+ */
 $routes["inscription_post"] = ["method" => "post",
                 "url" => "/inscription",
                 "controller" => "User:inscription"];
+
+/*
+ * Route d'accès au profil du visiteur
+ */
 $routes["profil"] = ["method" => "get",
                 "url" => "/profil",
                 "controller" => "User:profil"];
+/*
+ * Version post de la route précédente
+ */
 $routes["profil_post"] = ["method" => "post",
                 "url" => "/profil",
                 "controller" => "User:profil"];
-$routes["admin_login_get"] = ["method" => "get",
-                "url" => "/admin/login",
-                "controller" => "User:loginAdmin"];
-$routes["admin_login_post"] = ["method" => "post",
-                "url" => "/admin/login",
-                "controller" => "User:loginAdmin"];
 
+/*
+ * Route de connexion à la zone admin
+ */
+$routes["login_get_admin"] = ["method" => "get",
+                "url" => "/admin/login",
+                "controller" => "UserAdmin:login"];
+/*
+ * Version post de la route précedente
+ */
+$routes["login_post_admin"] = ["method" => "post",
+                "url" => "/admin/login",
+                "controller" => "UserAdmin:login"];
 
-$routes["admin_logout"] = ["method" => "get",
+/*
+ * Route de deconnexion
+ */
+$routes["logout_admin"] = ["method" => "get",
                 "url" => "/admin/logout",
-                "controller" => "User:logoutAdmin"];
-$routes["admin_users"] = ["method" => "get",
+                "controller" => "UserAdmin:logout"];
+
+/*
+ * Route de la liste des visiteurs dans la zone admin
+ */
+$routes["users"] = ["method" => "get",
                 "url" => "/admin/users",
-                "controller" => "User:users"];
-$routes["admin_users_banished"] = ["method" => "get",
+                "controller" => "UserAdmin:users"];
+
+/*
+ * Route de la liste des visiteurs bani dans la zone admin
+ */
+$routes["users_banished"] = ["method" => "get",
                 "url" => "/admin/users/banished",
-                "controller" => "User:usersBanished"];
-$routes["admin_user"] = ["method" => "get",
+                "controller" => "UserAdmin:usersBanished"];
+
+/*
+ * Route d'edit du status d'un user dans la zone d'admin
+ */
+$routes["user_admin"] = ["method" => "get",
                 "url" => "/admin/user/:id",
-                "controller" => "User:user"];
-$routes["admin_user_post"] = ["method" => "post",
+                "controller" => "UserAdmin:user"];
+$routes["user_admin_post"] = ["method" => "post",
     "url" => "/admin/user/:id",
-    "controller" => "User:user"];
-$routes["areset_password"] = ["method" => "get",
+    "controller" => "UserAdmin:user"];
+
+/*
+ * Route pour réinitialiser le mot de passe
+ */
+$routes["reset_password"] = ["method" => "get",
     "url" => "/user/reset",
     "controller" => "User:reset"];
+/*
+ * Version post de la route précédente
+ */
 $routes["reset_password_post"] = ["method" => "post",
     "url" => "/user/reset",
     "controller" => "User:reset"];
 
 // Routes des Contents
-$routes["admin_contents"] = ["method" => "get",
+/*
+ * Route de la liste des contents dans la zone admin
+ */
+$routes["contents"] = ["method" => "get",
                 "url" => "/admin/contents",
-                "controller" => "Content:contents"];
-$routes["admin_content"] = ["method" => "get",
+                "controller" => "ContentAdmin:contents"];
+
+/*
+ * Route d'edit d'un content dans la zone admin
+ */
+$routes["content"] = ["method" => "get",
                 "url" => "/admin/content/:id",
-                "controller" => "Content:content"];
-$routes["admin_content_post"] = ["method" => "post",
+                "controller" => "ContentAdmin:content"];
+/*
+ * Version post de la route précédente
+ */
+$routes["content_post"] = ["method" => "post",
                 "url" => "/admin/content/:id",
-                "controller" => "Content:content"];
+                "controller" => "ContentAdmin:content"];
 
 

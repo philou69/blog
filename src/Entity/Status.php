@@ -9,18 +9,6 @@ class Status
     protected $id = 3;
     protected $status;
 
-    function __construct($data = null)
-    {
-        if(is_array($data)){
-            foreach ($data as $key => $value){
-                $methodName = 'set'. ucfirst($key);
-                if(method_exists($this, $methodName)){
-                    $this->$methodName($value);
-                }
-            }
-        }
-    }
-
     /**
      * Get id
      *

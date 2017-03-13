@@ -11,16 +11,6 @@ class Content
     private $content;
     private $page;
 
-    function __construct(array $data = null)
-    {
-        foreach ($data as $key => $value){
-            $method = 'set'.ucfirst($key);
-            if(method_exists($this, $method)){
-                $this->$method($value);
-            }
-        }
-    }
-
     /**
      * @return mixed
      */

@@ -160,16 +160,16 @@ class Comment
      * @param mixed $createdAt
      * @return $this
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(\DateTime $createdAt)
     {
-        if ($createdAt == null) {
-            $this->createdAt = $createdAt;
-        } elseif (is_string($createdAt)) {
-            $this->createdAt = new \DateTime($createdAt);
-        } elseif (is_a($createdAt, 'DateTime')) {
-            $this->createdAt = $createdAt;
-        }
-
+//        if ($createdAt == null) {
+//            $this->createdAt = $createdAt;
+//        } elseif (is_string($createdAt)) {
+//            $this->createdAt = new \DateTime($createdAt);
+//        } elseif (is_a($createdAt, 'DateTime')) {
+//            $this->createdAt = $createdAt;
+//        }
+        $this->createdAt = $createdAt;
         return $this;
     }
 
@@ -250,16 +250,17 @@ class Comment
      * @param mixed $signaledAt
      * @return $this
      */
-    public function setStatusedAt($statusedAt = null)
+    public function setStatusedAt(\DateTime $statusedAt = null)
     {
-        if ($statusedAt == null) {
-            $this->statusedAt = null;
-        } elseif (is_string($statusedAt)) {
-            $this->statusedAt = new \DateTime($statusedAt);
-        } elseif (is_a($statusedAt, 'DateTime')) {
-            $this->statusedAt = $statusedAt;
-        }
+//        if ($statusedAt == null) {
+//            $this->statusedAt = null;
+//        } elseif (is_string($statusedAt)) {
+//            $this->statusedAt = new \DateTime($statusedAt);
+//        } elseif (is_a($statusedAt, 'DateTime')) {
+//            $this->statusedAt = $statusedAt;
+//        }
 
+        $this->statusedAt = $statusedAt;
         return $this;
     }
 

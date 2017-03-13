@@ -28,12 +28,10 @@ class ContentManager
         $q = $this->bd->prepare("SELECT id, title, content, page FROM Content WHERE title = :title");
         $q->bindValue(":title", $title, \PDO::PARAM_STR);
         $q->execute();
-        if ($q->rowCount() < 1) {
+        if ($q->rowCount() == 0 ) {
             return false;
         }
-        $data = $q->fetch(\PDO::FETCH_ASSOC);
-
-        return new Content($data);
+        return $q->fetchObject(Content::class);
     }
 
     public function findAll()
@@ -41,11 +39,11 @@ class ContentManager
         // Fonction cherchant tous les contenus
         $contents = [];
         $q = $this->bd->query("SELECT id, title, content, page FROM Content ORDER  BY page");
-        if ($q->rowCount() < 1) {
+        if ($q->rowCount() == 0 ) {
             return false;
         }
-        while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
-            $contents[] = new Content($data);
+        while ($content = $q->fetchObject(Content::class)) {
+            $contents[] = $content;
         }
 
         return $contents;
@@ -59,11 +57,11 @@ class ContentManager
         $q->bindValue(":page", $page, \PDO::PARAM_STR);
         $q->execute();
 
-        if ($q->rowCount() < 1) {
+        if ($q->rowCount() == 0 ) {
             return false;
         }
-        while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
-            $contents[] = new Content($data);
+        while ($content = $q->fetchObject(Content::class)) {
+            $contents[] = $content;
         }
 
         return $contents;
@@ -77,9 +75,7 @@ class ContentManager
         if($q->rowCount() == 0){
             return false;
         }
-        $data = $q->fetch(\PDO::FETCH_ASSOC);
-
-        return new Content($data);
+        return $q->fetchObject(Content::class);
     }
 
 }

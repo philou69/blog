@@ -6,19 +6,19 @@
     <div class="well">
         <form action="" method="post" class="form-horizontal">
             <h1 class="text-center">Formulaire de connection</h1>
-            {% for erreur in erreurs if erreur.erreur == "formulaire" %}
+            {% for error in errors if error.error == "formulaire" %}
                 <div class="alert alert-danger">
-                    {{ erreur.message }}
+                    {{ error.message }}
                 </div>
             {% endfor %}
             <div class="form-group">
-                <label for="username" class="control-label col-sm-2">Nom : </label>
+                <label for="firstname" class="control-label col-sm-2">Prénom : </label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" name="username" id="username" value="">
+                    <input type="text" class="form-control" name="firstname" id="firstname" value="">
                 </div>
-                {% for erreur in erreurs if erreur.erreur == "username" %}
+                {% for error in errors if error.error == "firstname" %}
                     <div class="alert alert-danger col-sm-5">
-                        {{ erreur.message }}
+                        {{ error.message }}
                     </div>
                 {% endfor %}
             </div>
@@ -27,9 +27,9 @@
                 <div class="col-sm-5">
                     <input type="password" class="form-control" name="password" id="password">
                 </div>
-                {% for erreur in erreurs if erreur.erreur == "password" %}
+                {% for error in errors if error.error == "password" %}
                     <div class="alert alert-danger col-sm-5">
-                        {{ erreur.message }}
+                        {{ error.message }}
                     </div>
                 {% endfor %}
             </div>
@@ -37,5 +37,8 @@
                 <input type="submit" value="Se connecter" class="button button-s button-primary center">
             </div>
         </form>
+        <div class="text-center">
+            <a href="/user/reset">Mot de passe oublié</a>
+        </div>
     </div>
 {% endblock %}

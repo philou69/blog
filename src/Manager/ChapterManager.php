@@ -16,7 +16,7 @@ class ChapterManager
         $this->db = PDO::get();
     }
 
-    public function add(Chapter $chapter)
+    public function create(Chapter $chapter)
     {
         // Fonction pour ajouter un chapter
         // On s'assure que le chapter passer en paramètre est bien remplie
@@ -67,11 +67,8 @@ class ChapterManager
         if ($q->rowCount() != 1) {
             return false;
         }
-        // On récupere le tous dans un tableau qu'on passe en paramètre d'une instance de chapter
-        $data = $q->fetch(\PDO::FETCH_ASSOC);
-
-        // On revoie l'objet Chapter
-        return new Chapter($data);
+        // On retourne une instance de Chapter
+        return $q->fetchObject(Chapter::class);
     }
 
     public function findAll()
@@ -86,8 +83,8 @@ class ChapterManager
             return false;
         }
         // On boucle autant que possible pour ajouter les objets au tableau
-        while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
-            $chapters[] = new Chapter($data);
+        while ($chapter = $q->fetchObject(Chapter::class)) {
+            $chapters[] = $chapter;
         }
 
         // On retourne le tableau
@@ -108,8 +105,8 @@ class ChapterManager
             return false;
         }
         // On boucle autant que possible pour ajoute les objets au tableau
-        while ($data = $q->fetch(\PDO::FETCH_ASSOC)) {
-            $chapters[] = new Chapter($data);
+        while ($chapter = $q->fetchObject(Chapter::class)) {
+            $chapters[] = $chapter;
         }
 
         // On retourne le tableau de chapters
@@ -121,9 +118,7 @@ class ChapterManager
         if($q->rowCount() != 1){
             return false;
         }
-        $data = $q->fetch(\PDO::FETCH_ASSOC);
-
-        return new Chapter($data);
+        return $q->fetchObject(Chapter::class);
     }
 
     public function findAllDraft(){

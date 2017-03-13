@@ -4,10 +4,10 @@
 
 {% block body %}
     <div class="well">
-        <h1 class="text-center">{% for content in listContent if content.title == "title_index" %}{{ content.content }}
+        <h1 class="text-center">{% for content in contents if content.title == "title_index" %}{{ content.content }}
     {% endfor %}</h1>
         <p>
-            {% for content in listContent if content.title == "presentation" %}
+            {% for content in contents if content.title == "presentation" %}
                 {{ content.content| raw }}
             {% endfor %}
         </p>

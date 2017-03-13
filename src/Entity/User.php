@@ -11,30 +11,8 @@ class User
     private $firstname;
     private $mail;
     private $password;
-    private $banish;
+    private $banish = false;
     private $roles = [];
-
-    function __construct(array $data = null)
-    {
-        if (is_array($data)) {
-            foreach ($data as $key => $value) {
-                $method = 'set'.ucfirst($key);
-                if (method_exists($this, $method)) {
-                    $this->$method($value);
-                }
-            }
-        }
-    }
-
-    public function hydrate(array $data)
-    {
-        foreach ($data as $key => $value) {
-            $method = 'set'.ucfirst($key);
-            if (method_exists($this, $method)) {
-                $this->$method($value);
-            }
-        }
-    }
 
     /**
      * @param mixed $id
@@ -64,12 +42,16 @@ class User
 
     /**
      * @param mixed $username
+     *
+     * @return $this
      */
     public function setUsername($username)
     {
         if (is_string($username)) {
             $this->username = $username;
         }
+
+        return $this;
     }
 
     /**
@@ -82,12 +64,16 @@ class User
 
     /**
      * @param mixed $mail
+     *
+     * @return $this
      */
     public function setMail($mail)
     {
         if (is_string($mail)) {
             $this->mail = $mail;
         }
+
+        return $this;
     }
 
     /**
@@ -100,12 +86,16 @@ class User
 
     /**
      * @param mixed $password
+     *
+     * @return $this
      */
     public function setPassword($password)
     {
         if (is_string($password)) {
             $this->password = $password;
         }
+
+        return $this;
     }
 
 
@@ -114,8 +104,11 @@ class User
      */
     public function getRoles()
     {
-        $roles = $this->roles;
-
+        if(!is_array($this->roles)){
+            $roles = unserialize($this->roles);
+        }else{
+            $roles = $this->roles;
+        }
         return array_unique($roles);
     }
 
@@ -151,7 +144,11 @@ class User
 
     public function serializeRoles()
     {
-        return serialize($this->roles);
+        if(is_array($this->roles)){
+            return serialize($this->roles);
+        }else{
+            return $this->roles;
+        }
     }
 
     /**

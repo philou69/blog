@@ -11,6 +11,7 @@ class Controller
     private $loader;
     private $twig;
     protected $contentManager;
+    protected $template;
 
 
     public function __construct()
@@ -24,23 +25,35 @@ class Controller
     /**
      * @param $view
      * @param array $params
-     * Fonction génerique permettant d'afficher une vue twig
+     * @return $this->template->render(
+     * Fonction générique permettant d'afficher une vue twig
      */
     protected function render($view, $params = [], $session = null)
     {
+        // Récuperation des contents
         $contentManager = new ContentManager();
         $contents  =  $contentManager->findAll();
+        // Ajoutes des globals session et content
         $this->twig->addGlobal('session', $session);
         $this->twig->addGlobal('contents', $contents);
+        // Création du template en rapport de la vue
         $this->template = $this->twig->load($view);
+        // Retourne le rendu du template
         return $this->template->render($params);
     }
 
+    /*
+     * Génération d'une redirection
+     * @string = route de la redirection
+     */
     protected function redirectTo($string){
         header("Location : $string");
         echo "<META HTTP-EQUIV='refresh' CONTENT='0;URL=$string'>";
     }
 
+    /*
+     * creation de session
+     */
     protected function session()
     {
         // On commence par vérifie l'exisance d'une session
@@ -50,17 +63,21 @@ class Controller
         }
     }
 
+    /*
+     * Création de session
+     */
     protected function fillSession($user = null)
     {
         session_unset();
+        // Si user n'est pas vide, on créé une session correspondante
         if ($user) {
-
             $_SESSION['id'] = $user->getId();
-            $_SESSION['username'] = $user->getUsername();
+            $_SESSION['firstname'] = $user->getfirstname();
             $_SESSION['roles'] = $user->getRoles();
             $_SESSION['isconnected'] = true;
         } else {
-            $_SESSION['username'] = "visiteur";
+            // Sinon, on créé une session anonyme
+            $_SESSION['firstname'] = "visiteur";
             $_SESSION['roles'] = ["ROLE_USER"];
             $_SESSION['isconnected'] = false;
         }

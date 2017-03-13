@@ -4,6 +4,7 @@
 namespace App\Manager;
 
 
+use App\Entity\Chapter;
 use App\Entity\PDO;
 use App\Entity\User;
 
@@ -18,146 +19,103 @@ class UserManager
 
     public function create(User $user)
     {
+        // Enregistrement de l'user
         $q = $this->db->prepare(
-            "INSERT INTO User(username, mail, password, roles) VALUES(:username, :mail, :password, :roles)"
+            "INSERT INTO User(username, firstname, mail, password, roles) VALUES(:username,:firstname, :mail, :password, :roles)"
         );
-        $q->execute(
-            array(
-                ":username" => $user->getUsername(),
-                ":mail" => $user->getMail(),
-                ":password" => $user->getPassword(),
-                ":roles" => $user->serializeRoles(),
-            )
-        );
-
-        $q = $this->db->query("SELECT LAST_INSERT_ID() FROM User");
-        $donnees =$q->fetch();
-        $user->setId($donnees[0]);
+        $q->bindValue(":username", $user->getUsername(), \PDO::PARAM_STR);
+        $q->bindValue(":firstname", $user->getFirstname(), \PDO::PARAM_STR);
+        $q->bindValue(":mail", $user->getMail(), \PDO::PARAM_STR);
+        $q->bindValue(":password", $user->getPassword(), \PDO::PARAM_STR);
+        $q->bindValue(":roles", $user->serializeRoles());
+        $q->execute();
+        // recuperation du dernier id
+        $user->setId($this->db->lastInsertId());
         return $user;
     }
 
     public function update(User $user)
     {
         $q = $this->db->prepare(
-            "UPDATE User SET username = :username, mail = :mail, password = :password, roles = :roles, banish = :banish WHERE id = :id"
+            "UPDATE User SET username = :username,firstname = :firstname, mail = :mail, password = :password, roles = :roles, banish = :banish WHERE id = :id"
         );
-        $q->execute(
-            array(
-                ":username" => $user->getUsername(),
-                ":mail" => $user->getMail(),
-                ":password" => $user->getPassword(),
-                ":roles" => $user->serializeRoles(),
-                ":banish" =>$user->getBanish(),
-                ":id" => $user->getId(),
-            )
-        );
+        $q->bindValue(":username", $user->getUsername(), \PDO::PARAM_STR);
+        $q->bindValue(":firstname", $user->getFirstname(), \PDO::PARAM_STR);
+        $q->bindValue(":mail", $user->getMail(), \PDO::PARAM_STR);
+        $q->bindValue(":password", $user->getPassword(), \PDO::PARAM_STR);
+        $q->bindValue(":roles", $user->serializeRoles());
+        $q->bindValue(":banish", $user->getBanish(), \PDO::PARAM_BOOL);
+        $q->bindValue(":id", $user->getId(), \PDO::PARAM_INT);
+        $q->execute();
     }
 
-    public function getOne($id)
-    {
-        $q = $this->db->prepare("SELECT id, username, mail, roles FROM User WHERE id = :id");
-        $q->execute(array(":id" => $id));
-        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
-
-        return new User($donnees);
-    }
-
-    public function getAll()
-    {
-        $users = [];
-        $q = $this->db->query("SELECT id, username, mail, roles FROM User ORDER BY username");
-        while ($donnees = $q->fetch(\PDO::FETCH_ASSOC)) {
-            $users[] = new User($donnees);
-        }
-
-        return $users;
-    }
-
-    public function findOneByUserName($username)
+    public function findOneByFirstNameAndPassword($firstname, $password)
     {
         $q = $this->db->prepare(
-            "SELECT id, username, mail, password, roles FROM User WHERE username = :username"
+            "SELECT id, firstname, mail, roles FROM User WHERE firstname = :firstname AND  password = :password"
         );
-        $q->execute(
-            array(
-                ":username" => $username
-            )
-        );
-        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
+        $q->bindValue(':firstname', $firstname, \PDO::PARAM_STR);
+        $q->bindValue(':password', $password, \PDO::PARAM_STR);
+        $q->execute();
 
-        return new User($donnees);
-    }
-    public function findOneByUserNameAndPassword($username, $password)
-    {
-        $q = $this->db->prepare(
-            "SELECT id, username, mail, roles FROM User WHERE username = :username AND  password = :password"
-        );
-        $q->execute(
-            array(
-                ":username" => $username,
-                ":password" => $password,
-            )
-        );
-        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
-
-        return new User($donnees);
+        return $q->fetchObject(User::class);
     }
 
     public function findOneById($id)
     {
-        $q = $this->db->prepare("SELECT id, username, mail, password, roles, banish FROM User WHERE id = :id");
+        $q = $this->db->prepare("SELECT id, username,firstname, mail, password, roles, banish FROM User WHERE id = :id");
+        $q->bindValue(':id', $id, \PDO::PARAM_INT);
         $q->execute(array(":id" => $id));
-        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
 
-        return new User($donnees);
+        return $q->fetchObject(User::class);
     }
 
-    public function findByUsernameOrMail($username, $mail)
+    public function findByFirstnameOrMail($firstname, $mail)
     {
-        $q = $this->db->prepare("SELECT id, username FROM User WHERE username = :username OR mail = :mail");
-        $q->execute(
-            array(
-                ":username" => $username,
-                ":mail" => $mail,
-            )
-        );
-        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
-        if (is_bool($donnees)) {
+        $q = $this->db->prepare("SELECT id, firstname FROM User WHERE firstname = :firstname OR mail = :mail");
+        $q->bindValue(':firstname', $firstname, \PDO::PARAM_STR);
+        $q->bindValue(':mail', $mail, \PDO::PARAM_STR);
+        $q->execute();
+
+        $data = $q->fetch(\PDO::FETCH_ASSOC);
+        if (is_bool($data)) {
             return true;
         }
 
         return false;
     }
 
-    public function findByUsername($username)
+    public function findByFisrtname($firstname)
     {
-        $q = $this->db->prepare("SELECT id, username FROM User WHERE username = :username");
-        $q->execute(array(":username" => $username));
-        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
-        if (is_bool($donnees)) {
+        $q = $this->db->prepare("SELECT id, firstname FROM User WHERE firstname = :firstname");
+        $q->bindValue(':firstname', $firstname, \PDO::PARAM_STR);
+        $q->execute();
+        $data = $q->fetch(\PDO::FETCH_ASSOC);
+        if (is_bool($data)) {
             return true;
         }
         return false;
     }
     public function findByMail($mail)
     {
-        $q = $this->db->prepare("SELECT id, username FROM User WHERE mail = :mail");
+        $q = $this->db->prepare("SELECT id, firstname FROM User WHERE mail = :mail");
+        $q->bindValue(':mail', $mail, \PDO::PARAM_STR);
         $q->execute(array(":mail" => $mail));
-        $donnees = $q->fetch(\PDO::FETCH_ASSOC);
-        if (is_bool($donnees)) {
+        $data = $q->fetch(\PDO::FETCH_ASSOC);
+        if (is_bool($data)) {
             return true;
         }
         return false;
     }
 
-    public function getByMail($mail){
+    public function findOneByMail($mail){
         $q = $this->db->prepare("SELECT id, username, firstname, mail, password, roles, banish FROM User WHERE mail = :mail");
-        $q->execute(array(":mail" => $mail));
-        $data = $q->fetch(\PDO::FETCH_ASSOC);
-        if (is_bool($data)) {
+        $q->bindValue(':mail', $mail, \PDO::PARAM_STR);
+        $q->execute();
+        if($q->rowCount() == 0){
             return false;
         }
-        return new User($data);
+        return $q->fetchObject(User::class);
 }
     public function findAll(){
         $users = [];
@@ -165,8 +123,8 @@ class UserManager
         if($q->rowCount() == 0){
             return false;
         }
-        while ($data = $q->fetch(\PDO::FETCH_ASSOC)){
-            $users[] = new User($data);
+        while ($user = $q->fetchObject(User::class)){
+            $users[] = $user;
         }
         return $users;
     }
@@ -177,8 +135,8 @@ class UserManager
         if($q->rowCount() == 0){
             return false;
         }
-        while ($data = $q->fetch(\PDO::FETCH_ASSOC)){
-            $users[] = new User($data);
+        while ($user = $q->fetchObject(User::class)){
+            $users[] = $user;
         }
         return $users;
     }

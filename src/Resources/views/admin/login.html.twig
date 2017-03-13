@@ -19,11 +19,11 @@
                 </div>
             {% endfor %}
             <div class="form-group">
-                <label for="username" class="control-label col-sm-2">Nom : </label>
+                <label for="firstname" class="control-label col-sm-2">Nom : </label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" name="username" id="username" value="">
+                    <input type="text" class="form-control" name="firstname" id="firstname" value="">
                 </div>
-                {% for error in errors if error.error == "username" %}
+                {% for error in errors if error.error == "firstname" %}
                     <div class="alert alert-danger col-sm-5">
                         {{ error.message }}
                     </div>
@@ -43,5 +43,8 @@
                 <input type="submit" value="Se connecter" class="button button-s button-primary center">
             </div>
         </form>
+        <div class="text-center">
+            <a href="/user/reset">Mot de passe oublié</a>
+        </div>
     </div>
 {% endblock %}
