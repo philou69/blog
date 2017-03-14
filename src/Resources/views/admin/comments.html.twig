@@ -19,19 +19,19 @@
                 {% for comment in comments %}
                     {% if comment.status.id == 1 %}
                         {% set status = "Signaler
-                            par " ~ comment.signaledBy.username ~ "
-                            le " ~ comment.signaledAt | date('d/m/Y') %}
+                            par " ~ comment.statusedBy.username ~ "
+                            le " ~ comment.statusedAt | date('d/m/Y') %}
                     {% elseif comment.status.id == 2%}
                         {% set status = "bani
-                            par " ~ comment.signaledBy.username ~ "
-                            le " ~ comment.signaledAt | date('d/m/Y') %}
+                            par " ~ comment.statusedBy.username ~ "
+                            le " ~ comment.statusedAt | date('d/m/Y') %}
                     {% else %}
                         {% set status = 'Normal' %}
                     {% endif %}
                     <tr class="row">
                         <th class="col-sm-4">{{ comment.comment | slice(0,50) }}...</th>
                         <th class="col-sm-2">{{ comment.user.username }}</th>
-                        <th class="col-sm-2">{{ comment.published_at | date('d/m/Y') }}</th>
+                        <th class="col-sm-2">{{ comment.createdAt | date('d/m/Y') }}</th>
                         <th class="col-sm-3">{{ status }}
                         </th>
                         <th class="col-sm-1"><a href="/admin/comment/edit/{{ comment.id }}"

@@ -5,6 +5,7 @@ namespace App\Controller;
 
 
 use App\Entity\Comment;
+use App\Entity\Status;
 use App\Entity\User;
 use App\Manager\ChapterManager;
 use App\Manager\CommentManager;
@@ -17,6 +18,8 @@ class CommentController extends AdminController
     public function createAction($id)
     {
         session_start();
+        var_dump($_SESSION);
+        var_dump($_SERVER['REQUEST_METHOD']);
         // Vérification de l'id et de l'existence du chapter
         if (!is_numeric($id) || $_SESSION['id'] == null ) {
             throw new \Exception("Page not found");
@@ -31,19 +34,24 @@ class CommentController extends AdminController
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $message = htmlspecialchars($_POST['comment']);
             if (isset($message)) {
+                $status = new Status();
+                $status->setId(3);
                 $comment = new Comment();
                 $user = new User();
                 $user->setId($_SESSION['id']);
                 $comment->setComment($message)
                     ->setChapter($chapter)
                     ->setUser($user)
-                    ->setCreatedAt(new \DateTime());
+                    ->setCreatedAt(new \DateTime())
+                    ->setStatus($status);
                 $commentManager = new CommentManager();
                 $commentManager->create($comment);
                 // Redirection sur la page du chapter
+
                 $this->redirectTo("/chapter/$id");
             }
         }
+        exit;
         // Si le formlaire n'est pas envoyer, on redirige vers lapage d'accueil
         $this->redirectTo('/');
     }
@@ -86,10 +94,12 @@ class CommentController extends AdminController
             }
             $user = new User();
             $user->setId($_SESSION['id']);
-
+            $status = new Status();
+            $status->setId(3);
             $new_comment->setComment($text)
                 ->setUser($user)
-                ->setChapter($comment->getChapter());
+                ->setChapter($comment->getChapter())
+                ->setStatus($status);
             $commentManager->create($new_comment);
 
             // Après enregistrer, on redirige vers la page du chapter

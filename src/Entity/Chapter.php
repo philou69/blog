@@ -12,6 +12,13 @@ class Chapter
     private $publishedAt;
     private $published;
 
+    function __construct()
+    {
+        if(is_string($this->publishedAt)){
+            $this->publishedAt = new \DateTime($this->publishedAt);
+        }
+    }
+
     /**
      * @param mixed $id
      */

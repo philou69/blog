@@ -173,7 +173,7 @@ $routes["login_post"] = ["method" => "post",
  */
 $routes["logout"] = ["method" => "get",
                 "url" => "/logout",
-                "controller" => "user:logout"];
+                "controller" => "User:logout"];
 
 /*
  * Route d'inscription

@@ -110,9 +110,6 @@ class UserController extends AdminController
                     // ce n'est pas un username, on remplie le tableau
                     $errors[] = ["error" => "username", "message" => "Le nom n'a pas un bon format"];
                 }
-                if($user->getUsername() != $username){
-                    $user->setUsername($username);
-                }
             }
             if (isset($firstname)) {
                 //username n'est pas vide.
@@ -120,10 +117,9 @@ class UserController extends AdminController
                     // ce n'est pas un username, on remplie le tableau
                     $errors[] = ["error" => "username", "message" => "Le nom n'a pas un bon format"];
                 }
-                if (!$userConstraint->isNotOtherFirstName($firstname) && $user->getUsername() != $firstname ) {
-                    $errors[] = ["error" => "formulaire", "message" => "Modification 1 impossible"];
+                if ($user->getFirstname() != $firstname && !$userConstraint->isNotOtherFirstName($firstname)  ) {
+                    $errors[] = ["error" => "formulaire", "message" => "Modification impossible"];
                 }
-                $user->setFirstname($firstname);
             }
             if (isset($mail)) {
                 // mail n'est pas vide.
@@ -133,7 +129,6 @@ class UserController extends AdminController
                 if (!$userConstraint->isNotOtherMail($mail) && $user->getMail() != $mail) {
                     $errors[] = ["error" => "formulaire", "message" => "Modification 2 impossible"];
                 }
-                $user->setMail($mail);
             }
             if (!empty($password) && !empty($passwordConfirmation)) {
                 // password et password_confirmation ne sont pas vides
@@ -145,11 +140,23 @@ class UserController extends AdminController
                     if (!$userValidator->isPassword($password)) {
                         $errors[] = ["error" => "password", "message" => "Le mot de passe n'est pas au bon format!"];
                     }
-                    $user->setPassword(hash("sha512", $password));
                 }
             }
             // Si le tableau est vide on update le user
             if (empty($errors)) {
+                if($user->getUsername() != $username){
+                    $user->setUsername($username);
+                }
+                if($user->getFirstname() != $firstname){
+                    $user->setFirstname($firstname);
+                }
+                if($user->getMail() != $mail){
+                    $user->setMail($mail);
+                }
+                if($user->getPassword() != hash("sha512", $password)) {
+                    $user->setPassword(hash("sha512", $password));
+
+                }
                 $userManager->update($user);
                 $success = "Vos modifications ont bien été enregistrer !";
             }
@@ -200,6 +207,9 @@ class UserController extends AdminController
                 // on vérifie l'existance de l'user
                 if (!$user) {
                     throw new \Exception("L'user n'existe pas ou mauvais mot de passe");
+                }
+                if($user->isBanish() == true){
+                   return $this->redirectTo('/');
                 }
                 // On enregistre l'utilisateur dans une session
                 $this->fillSession($user);

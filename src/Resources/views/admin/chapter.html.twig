@@ -54,11 +54,11 @@
                 <label for="published" class="col-sm-2 control-label">Publiable</label>
                 <div class="col-sm-5">
                     <div class="btn-group" data-toggle="buttons" aria-required="true">
-                        <label id="true" class="btn published btn-default {% if chapter.published == 0 %}active {% endif %} ">
-                            <input type="radio" name="published" value="true" {% if chapter.published == 0 %}checked {% endif %} >oui
+                        <label id="true" class="btn published btn-default {% if chapter.published == 1 %}active {% endif %} ">
+                            <input type="radio" name="published" value="true" {% if chapter.published == 1 %}checked {% endif %} >oui
                         </label>
-                        <label id="false" class="btn btn-default published {% if chapter.published == 1 %}checked{% endif %}">
-                            <input type="radio" name="published" value="false"  {% if chapter.published == 1 %}checked {% endif %} >non
+                        <label id="false" class="btn btn-default published {% if chapter.published == 0 %}active{% endif %}">
+                            <input type="radio" name="published" value="false"  {% if chapter.published == 0 %}checked {% endif %} >non
                         </label>
                     </div>
                 </div>

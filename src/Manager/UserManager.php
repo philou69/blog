@@ -52,7 +52,7 @@ class UserManager
     public function findOneByFirstNameAndPassword($firstname, $password)
     {
         $q = $this->db->prepare(
-            "SELECT id, firstname, mail, roles FROM User WHERE firstname = :firstname AND  password = :password"
+            "SELECT id, firstname, mail, roles, banish FROM User WHERE firstname = :firstname AND  password = :password"
         );
         $q->bindValue(':firstname', $firstname, \PDO::PARAM_STR);
         $q->bindValue(':password', $password, \PDO::PARAM_STR);

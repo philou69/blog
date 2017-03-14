@@ -10,25 +10,25 @@
             <div class="form-group">
                 <label for="id" class="col-sm-3 control-label">Id :</label>
                 <div class="col-sm-5">
-                    <input type="text" id="id" readonly="readonly" value="{{ user.id }}">
+                    <input type="text" id="id" class="form-control" readonly="readonly" value="{{ user.id }}">
                 </div>
             </div>
             <div class="form-group">
                 <label for="username" class="col-sm-3 control-label">Nom</label>
                 <div class="col-sm-5">
-                    <input type="text" id="username" readonly="readonly" value="{{ user.username }}">
+                    <input type="text" id="username" class="form-control" readonly="readonly" value="{{ user.username }}">
                 </div>
             </div>
             <div class="form-group">
                 <label for="firstname" class="col-sm-3 control-label">Prénom</label>
                 <div class="col-sm-5">
-                    <input type="text" id="firstname" readonly="readonly" value="{{ user.firstname }}">
+                    <input type="text" id="firstname" class="form-control" readonly="readonly" value="{{ user.firstname }}">
                 </div>
             </div>
             <div class="form-group">
                 <label for="mail" class="col-sm-3 control-label">Mail</label>
                 <div class="col-sm-5">
-                    <input type="email" id="mail" readonly="readonly" value="{{ user.mail }}">
+                    <input type="email" id="mail" class="form-control" readonly="readonly" value="{{ user.mail }}">
                 </div>
             </div>
             {% if user.id == session.id %}
@@ -51,7 +51,7 @@
                             <label><input type="checkbox" name="roles[]" value="ROLE_USER" {% for role in user.roles if role == "ROLE_USER" %}checked="true"{% endfor %}>ROLE_USER</label>
                         </div>
                         <div class="checkbox">
-                            <label><input type="checkbox" name="roles[]" value="ROLE_ADMIN" {% for role in user.roles if role == "ROLE_ADMIN" %}checked="true"{% endfor %}>ROLE_ADMIN</label>
+                            <label><input type="checkbox"  name="roles[]" value="ROLE_ADMIN" {% for role in user.roles if role == "ROLE_ADMIN" %}checked="true"{% endfor %}>ROLE_ADMIN</label>
                         </div>
                     </div>
                 </div>
@@ -61,11 +61,11 @@
                 <label for="status" class="col-sm-3 control-label">Etat : </label>
                 <div class="col-sm-4">
                     <div class="radio">
-                        <label><input type="radio" name="status"
+                        <label><input type="radio"name="status"
                                       value="false" {% if user.banish == false%} checked="true" {% endif %} >Normal</label>
                     </div>
                     <div class="radio ">
-                        <label><input type="radio" name="status"
+                        <label><input type="radio"name="status"
                                       value="true" {% if user.banish == true %} checked="true" {% endif %} >Banni
                         </label>
                     </div>

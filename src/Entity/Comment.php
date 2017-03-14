@@ -27,9 +27,12 @@ class Comment
 
     public function __construct(array $data = null)
     {
-        $this->status = new Status();
+
         if (is_array($data)) {
             foreach ($data as $key => $value) {
+                if($key == 'createdAt' || $key == 'statusedAt'){
+                    $value = new \DateTime($value);
+                }
                 $method = 'set'.ucfirst($key);
                 if (method_exists($this, $method)) {
                     $this->$method($value);
@@ -39,6 +42,7 @@ class Comment
         if ($this->createdAt == null) {
             $this->createdAt = new \DateTime();
         }
+
     }
 
     public function hydrate(array $data)
@@ -162,14 +166,8 @@ class Comment
      */
     public function setCreatedAt(\DateTime $createdAt)
     {
-//        if ($createdAt == null) {
-//            $this->createdAt = $createdAt;
-//        } elseif (is_string($createdAt)) {
-//            $this->createdAt = new \DateTime($createdAt);
-//        } elseif (is_a($createdAt, 'DateTime')) {
-//            $this->createdAt = $createdAt;
-//        }
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -252,15 +250,8 @@ class Comment
      */
     public function setStatusedAt(\DateTime $statusedAt = null)
     {
-//        if ($statusedAt == null) {
-//            $this->statusedAt = null;
-//        } elseif (is_string($statusedAt)) {
-//            $this->statusedAt = new \DateTime($statusedAt);
-//        } elseif (is_a($statusedAt, 'DateTime')) {
-//            $this->statusedAt = $statusedAt;
-//        }
-
         $this->statusedAt = $statusedAt;
+
         return $this;
     }
 

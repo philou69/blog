@@ -14,6 +14,18 @@ class User
     private $banish = false;
     private $roles = [];
 
+    function __construct()
+    {
+        if(is_string($this->roles)){
+            $this->setRoles(unserialize($this->roles));
+        }
+        if($this->banish == 0){
+            $this->banish = false;
+        }else{
+            $this->banish = true;
+        }
+    }
+
     /**
      * @param mixed $id
      */
@@ -180,7 +192,7 @@ class User
      *
      * @return mixed
      */
-    public function getBanish()
+    public function isBanish()
     {
         return $this->banish;
     }

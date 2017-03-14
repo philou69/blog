@@ -45,9 +45,17 @@ class CommentManager
     {
         // Fonction pour mettre à jour un comment
         if ($comment->getCommentParent() != null) {
-            $q = $this->db->prepare(
-                "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, id_parent = :id_parent, createdAt = :createdAt, place = :place, statusedBy = :statusedBy, statusedAt = :statusedAt, id_status = :status WHERE id = :id"
-            );
+            if($comment->getStatusedBy() != null){
+                $q = $this->db->prepare(
+                    "UPDATE Comment SET comment = :comment,id_parent = :id_parent, id_chapter = :id_chapter, id_user = :id_user, createdAt = :createdAt, place = :place, statusedBy = :statusedBy, statusedAt = :statusedAt,  id_status = :status WHERE id = :id"
+                );
+                $q->bindValue(":statusedBy", $comment->getStatusedBy()->getId(), \PDO::PARAM_INT);
+                $q->bindValue(":statusedAt", $comment->getStatusedAt()->format("Y-m-d"), \PDO::PARAM_STR);
+            }else{
+                $q = $this->db->prepare(
+                    "UPDATE Comment SET comment = :comment,id_parent = :id_parent, id_chapter = :id_chapter, id_user = :id_user, createdAt = :createdAt, place = :place, statusedBy = null, statusedAt = null,  id_status = :status WHERE id = :id"
+                );
+            }
             $q->bindValue(":id_parent", $comment->getCommentParent()->getId(), \PDO::PARAM_INT);
         } else {
             if($comment->getStatusedBy() != null){
@@ -58,19 +66,18 @@ class CommentManager
                 $q->bindValue(":statusedAt", $comment->getStatusedAt()->format("Y-m-d"), \PDO::PARAM_STR);
             }else{
                 $q = $this->db->prepare(
-                    "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, createdAt = :createdAt, place = :place,  id_status = :status WHERE id = :id"
+                    "UPDATE Comment SET comment = :comment, id_chapter = :id_chapter, id_user = :id_user, createdAt = :createdAt, place = :place, statusedBy = null, statusedAt = null,  id_status = :status WHERE id = :id"
                 );
             }
-            $q->bindValue(":comment", $comment->getComment(), \PDO::PARAM_STR);
-            $q->bindValue(":id_chapter", $comment->getChapter()->getId(), \PDO::PARAM_STR);
-            $q->bindValue(":id_user", $comment->getUser()->getId(), \PDO::PARAM_INT);
-            $q->bindValue(":createdAt", $comment->getCreatedAt()->format('Y-m-d'), \PDO::PARAM_STR);
-            $q->bindValue(":place", $comment->getPlace(), \PDO::PARAM_INT);
-            $q->bindValue(":status", $comment->getStatus()->getId(), \PDO::PARAM_INT);
-            $q->bindValue(":id", $comment->getId(), \PDO::PARAM_INT);
-            $q->execute();
         }
-
+        $q->bindValue(":comment", $comment->getComment(), \PDO::PARAM_STR);
+        $q->bindValue(":id_chapter", $comment->getChapter()->getId(), \PDO::PARAM_STR);
+        $q->bindValue(":id_user", $comment->getUser()->getId(), \PDO::PARAM_INT);
+        $q->bindValue(":createdAt", $comment->getCreatedAt()->format('Y-m-d'), \PDO::PARAM_STR);
+        $q->bindValue(":place", $comment->getPlace(), \PDO::PARAM_INT);
+        $q->bindValue(":status", $comment->getStatus()->getId(), \PDO::PARAM_INT);
+        $q->bindValue(":id", $comment->getId(), \PDO::PARAM_INT);
+        $q->execute();
     }
 
     public function bannish(Comment $comment)
@@ -125,11 +132,9 @@ class CommentManager
         }
         if($data['statusedBy'] != null){
             $data['statusedBy'] = $this->addUser($data['statusedBy']);
-            $data['statusedAt'] = $this->datification($data['statusedAt']);
         }else{
             unset($data['statusedAt']);
-        }
-        $data['createdAt'] = $this->datification($data['createdAt']);
+        };
         $data['status'] = $this->addStatus($data['id_status']);
         // On retourne le comment
         return new Comment($data);
@@ -166,11 +171,9 @@ class CommentManager
             }
             if($data['statusedBy'] != null){
                 $data['statusedBy'] = $this->addUser($data['statusedBy']);
-                $data['statusedAt'] = $this->datification($data['statusedAt']);
             }else{
                 unset($data['statusedAt']);
             }
-            $data['createdAt'] = $this->datification($data['createdAt']);
             $comments[] = new Comment($data);
         }
         return $comments;
@@ -200,12 +203,10 @@ class CommentManager
             $data['comments'] = $this->findChildrenForOneComment($data['id']);
             if($data['id_status'] != 3){
                 $data['statusedBy'] = $this->addUser($data['statusedBy']);
-                $data['statusedAt'] = $this->datification($data['statusedAt']);
             }else{
                 unset($data['statusedAt']);
             }
 
-            $data['createdAt'] = $this->datification($data['createdAt']);
             $comments[] = new Comment($data);
         }
         // On retourne le tableau de comments
@@ -233,11 +234,9 @@ class CommentManager
             $data['status'] = $this->addStatus($data['id_status']);
             if($data['id_status'] != 3){
                 $data['statusedBy'] = $this->addUser($data['statusedBy']);
-                $data['statusedAt'] = $this->datification($data['statusedAt']);
             }else{
                 unset($data['statusedAt']);
             }
-            $data['createdAt'] = $this->datification($data['createdAt']);
             $data['comments'] = $this->findChildrenForOneComment($data['id']);
 
             $comments[] = new Comment($data);
@@ -258,7 +257,7 @@ class CommentManager
             $data['user'] = $this->addUser($data['id_user']);
             $data['chapter'] = $this->addChapter($data['id_chapter']);
             $data['statusedBy'] = $this->addUser($data['statusedBy']);
-            $data['statusedAt'] = $this->datification($data['statusedAt']);
+            //$data['statusedAt'] = $this->datification($data['statusedAt']);
             $comments[] =  new Comment($data);
         }
         return $comments;
@@ -274,7 +273,7 @@ class CommentManager
             $data['user'] = $this->addUser($data['id_user']);
             $data['chapter'] = $this->addChapter($data['id_chapter']);
             $data['statusedBy'] = $this->addUser($data['statusedBy']);
-            $data['statusedAt'] = $this->datification($data['statusedAt']);
+            //$data['statusedAt'] = $this->datification($data['statusedAt']);
             $comments[] =  new Comment($data);
         }
         return $comments;

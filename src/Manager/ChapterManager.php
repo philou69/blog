@@ -84,6 +84,8 @@ class ChapterManager
         }
         // On boucle autant que possible pour ajouter les objets au tableau
         while ($chapter = $q->fetchObject(Chapter::class)) {
+//            var_dump($chapter);
+//            exit;
             $chapters[] = $chapter;
         }
 
