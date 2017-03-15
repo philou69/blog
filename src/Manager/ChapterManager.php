@@ -19,17 +19,14 @@ class ChapterManager
     public function create(Chapter $chapter)
     {
         // Fonction pour ajouter un chapter
-        // On s'assure que le chapter passer en paramètre est bien remplie
-        if($chapter->getTitle() == null || $chapter->getChapter() == null || $chapter->getPublishedAt() == null || $chapter->isPublished() == null){
-            return false;
-        }
+
         $q = $this->db->prepare(
             'INSERT INTO Chapter(title, chapter, publishedAt,published) VALUES(:title, :chapter, :publishedAt, :published)'
         );
         $q->bindValue(':title', $chapter->getTitle(), \PDO::PARAM_STR);
         $q->bindValue(':chapter', $chapter->getChapter(), \PDO::PARAM_STR);
         $q->bindValue(':publishedAt', $chapter->getPublishedAt()->format("Y-m-d"), \PDO::PARAM_STR);
-        $q->bindValue(':published', $chapter->isPublished(), \PDO::PARAM_BOOL);
+        $q->bindValue(':published', $chapter->isPublished());
         $q->execute();
 
     }
@@ -47,9 +44,11 @@ class ChapterManager
         $q->bindValue(':title', $chapter->getTitle(), \PDO::PARAM_STR);
         $q->bindValue(':chapter', $chapter->getChapter(), \PDO::PARAM_STR);
         $q->bindValue(':publishedAt', $chapter->getPublishedAt()->format("Y-m-d"), \PDO::PARAM_STR);
-        $q->bindValue(':published', $chapter->isPublished(), \PDO::PARAM_BOOL);
+        $q->bindValue(':published', $chapter->isPublished());
         $q->bindValue(':id', $chapter->getId(), \PDO::PARAM_INT);
         $q->execute();
+        var_dump($chapter->isPublished());
+        exit;
 
     }
     public function delete(Chapter $chapter){
@@ -99,7 +98,7 @@ class ChapterManager
         // Tableau prévue pour contenir les chapters
         $chapters = [];
         $q = $this->db->query(
-            "SELECT id , title, chapter, publishedAt FROM Chapter WHERE published = 1 ORDER BY publishedAt DESC"
+            "SELECT id , title, chapter, publishedAt, published FROM Chapter WHERE published = true ORDER BY publishedAt DESC"
         );
 
         // On vérifie le nombre d'entrées retourné
@@ -116,7 +115,7 @@ class ChapterManager
     }
 
     public function findLastPublished(){
-        $q = $this->db->query("SELECT id,title, chapter, publishedAt FROM Chapter WHERE published = true ORDER BY publishedAt DESC  LIMIT 0, 1");
+        $q = $this->db->query("SELECT id,title, chapter, published, publishedAt FROM Chapter WHERE published = true ORDER BY publishedAt DESC  LIMIT 0, 1");
         if($q->rowCount() != 1){
             return false;
         }
@@ -124,7 +123,7 @@ class ChapterManager
     }
 
     public function findAllDraft(){
-        $q = $this->db->query('SELECT id, title, chapter, publishedAt FROM Chapter WHERE published = false');
+        $q = $this->db->query('SELECT id, title, chapter, published, publishedAt FROM Chapter WHERE published = false');
         if($q->rowCount() == 0){
             return false;
         }
@@ -136,7 +135,7 @@ class ChapterManager
     }
 
     public function findAllPublished(){
-        $q = $this->db->query('SELECT id, title, chapter, publishedAt FROM Chapter WHERE published = true');
+        $q = $this->db->query('SELECT id, title, chapter, published, publishedAt FROM Chapter WHERE published = true');
         if($q->rowCount() == 0){
             return false;
         }

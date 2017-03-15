@@ -23,8 +23,8 @@
                 {% for chapter in chapters %}
                     <tr class="row">
                         <th class="col-sm-4">{{ chapter.title }}</th>
-                        <th class="col-sm-4">{{ chapter.chapter | raw | slice(0,10) }}...</th>
-                        <th class="col-sm-1">{{  chapter.published == 1 ? "Oui" : "Non"}}</th>
+                        <th class="col-sm-4">{{ chapter.chapter | raw | slice(0,10) }}...</th>{{ dump(chapter.published) }}
+                        <th class="col-sm-1">{{  chapter.published == true ? "Oui" : "Non"}}</th>
                         <th class="col-sm-2">{{ chapter.publishedAt | date('d/m/Y') }}</th>
                         <th class="col-sm-1"><a href="/admin/chapter/edit/{{ chapter.id }}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-pencil"></i></a>    <a href="/admin/chapter/delete/{{ chapter.id }}" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-trash"></i></a></th>
                     </tr>

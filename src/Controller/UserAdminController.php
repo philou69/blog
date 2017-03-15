@@ -72,7 +72,6 @@ class UserAdminController extends AdminController
                 if(in_array("ROLE_ADMIN", $_POST['roles']) && !in_array("ROLE_USER", $_POST['roles'])){
                     $_POST['roles'][] = 'ROLE_USER';
                 }
-
                 $user->setRoles($_POST['roles'])
                     ->setBanish($status);
                 $userManager->update($user);

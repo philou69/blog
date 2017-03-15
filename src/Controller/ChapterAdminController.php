@@ -40,6 +40,7 @@ class ChapterAdminController extends AdminController
             $text = htmlspecialchars($_POST['chapter']);
             $publishedAt = htmlspecialchars($_POST['publishedAt']);
             $published = htmlspecialchars($_POST['published']);
+
             $chapterValidator = new  ChapterValidator();
             // On va ensuite vérifie sur chaqu'une d'elles si elles sont vide
             // et si elles correspondent au format demandé
@@ -62,11 +63,12 @@ class ChapterAdminController extends AdminController
             if(!isset($published)){
                 $errors[] = ['error' => "published", "message" => "Le statut de la publication ne peut être vide"];
             }elseif (!$chapterValidator->isPublished($published)){
-                $errors[] = ['erro' => "published", "message" => "Le statut de publication n'est pas valide"];
+                $errors[] = ['error' => "published", "message" => "Le statut de publication n'est pas valide"];
             }
             // Si le tableau d'erreurs est vide, on enregistre le chapter
             if(empty($errors)){
 
+                $published = ($published == 'true' ? true : false );
                 $chapterManager = new ChapterManager();
                 $chapter = new Chapter();
                 $chapter->setTitle($title)
@@ -132,6 +134,7 @@ class ChapterAdminController extends AdminController
 
             // Mise à jour en bdd si pas d'erreurs
             if(empty($errors)){
+                $published = ($published == 'true' ? true : false );
                 $chapterManager = new ChapterManager();
                 $chapter->setTitle($title)
                     ->setChapter($text)
