@@ -35,9 +35,7 @@ class ChapterManager
     {
         // Fonction pour mettre à jour un chapter
         // On s'assure que le chapter passer en paramètre est bien remplie
-        if($chapter->getTitle() == null || $chapter->getChapter() == null || $chapter->getPublishedAt() == null || $chapter->isPublished() == null){
-            return false;
-        }
+
         $q = $this->db->prepare(
             "UPDATE Chapter SET title = :title, chapter = :chapter, publishedAt = :publishedAt, published = :published WHERE id = :id"
         );
