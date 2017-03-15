@@ -18,8 +18,6 @@ class CommentController extends AdminController
     public function createAction($id)
     {
         session_start();
-        var_dump($_SESSION);
-        var_dump($_SERVER['REQUEST_METHOD']);
         // Vérification de l'id et de l'existence du chapter
         if (!is_numeric($id) || $_SESSION['id'] == null ) {
             throw new \Exception("Page not found");

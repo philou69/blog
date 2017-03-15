@@ -44,7 +44,7 @@ class UserManager
         $q->bindValue(":mail", $user->getMail(), \PDO::PARAM_STR);
         $q->bindValue(":password", $user->getPassword(), \PDO::PARAM_STR);
         $q->bindValue(":roles", $user->serializeRoles());
-        $q->bindValue(":banish", $user->getBanish(), \PDO::PARAM_BOOL);
+        $q->bindValue(":banish", $user->isBanish(), \PDO::PARAM_BOOL);
         $q->bindValue(":id", $user->getId(), \PDO::PARAM_INT);
         $q->execute();
     }

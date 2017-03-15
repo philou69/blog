@@ -64,9 +64,9 @@ class ChapterAdminController extends AdminController
             }elseif (!$chapterValidator->isPublished($published)){
                 $errors[] = ['erro' => "published", "message" => "Le statut de publication n'est pas valide"];
             }
-
             // Si le tableau d'erreurs est vide, on enregistre le chapter
             if(empty($errors)){
+
                 $chapterManager = new ChapterManager();
                 $chapter = new Chapter();
                 $chapter->setTitle($title)
@@ -79,7 +79,6 @@ class ChapterAdminController extends AdminController
             }
 
         }
-
         // On affiche la page du formulaire
         echo $this->render("admin/chapter.html.twig", array('errors' => $errors));
     }
