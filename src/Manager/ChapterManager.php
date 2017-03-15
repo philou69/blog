@@ -47,8 +47,6 @@ class ChapterManager
         $q->bindValue(':published', $chapter->isPublished());
         $q->bindValue(':id', $chapter->getId(), \PDO::PARAM_INT);
         $q->execute();
-        var_dump($chapter->isPublished());
-        exit;
 
     }
     public function delete(Chapter $chapter){
