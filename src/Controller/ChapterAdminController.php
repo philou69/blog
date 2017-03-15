@@ -142,8 +142,7 @@ class ChapterAdminController extends AdminController
                     ->setPublished($published);
 
                 $chapterManager->update($chapter);
-                var_dump($chapter);
-                exit;
+
                 // On redirige vers la liste des chapters
                 $this->redirectTo('/admin/chapters');
             }
