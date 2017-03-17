@@ -20,9 +20,6 @@ class CommentAdminController extends AdminController
         $this->isAuthorized();
         $commentManager = new CommentManager();
         $comments = $commentManager->findAll();
-        if(!$comments){
-            throw new \Exception('Page not found');
-        }
         echo $this->render('admin/comments.html.twig', array('comments' => $comments), $_SESSION);
     }
 
@@ -35,9 +32,6 @@ class CommentAdminController extends AdminController
 
         $commentManager = new CommentManager();
         $comments = $commentManager->findAllSignaled();
-        if(!$comments){
-            throw new \Exception('Page not  found!');
-        }
         echo $this->render("admin/comments.html.twig", array('comments' => $comments));
     }
 
@@ -50,9 +44,6 @@ class CommentAdminController extends AdminController
 
         $commentManager = new CommentManager();
         $comments = $commentManager->findAllBanished();
-        if(!$comments){
-            throw new \Exception('page not Found!');
-        }
         echo $this->render("admin/comments.html.twig", array('comments' => $comments));
     }
 

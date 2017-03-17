@@ -190,11 +190,6 @@ class ChapterAdminController extends AdminController
 
         $chapterManager = new ChapterManager();
         $chapters = $chapterManager->findAllDraft();
-
-        if(!$chapters){
-            throw new \Exception("Page Introuvable");
-        }
-
         echo $this->render("admin/chapters.html.twig", array('chapters' => $chapters));
     }
 
@@ -206,11 +201,6 @@ class ChapterAdminController extends AdminController
 
         $chapterManager = new ChapterManager();
         $chapters = $chapterManager->findAllPublished();
-
-        if(!$chapters){
-            throw new \Exception("Page Introuvable");
-        }
-
         echo $this->render("admin/chapters.html.twig", array('chapters' => $chapters));
     }
 

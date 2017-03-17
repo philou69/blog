@@ -34,7 +34,7 @@ class ContentAdminController extends AdminController
         }
          // Le formulaire est il envoié
         if($_SERVER['REQUEST_METHOD'] == "POST"){
-            $text = htmlspecialchars($_POST['content']);
+            $text = $_POST['content'];
             if(isset($text)){
                 $content->setContent($text);
                 $contentManager->update($content);

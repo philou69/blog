@@ -91,3 +91,8 @@
         </div>
     </form>
 {% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript" src="../src/Resources/js/remove.alert.js"></script>
+{% endblock %}

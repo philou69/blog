@@ -5,7 +5,7 @@ $(document).ready(function () {
 });
 function deleteAlert() {
     // Récuperation de toutes les balises avec la class alert
-    var alertElts = $(".alert");
+    var alertElts = $(".alert-info");
     // on supprime les balises
     alertElts.remove();
 }
