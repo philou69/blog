@@ -37,7 +37,7 @@ class ChapterAdminController extends AdminController
         if($_SERVER['REQUEST_METHOD'] == "POST"){
             // On récupère toutes les données du form en désactivant d'hypotétique balises
             $title = htmlspecialchars($_POST['title']);
-            $text = htmlspecialchars($_POST['chapter']);
+            $text = $_POST['chapter'];
             $publishedAt = htmlspecialchars($_POST['publishedAt']);
             $published = htmlspecialchars($_POST['published']);
 
@@ -46,24 +46,24 @@ class ChapterAdminController extends AdminController
             // et si elles correspondent au format demandé
             // et on remplit le tableau d'erreurs en fonction
             if(empty($title)){
-                $errors[] = ['error' => "title", "message" => "Le titre ne peut être vide"];
+                $errors[] = ['error' => "title", "message" => "Le titre ne peut être vide !"];
             }else if(!$chapterValidator->isTitle($title)){
-                $errors[] = ['error' => "title", "message" => "Le titre n'est pas au bon format!"];
+                $errors[] = ['error' => "title", "message" => "Le titre n'est pas au bon format !"];
             }
             if(empty($text)){
-                $errors[] = ['error' => "chapter", "message" => "Le chapter ne peut être vide"];
+                $errors[] = ['error' => "chapter", "message" => "Le chapitre ne peut être vide !"];
             }elseif (!$chapterValidator->isChapter($text)){
-                $errors[] = ['error' => "chapter", "message" => "Le chapter n'est pas au bon format!"];
+                $errors[] = ['error' => "chapter", "message" => "Le chapitre n'est pas au bon format !"];
             }
             if(empty($publishedAt)){
-                $errors[] = ['error' => "published_at", "message" => "La date de publication ne peut être vide!"];
+                $errors[] = ['error' => "published_at", "message" => "La date de publication ne peut être vide !"];
             }elseif(!$chapterValidator->isDate($publishedAt)){
-                $errors[]= ['error' => "published_at", "message" => "La date n'est pas valide!"];
+                $errors[]= ['error' => "published_at", "message" => "La date de publication n'est pas valide !"];
             }
             if(!isset($published)){
-                $errors[] = ['error' => "published", "message" => "Le statut de la publication ne peut être vide"];
+                $errors[] = ['error' => "published", "message" => "Le statut de la publication ne peut être vide !"];
             }elseif (!$chapterValidator->isPublished($published)){
-                $errors[] = ['error' => "published", "message" => "Le statut de publication n'est pas valide"];
+                $errors[] = ['error' => "published", "message" => "Le statut de publication n'est pas valide !"];
             }
             // Si le tableau d'erreurs est vide, on enregistre le chapter
             if(empty($errors)){
@@ -106,30 +106,30 @@ class ChapterAdminController extends AdminController
         if($_SERVER['REQUEST_METHOD'] == "POST"){
             // Récuperation des differents variables
             $title = htmlspecialchars($_POST['title']);
-            $text = htmlspecialchars($_POST['chapter']);
-            $publishedAt = htmlspecialchars($_POST['publishedAt']);
+            $text = $_POST['chapter'];
+            $publishedAt = $_POST['publishedAt'];
             $published = htmlspecialchars($_POST['published']);
             $chapterValidator = new  ChapterValidator();
             // Vérification du remplissage et du format
             if(empty($title)){
-                $errors[] = ['error' => "title", "message" => "Le titre ne peut être vide"];
+                $errors[] = ['error' => "title", "message" => "Le titre ne peut être vide !"];
             }else if(!$chapterValidator->isTitle($title)){
-                $errors[] = ['error' => "title", "message" => "Le titre n'est pas au bon format!"];
+                $errors[] = ['error' => "title", "message" => "Le titre n'est pas au bon format !"];
             }
             if(empty($text)){
-                $errors[] = ['error' => "chapter", "message" => "Le chapter ne peut être vide"];
+                $errors[] = ['error' => "chapter", "message" => "Le chapitre ne peut être vide !"];
             }elseif (!$chapterValidator->isChapter($text)){
-                $errors[] = ['error' => "chapter", "message" => "Le chapter n'est pas au bon format!"];
+                $errors[] = ['error' => "chapter", "message" => "Le chapitre n'est pas au bon format !"];
             }
             if(empty($publishedAt)){
-                $errors[] = ['error' => "published_at", "message" => "La date de publication ne peut être vide!"];
+                $errors[] = ['error' => "published_at", "message" => "La date de publication ne peut être vide !"];
             }elseif(!$chapterValidator->isDate($publishedAt)){
-                $errors[]= ['error' => "published_at", "message" => "La date n'est pas valide!"];
+                $errors[]= ['error' => "published_at", "message" => "La date de publication n'est pas valide!"];
             }
             if(!isset($published)){
-                $errors[] = ['error' => "published", "message" => "Le statut de la publication ne peut être vide"];
+                $errors[] = ['error' => "published", "message" => "Le statut de la publication ne peut être vide !"];
             }elseif (!$chapterValidator->isPublished($published)){
-                $errors[] = ['erro' => "published", "message" => "Le statut de publication n'est pas valide"];
+                $errors[] = ['erro' => "published", "message" => "Le statut de publication n'est pas valide !"];
             }
 
             // Mise à jour en bdd si pas d'erreurs

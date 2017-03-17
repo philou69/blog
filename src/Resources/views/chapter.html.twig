@@ -17,7 +17,7 @@
         <p>{{ chapter.chapter | raw }}</p>
     {% else %}
         <p>
-            Le chapitre n'est pas encore publié.<br/>
+            Le chapitre n'a pas encore été publié.<br/>
             Revenez le {{ chapter.publishedAt  | date('d/m/Y') }}
         </p>
     {% endif %}

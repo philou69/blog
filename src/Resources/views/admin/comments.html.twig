@@ -8,17 +8,17 @@
         <table id="comment-dataTables" class="table table-striped table-hover">
             <thead>
             <tr class="succes row">
-                <th class="col-sm-4">commentaire</th>
+                <th class="col-sm-4">commentaires</th>
                 <th class="col-sm-2">publié par</th>
-                <th class="col-sm-2">Date du post</th>
-                <th class="col-sm-3">Etat</th>
-                <th class="col-sm-1">Editer</th>
+                <th class="col-sm-2">date du post</th>
+                <th class="col-sm-3">état</th>
+                <th class="col-sm-1">éditer</th>
             </tr>
             </thead>
             <tbody>
                 {% for comment in comments %}
                     {% if comment.status.id == 1 %}
-                        {% set status = "Signaler
+                        {% set status = "Signalé
                             par " ~ comment.statusedBy.username ~ "
                             le " ~ comment.statusedAt | date('d/m/Y') %}
                     {% elseif comment.status.id == 2%}

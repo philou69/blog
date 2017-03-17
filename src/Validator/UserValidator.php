@@ -10,8 +10,8 @@ class UserValidator
 
     function __construct()
     {
-        $this->regexUsername = "#^[a-zA-Z0-9éèàùêâûîô_\-]{2,25}$#";
-        $this->regexPassword = "#^[a-zA-Z0-9@+\-*/&]{3,25}$#";
+        $this->regexUsername = "#^[a-zA-Z0-9éèàùêâûîô_-]{2,25}$#";
+        $this->regexPassword = "#^[a-zA-Z0-9@+*/&-]{3,25}$#";
         $this->regexMail = "/^[a-z0-9._-]+@[a-z0-9_-]{2,}\.[a-z]{2,4}$/i";
     }
 

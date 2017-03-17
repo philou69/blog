@@ -8,21 +8,15 @@
         <h1 class="text-center"> {{ user.username }}</h1>
         <form action="" method="post" class="form-horizontal">
             <div class="form-group">
-                <label for="id" class="col-sm-3 control-label">Id :</label>
+                <label for="firstname" class="col-sm-3 control-label">Prénom</label>
                 <div class="col-sm-5">
-                    <input type="text" id="id" class="form-control" readonly="readonly" value="{{ user.id }}">
+                    <input type="text" id="firstname" class="form-control" readonly="readonly" value="{{ user.firstname }}">
                 </div>
             </div>
             <div class="form-group">
                 <label for="username" class="col-sm-3 control-label">Nom</label>
                 <div class="col-sm-5">
                     <input type="text" id="username" class="form-control" readonly="readonly" value="{{ user.username }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="firstname" class="col-sm-3 control-label">Prénom</label>
-                <div class="col-sm-5">
-                    <input type="text" id="firstname" class="form-control" readonly="readonly" value="{{ user.firstname }}">
                 </div>
             </div>
             <div class="form-group">

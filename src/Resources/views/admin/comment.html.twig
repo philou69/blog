@@ -29,12 +29,12 @@
                 </div>
                 <div class="radio">
                     <label><input type="radio" name="etat"
-                                  value="signaled" {% if etat == "signaled" %} checked="true" {% endif %} >Signaler{% if etat == "signaled" %} par {{ comment.signaledBy.username }} le {{ comment.signaledAt| date('d/m/Y') }}{% endif %}
+                                  value="signaled" {% if etat == "signaled" %} checked="true" {% endif %} >Signalé
                     </label>
                 </div>
                 <div class="radio ">
                     <label><input type="radio" name="etat"
-                                  value="banished" {% if etat == "banished" %} checked="true" {% endif %} >Banni {% if etat == "banished" %}par {{ comment.banishedBy.username }} le {{ comment.banishedAt | date('d/m/Y') }}{% endif %}
+                                  value="banished" {% if etat == "banished" %} checked="true" {% endif %} >Banni
                     </label>
                 </div>
 
@@ -53,7 +53,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="user" class="col-sm-3 control-label">publié par :</label>
+            <label for="user" class="col-sm-3 control-label">Publié par :</label>
             <div class="col-sm-5">
                 <input type="text" id="user" value="{{ comment.user.username }}" class="form-control"
                        readonly="readonly">

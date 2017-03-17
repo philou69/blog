@@ -31,7 +31,7 @@ class UserController extends AdminController
                 // On utilise le userValidator
                 $userValidator = new UserValidator();
                 // le prénoms d'abord
-                if(!$userValidator->isUsername($username)){
+                if(!$userValidator->isUsername($firstname)){
                     $errors[]= ["error" => "firstname", "message" => "Le prénom n'est pas au bon format"];
                 }
                 if (!$userValidator->isUsername($username)) {
@@ -44,8 +44,7 @@ class UserController extends AdminController
                 // les mots de passe
                 if ($password !== $passwordConfirmation) {
                     $errors[] = ["error" => "passwords", "message" => "Les mots de passe ne sont pas identique"];
-                }
-                if (!$userValidator->isPassword($password)) {
+                }elseif (!$userValidator->isPassword($password)) {
                     $errors[] = ["error" => "password", "message" => "Le mot de passe n'est pas du format"];
                 }
                 // On va s'assurer que l'username et mail n'est pas déjà utilise
@@ -91,8 +90,10 @@ class UserController extends AdminController
         }
         $success = null;
         $userManager = new  UserManager();
+        $userValidator = new UserValidator();
         $userConstraint = new UserConstraint();
         $user = $userManager->findOneById($_SESSION['id']);
+        $oldUser = clone $user;
         // Si le visiteur n'est pas connecter, on leve une exeption
         $errors = [];
 
@@ -101,65 +102,78 @@ class UserController extends AdminController
             $username = htmlspecialchars($_POST['username']);
             $firstname = htmlspecialchars($_POST['firstname']);
             $mail = htmlspecialchars($_POST['mail']);
+            $oldPassword = htmlspecialchars($_POST['oldPassword']);
             $password = htmlspecialchars($_POST['password']);
             $passwordConfirmation = htmlspecialchars($_POST['passwordConfirmation']);
-            $userValidator = new UserValidator();
-            if (isset($username)) {
-                //username n'est pas vide.
-                if (!$userValidator->isUsername($username)) {
-                    // ce n'est pas un username, on remplie le tableau
-                    $errors[] = ["error" => "username", "message" => "Le nom n'a pas un bon format"];
-                }
-            }
-            if (isset($firstname)) {
-                //username n'est pas vide.
-                if (!$userValidator->isUsername($firstname)) {
-                    // ce n'est pas un username, on remplie le tableau
-                    $errors[] = ["error" => "username", "message" => "Le nom n'a pas un bon format"];
-                }
-                if ($user->getFirstname() != $firstname && !$userConstraint->isNotOtherFirstName($firstname)  ) {
-                    $errors[] = ["error" => "formulaire", "message" => "Modification impossible"];
-                }
-            }
-            if (isset($mail)) {
-                // mail n'est pas vide.
-                if (!$userValidator->isMail($mail)) {
-                    $errors[] = ["error" => "mail", "message" => "Le mail n'est pas au bon format!"];
-                }
-                if (!$userConstraint->isNotOtherMail($mail) && $user->getMail() != $mail) {
-                    $errors[] = ["error" => "formulaire", "message" => "Modification 2 impossible"];
-                }
-            }
-            if (!empty($password) && !empty($passwordConfirmation)) {
-                // password et password_confirmation ne sont pas vides
-                if ($password != $passwordConfirmation) {
-                    // Les mots de passe ne sont pas identique
-                    $errors[] = ["error" => "password", "message" => "Les mots de passe ne sont pas identiques"];
-                } else {
-                    // Les mots sont identiques
-                    if (!$userValidator->isPassword($password)) {
-                        $errors[] = ["error" => "password", "message" => "Le mot de passe n'est pas au bon format!"];
+            if(empty($oldPassword)){
+                $errors[] = ['error' => 'formulaire', 'message' => "L'ancien mot de passe ne peut être vide"];
+            }else{
+                if (isset($username)) {
+                    //username n'est pas vide.
+                    if (!$userValidator->isUsername($username)) {
+                        // ce n'est pas un username, on remplie le tableau
+                        $errors[] = ["error" => "username", "message" => "Le nom n'a pas un bon format"];
                     }
                 }
-            }
-            // Si le tableau est vide on update le user
-            if (empty($errors)) {
-                if($user->getUsername() != $username){
-                    $user->setUsername($username);
+                if (isset($firstname)) {
+                    //username n'est pas vide.
+                    if (!$userValidator->isUsername($firstname)) {
+                        // ce n'est pas un username, on remplie le tableau
+                        $errors[] = ["error" => "username", "message" => "Le nom n'a pas un bon format"];
+                    }
                 }
-                if($user->getFirstname() != $firstname){
-                    $user->setFirstname($firstname);
+                if (isset($mail)) {
+                    // mail n'est pas vide.
+                    if (!$userValidator->isMail($mail)) {
+                        $errors[] = ["error" => "mail", "message" => "Le mail n'est pas au bon format!"];
+                    }
                 }
-                if($user->getMail() != $mail){
-                    $user->setMail($mail);
+                if (!empty($password) && !empty($passwordConfirmation)) {
+                    // password et password_confirmation ne sont pas vides
+                    if ($password != $passwordConfirmation) {
+                        // Les mots de passe ne sont pas identique
+                        $errors[] = ["error" => "password", "message" => "Les mots de passe ne sont pas identiques"];
+                    } else {
+                        // Les mots sont identiques
+                        if (!$userValidator->isPassword($password)) {
+                            $errors[] = ["error" => "password", "message" => "Le mot de passe n'est pas au bon format!"];
+                        }
+                    }
                 }
-                if($user->getPassword() != hash("sha512", $password)) {
-                    $user->setPassword(hash("sha512", $password));
+                if(hash('sha512', $oldPassword) == $user->getPassword()){
+                    if($user->getUsername() != $username){
+                        $user->setUsername($username);
 
+                    }
+                    if($user->getFirstname() != $firstname){
+                        $user->setFirstname($firstname);
+                        if(!$userConstraint->isNotOtherFirstName($firstname)){
+                            $errors[] = ['error' => 'formulaire', 'message' => "Vos modifications n'ont pas été enregistrer !"];
+                        }
+                    }
+                    if($user->getMail() != $mail){
+                        $user->setMail($mail);
+                        if(!$userConstraint->isNotOtherMail($mail)){
+                            $errors[] = ['error' => 'formulaire', 'message' => "Vos modifications n'ont pas été enregistrer !"];
+                        }
+                    }
+                    if($user->getPassword() != hash("sha512", $password)) {
+                        $user->setPassword(hash("sha512", $password));
+
+                    }
+                }else{
+                    $errors[]= ['error' => 'formulaire', 'message' => "Les modifications n'ont pu être enregistrées !"];
                 }
+
+
+            }// Si le tableau est vide on update le user
+            if (empty($errors)) {
                 $userManager->update($user);
                 $success = "Vos modifications ont bien été enregistrer !";
+            }else{
+                $user = $oldUser;
             }
+
 
         }
         // Si la méthode est post, on vérifie les données du formulaire

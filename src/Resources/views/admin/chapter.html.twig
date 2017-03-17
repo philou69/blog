@@ -29,9 +29,9 @@
                 {% endfor %}
             </div>
             <div class="form-group">
-                <label for="chapter" class="col-sm-2 control-label">Text :</label>
+                <label for="chapter" class="col-sm-2 control-label">Texte :</label>
                 <div class="col-sm-8">
-                    <textarea name="chapter" id="chapter">{{ chapter.chapter }}</textarea>
+                    <textarea name="chapter" id="chapter">{{ chapter.chapter | raw }}</textarea>
                 </div>
                 {% for error in errors if error.error == "chapter" %}
                     <div class="alert alert-danger col-sm-2">
@@ -40,7 +40,7 @@
                 {% endfor %}
             </div>
             <div class="form-group">
-                <label for="publishedAt" class="col-sm-2 control-label">publier le :</label>
+                <label for="publishedAt" class="col-sm-2 control-label">Publié le :</label>
                 <div class="col-sm-5">
                     <input type="date" name="publishedAt" id="publishedAt" class="form-control" value="{{ chapter.publishedAt|date("Y-m-d") }}">
                 </div>
