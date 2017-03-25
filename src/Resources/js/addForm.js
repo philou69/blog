@@ -8,6 +8,7 @@ btnsResponse.forEach(function (btn) {
             addForm(id, form);
             pElt.appendChild(form);
             e.target.parentNode.removeChild(e.target);
+            $('#response').focus()
             e.preventDefault();
         }
     )

@@ -202,10 +202,10 @@ class UserController extends AdminController
                 $password = htmlspecialchars($_POST['password']);
                 $userValidator = new UserValidator();
                 if (!$userValidator->isUsername($firstname)) {
-                    $errors[] = ["error" => "username", "message" => "Erreur sur le format du nom"];
+                    $errors[] = ["error" => "username", "message" => "Le nom n'est valide !"];
                 }
                 if (!$userValidator->isPassword($password)) {
-                    $errors[] = ["error" => "password", "message" => "Erreur sur le format du mot de passe"];
+                    $errors[] = ["error" => "password", "message" => "Le mot de passe n'est pas valide !"];
                 }
             } else {
                 $errors[] = ["error" => "formulaire", "message" => "Il faut un nom et un mot de passe!"];
@@ -267,7 +267,7 @@ class UserController extends AdminController
                         $userManager->update($user);
 
                     }
-                    $infos[] = "Nous avons bien enregistré votre demande.<br/> Si l'adresse mail $email correspond à un visiteur, un mail sera envoyé à cette adresse !";
+                    $infos[] = "Nous avons bien enregistré votre demande.<br/> Si l'adresse mail $email correspond à un visiteur, un mail sera envoyé à cette adresse !<br/>Consultez-le !";
                 }
             }
         }
