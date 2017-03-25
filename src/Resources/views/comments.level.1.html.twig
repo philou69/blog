@@ -20,7 +20,7 @@
                                 Répondre
                             </a>
                         {% else %}
-                            <a href="/login">Connectez</a> vous ou <a href="/inscription">inscrivez</a> vous.
+                            <a href="/login">Connectez-vous</a> ou <a href="/inscription">inscrivez</a> vous.
                         {% endif %}
                     </small>
                 {% endif %}
@@ -36,7 +36,7 @@
 {# le visiteur est connecter ?#}
 {% if session.isconnected == false %}
     <p>
-        <a href="/login">Connecter</a> vous pour laisser un commentaire sur ce chapitre.
+        <a href="/login">Connectez-vous</a> ou <a href="/inscription">inscrivez</a> vous pour laisser un commentaire sur ce chapitre.
     </p>
 {% else %}
     <form action="/comment/{{ chapter.id }}" method="post" class="form-horizontal well">

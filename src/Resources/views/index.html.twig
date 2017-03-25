@@ -16,7 +16,7 @@
         {% if chapter.published_at < "now" |date('Y-m-d') %}
             <h2 class="text-center">{{ chapter.title }}</h2>
             <p>
-                {{ chapter.title }} n'a pas encore été diffusé. Vous pourrez connaître
+                {{ chapter.title }} n'a pas encore été diffusée. Vous pourrez connaître
                 la suite des aventures le {{ chapter.published_at|date('d/m/Y') }}
             </p>
         {% else %}

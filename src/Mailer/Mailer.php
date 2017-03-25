@@ -28,13 +28,12 @@ class Mailer
         $mailer = \Swift_Mailer::newInstance($transport);
 
         $message = \Swift_Message::newInstance()
-            ->setSubject('Modification de votre mot de pass')
+            ->setSubject('Modification de votre mot de passe')
             ->setFrom(array($this->username => 'Blog'))
             ->setTo(array($user->getMail() => $user->getUsername()))
             ->setBody($view, 'text/html' );
 
         $mailer->send($message);
-        var_dump($mailer);
     }
 
 }

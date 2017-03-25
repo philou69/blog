@@ -32,22 +32,22 @@ class UserController extends AdminController
                 $userValidator = new UserValidator();
                 // le prénoms d'abord
                 if(!$userValidator->isUsername($firstname)){
-                    $errors[]= ["error" => "firstname", "message" => "Le prénom n'est pas au bon format"];
+                    $errors[]= ["error" => "firstname", "message" => "Ce prénom n'est pas valide !"];
                 }
                 if (!$userValidator->isUsername($username)) {
-                    $errors[] = ["error" => "username", "message" => "Le nom n'est pas du format"];
+                    $errors[] = ["error" => "username", "message" => "Ce nom n'est pas valide !"];
                 }
                 // le mail
                 if (!$userValidator->isMail($mail)) {
-                    $errors[] = ["error" => "mail", "message" => "Le mail n'est pas du format"];
+                    $errors[] = ["error" => "mail", "message" => "Cette adresse mail n'est pas valide !"];
                 }
                 // les mots de passe
                 if ($password !== $passwordConfirmation) {
-                    $errors[] = ["error" => "passwords", "message" => "Les mots de passe ne sont pas identique"];
+                    $errors[] = ["error" => "passwords", "message" => "Les mots de passe ne sont pas identiques !"];
                 }elseif (!$userValidator->isPassword($password)) {
-                    $errors[] = ["error" => "password", "message" => "Le mot de passe n'est pas du format"];
+                    $errors[] = ["error" => "password", "message" => "Ce mot de passe n'est pas valide !"];
                 }
-                // On va s'assurer que l'username et mail n'est pas déjà utilise
+                // On va s'assurer que l'username et mail n'est pas déjà utilisé
                 $user = new User();
                 $user->setUsername($username)
                     ->setFirstname($firstname)
@@ -59,7 +59,7 @@ class UserController extends AdminController
                 if (!$userConstraint->isNotOtherUser()) {
                     $errors[] = [
                         "error" => "user",
-                        "message" => "Il existe déjà un visiteur avec ce prénom ou cet mail",
+                        "message" => "Il existe déjà un visiteur avec ce prénom ou ce mail",
                     ];
 
                 }
@@ -220,15 +220,17 @@ class UserController extends AdminController
                 $user = $userManager->findOneByFirstNameAndPassword($firstname, $password);
                 // on vérifie l'existance de l'user
                 if (!$user) {
-                    throw new \Exception("L'user n'existe pas ou mauvais mot de passe");
-                }
-                if($user->isBanish() == true){
+                    $errors[] = [ "error" => "formulaire", 'message' => "L'user n'existe pas ou mauvais mot de passe"];
+                }elseif($user->isBanish()){
                    return $this->redirectTo('/');
                 }
-                // On enregistre l'utilisateur dans une session
-                $this->fillSession($user);
-                // L'utilisateur étant enrgistrer on le renvoye vers la page d'accueil
-                $this->redirectTo('/');
+                if(empty($errors)){
+                    // On enregistre l'utilisateur dans une session
+                    $this->fillSession($user);
+                    // L'utilisateur étant enrgistrer on le renvoye vers la page d'accueil
+                    $this->redirectTo('/');
+                }
+
             }
         }
 
@@ -251,7 +253,7 @@ class UserController extends AdminController
             if(isset($email)){
                 $userValidator = new UserValidator();
                 if(!$userValidator->isMail($email)){
-                    $errors['message'] = "Email au mauvais format";
+                    $errors['message'] = "Ce mail n'est pas valide !";
                 }else{
                     $userManager = new UserManager();
                     $user = $userManager->findOneByMail($email);
@@ -260,11 +262,12 @@ class UserController extends AdminController
                         $view = $this->render('email.password.html.twig', array('user' => $user, 'password' => $password));
                         $mailer = new Mailer();
                         $mailer->sendMail($user, $password, $view);
-                        $succes['messages'] = "Un email a été envoyer à l'adresse mail";
+                        $succes['messages'] = "Un email a été envoyé à l'adresse mail";
+                        $user->setPassword(hash('sha512', $password));
                         $userManager->update($user);
 
                     }
-                    $infos[] = "Nous avons bien enregistrez votre demande.<br/> Si l'adresse mail $email correspond à un visiteur, un mail sera envoyer à cette adresse !";
+                    $infos[] = "Nous avons bien enregistré votre demande.<br/> Si l'adresse mail $email correspond à un visiteur, un mail sera envoyé à cette adresse !";
                 }
             }
         }
