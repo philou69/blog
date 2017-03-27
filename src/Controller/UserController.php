@@ -18,6 +18,7 @@ class UserController extends AdminController
         session_start();
         $errors = [];
         // On vérifie si le formulaire a bien été envoyé
+        $user = new User();
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $firstname = htmlspecialchars($_POST['firstname']);
             $username = htmlspecialchars($_POST['username']);
@@ -48,7 +49,7 @@ class UserController extends AdminController
                     $errors[] = ["error" => "password", "message" => "Ce mot de passe n'est pas valide !"];
                 }
                 // On va s'assurer que l'username et mail n'est pas déjà utilisé
-                $user = new User();
+
                 $user->setUsername($username)
                     ->setFirstname($firstname)
                     ->setMail($mail)
@@ -79,7 +80,7 @@ class UserController extends AdminController
             }
         }
         // On affiche la vue du formulaire
-        echo $this->render('connect.html.twig', array("errors" => $errors), $_SESSION);
+        echo $this->render('connect.html.twig', array("errors" => $errors, 'user' => $user), $_SESSION);
     }
 
     public function profilAction()

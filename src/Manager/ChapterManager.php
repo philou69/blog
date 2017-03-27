@@ -47,11 +47,14 @@ class ChapterManager
         $q->execute();
 
     }
-    public function delete(Chapter $chapter){
+
+    public function delete(Chapter $chapter)
+    {
         $q = $this->db->prepare("DELETE FROM Chapter WHERE id = :id");
         $q->bindValue(":id", $chapter->getId(), \PDO::PARAM_INT);
         $q->execute();
     }
+
     public function findOneById($id)
     {
         // Fonction  cherchant un chapter par son identifiant
@@ -62,6 +65,7 @@ class ChapterManager
         if ($q->rowCount() != 1) {
             return false;
         }
+
         // On retourne une instance de Chapter
         return $q->fetchObject(Chapter::class);
     }
@@ -110,36 +114,54 @@ class ChapterManager
         return $chapters;
     }
 
-    public function findLastPublished(){
-        $q = $this->db->query("SELECT id,title, chapter, published, publishedAt FROM Chapter WHERE published = true ORDER BY publishedAt DESC  LIMIT 0, 1");
-        if($q->rowCount() != 1){
+    public function findLastPublished()
+    {
+        $q = $this->db->query(
+            "SELECT id,title, chapter, published, publishedAt FROM Chapter WHERE published = true ORDER BY publishedAt DESC  LIMIT 0, 1"
+        );
+        if ($q->rowCount() != 1) {
             return false;
         }
+
         return $q->fetchObject(Chapter::class);
     }
 
-    public function findAllDraft(){
+    public function findAllDraft()
+    {
         $q = $this->db->query('SELECT id, title, chapter, published, publishedAt FROM Chapter WHERE published = false');
-        if($q->rowCount() == 0){
+        if ($q->rowCount() == 0) {
             return false;
         }
         $chapters = [];
-        while($chapter = $q->fetchObject(Chapter::class)){
+        while ($chapter = $q->fetchObject(Chapter::class)) {
             $chapters[] = $chapter;
         }
+
         return $chapters;
     }
 
-    public function findAllPublished(){
+    public function findAllPublished()
+    {
         $q = $this->db->query('SELECT id, title, chapter, published, publishedAt FROM Chapter WHERE published = true');
-        if($q->rowCount() == 0){
+        if ($q->rowCount() == 0) {
             return false;
         }
         $chapters = [];
-        while($chapter = $q->fetchObject(Chapter::class)){
+        while ($chapter = $q->fetchObject(Chapter::class)) {
             $chapters[] = $chapter;
         }
+
         return $chapters;
     }
 
+    public function istOtherTitleChapter($title)
+    {
+        $q = $this->db->prepare("SELECT id FROM Chapter WHERE title = :title");
+        $q->bindValue(':title', $title, \PDO::PARAM_STR);
+        $q->execute();
+        if(is_bool($q->fetch())){
+            return true;
+        }
+        return false;
+    }
 }

@@ -14,7 +14,7 @@
             <div class="form-group">
                 <label for="firstname" class="control-label col-sm-2">Prénom : </label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" name="firstname" id="firstname" required>
+                    <input type="text" class="form-control" name="firstname" id="firstname" value="{{ user.firstname }}" required>
                 </div>
                 {% for error in errors if error.error == "username" %}
                     <div class="alert alert-danger col-sm-5">
@@ -25,7 +25,7 @@
             <div class="form-group">
                 <label for="username" class="control-label col-sm-2">Nom : </label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" name="username" id="username" required>
+                    <input type="text" class="form-control" name="username" id="username" value="{{ user.username }}" required>
                 </div>
                 {% for error in errors if error.error == "username" %}
                     <div class="alert alert-danger col-sm-5">
@@ -36,7 +36,7 @@
             <div class="form-group">
                 <label for="mail" class="control-label col-sm-2">Mail : </label>
                 <div class="col-sm-5">
-                    <input type="email" class="form-control" name="mail" id="mail" required>
+                    <input type="email" class="form-control" name="mail" id="mail" value="{{ user.mail }}" required>
                 </div>
                 {% for error in errors if error.error == "mail" %}
                     <div class="alert alert-danger col-sm-5">

@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Constraint\ChapterConstraint;
 use App\Entity\Chapter;
 use App\Manager\ChapterManager;
 use App\Validator\ChapterValidator;
@@ -32,6 +33,7 @@ class ChapterAdminController extends AdminController
         $this->isAuthorized();
         // Initialisation d'un tableau d'erreurs
         $errors = [];
+        $chapter = new Chapter();
         // On verifie si la requete est en post ou en get
         // Cela nous definis si le fomrulaire à été validé ou pas
         if($_SERVER['REQUEST_METHOD'] == "POST"){
@@ -67,22 +69,30 @@ class ChapterAdminController extends AdminController
             }
             // Si le tableau d'erreurs est vide, on enregistre le chapter
             if(empty($errors)){
-
-                $published = ($published == 'true' ? true : false );
-                $chapterManager = new ChapterManager();
+                $chapterConstraint = new ChapterConstraint();
                 $chapter = new Chapter();
+                $published = ($published == 'true' ? true : false );
                 $chapter->setTitle($title)
                     ->setChapter($text)
                     ->setPublishedAt($publishedAt)
                     ->setPublished($published);
-                $chapterManager->create($chapter);
-                // On redirige vers la page des chapters
-                $this->redirectTo('/admin/chapters');
+                if(!$chapterConstraint->isAnotherChapterTitle($title)){
+
+                    $chapterManager = new ChapterManager();
+
+                    $chapterManager->create($chapter);
+                    // On redirige vers la page des chapters
+                    $this->redirectTo('/admin/chapters');
+                }else{
+                    $errors[]= ['error' => 'title', 'message' => 'Ce titre existe déjà !'];
+                }
+
+
             }
 
         }
         // On affiche la page du formulaire
-        echo $this->render("admin/chapter.html.twig", array('errors' => $errors));
+        echo $this->render("admin/chapter.html.twig", array('errors' => $errors, 'chapter' => $chapter));
     }
 
     /*
