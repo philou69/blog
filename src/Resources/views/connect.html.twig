@@ -16,7 +16,7 @@
                 <div class="col-sm-5">
                     <input type="text" class="form-control" name="firstname" id="firstname" value="{{ user.firstname }}" required>
                 </div>
-                {% for error in errors if error.error == "username" %}
+                {% for error in errors if error.error == "firstname" %}
                     <div class="alert alert-danger col-sm-5">
                         {{ error.message }}
                     </div>
