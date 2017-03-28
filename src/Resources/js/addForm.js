@@ -36,6 +36,8 @@ function addForm(id, form) {
     var text = document.createElement("textarea");
     text.setAttribute("name", "response");
     text.setAttribute("id", "response");
+    text.setAttribute("spellcheck", "true");
+    text.setAttribute("require", "true");
     text.setAttribute("rows", "10");
     text.setAttribute("cols", "50");
 

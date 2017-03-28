@@ -9,7 +9,9 @@
         tinymce.init({
             selector: 'textarea',
             menubar: false,
-            forced_root_block : ""
+            forced_root_block : "",
+            plugins: "spellchecker",
+            browser_spellcheck: true
         });
     </script>
 {% endblock %}
