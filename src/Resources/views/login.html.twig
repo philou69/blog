@@ -3,6 +3,13 @@
 {% block title %}Connection {% endblock %}
 
 {% block body %}
+    {% for info in infos %}
+        <div class="row">
+            <div class="alert alert-success col-sm-6 col-sm-push-3">
+                {{ info.0 | raw }}
+            </div>
+        </div>
+    {% endfor %}
     <div class="well">
         <form action="" method="post" class="form-horizontal">
             <h1 class="text-center">Formulaire de connection</h1>

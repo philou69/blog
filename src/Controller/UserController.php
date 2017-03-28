@@ -16,6 +16,10 @@ class UserController extends AdminController
     public function inscriptionAction()
     {
         session_start();
+        $route = $_SERVER['HTTP_REFERER'];
+        if ($route != 'http://blog.fr/inscription') {
+            $_SESSION['route'] = $route;
+        }
         $errors = [];
         // On vérifie si le formulaire a bien été envoyé
         $user = new User();
@@ -32,8 +36,8 @@ class UserController extends AdminController
                 // On utilise le userValidator
                 $userValidator = new UserValidator();
                 // le prénoms d'abord
-                if(!$userValidator->isUsername($firstname)){
-                    $errors[]= ["error" => "firstname", "message" => "Ce prénom n'est pas valide !"];
+                if (!$userValidator->isUsername($firstname)) {
+                    $errors[] = ["error" => "firstname", "message" => "Ce prénom n'est pas valide !"];
                 }
                 if (!$userValidator->isUsername($username)) {
                     $errors[] = ["error" => "username", "message" => "Ce nom n'est pas valide !"];
@@ -45,7 +49,7 @@ class UserController extends AdminController
                 // les mots de passe
                 if ($password !== $passwordConfirmation) {
                     $errors[] = ["error" => "passwords", "message" => "Les mots de passe ne sont pas identiques !"];
-                }elseif (!$userValidator->isPassword($password)) {
+                } elseif (!$userValidator->isPassword($password)) {
                     $errors[] = ["error" => "password", "message" => "Ce mot de passe n'est pas valide !"];
                 }
                 // On va s'assurer que l'username et mail n'est pas déjà utilisé
@@ -69,16 +73,17 @@ class UserController extends AdminController
             }
             // On vérifie si la  variable error n'est pas vide
             if (empty($errors)) {
-
+                $route = $_SESSION['route'];
                 // On l'enregistre
                 $userManager = new UserManager();
                 $user = $userManager->create($user);
                 // On crée la session
                 $this->fillSession($user);
                 // On renvoie vers la page d'accueil
-                $this->redirectTo('/');
+                    $this->redirectTo($route);
             }
         }
+
         // On affiche la vue du formulaire
         echo $this->render('connect.html.twig', array("errors" => $errors, 'user' => $user), $_SESSION);
     }
@@ -106,9 +111,9 @@ class UserController extends AdminController
             $oldPassword = htmlspecialchars($_POST['oldPassword']);
             $password = htmlspecialchars($_POST['password']);
             $passwordConfirmation = htmlspecialchars($_POST['passwordConfirmation']);
-            if(empty($oldPassword)){
+            if (empty($oldPassword)) {
                 $errors[] = ['error' => 'formulaire', 'message' => "L'ancien mot de passe ne peut être vide"];
-            }else{
+            } else {
                 if (isset($username)) {
                     //username n'est pas vide.
                     if (!$userValidator->isUsername($username)) {
@@ -137,33 +142,45 @@ class UserController extends AdminController
                     } else {
                         // Les mots sont identiques
                         if (!$userValidator->isPassword($password)) {
-                            $errors[] = ["error" => "password", "message" => "Le mot de passe n'est pas au bon format!"];
+                            $errors[] = [
+                                "error" => "password",
+                                "message" => "Le mot de passe n'est pas au bon format!",
+                            ];
                         }
                     }
                 }
-                if(hash('sha512', $oldPassword) == $user->getPassword()){
-                    if($user->getUsername() != $username){
+                if (hash('sha512', $oldPassword) == $user->getPassword()) {
+                    if ($user->getUsername() != $username) {
                         $user->setUsername($username);
 
                     }
-                    if($user->getFirstname() != $firstname){
+                    if ($user->getFirstname() != $firstname) {
                         $user->setFirstname($firstname);
-                        if(!$userConstraint->isNotOtherFirstName($firstname)){
-                            $errors[] = ['error' => 'formulaire', 'message' => "Vos modifications n'ont pas été enregistrer !"];
+                        if (!$userConstraint->isNotOtherFirstName($firstname)) {
+                            $errors[] = [
+                                'error' => 'formulaire',
+                                'message' => "Vos modifications n'ont pas été enregistrer !",
+                            ];
                         }
                     }
-                    if($user->getMail() != $mail){
+                    if ($user->getMail() != $mail) {
                         $user->setMail($mail);
-                        if(!$userConstraint->isNotOtherMail($mail)){
-                            $errors[] = ['error' => 'formulaire', 'message' => "Vos modifications n'ont pas été enregistrer !"];
+                        if (!$userConstraint->isNotOtherMail($mail)) {
+                            $errors[] = [
+                                'error' => 'formulaire',
+                                'message' => "Vos modifications n'ont pas été enregistrer !",
+                            ];
                         }
                     }
-                    if($user->getPassword() != hash("sha512", $password)) {
+                    if ($user->getPassword() != hash("sha512", $password)) {
                         $user->setPassword(hash("sha512", $password));
 
                     }
-                }else{
-                    $errors[]= ['error' => 'formulaire', 'message' => "Les modifications n'ont pu être enregistrées !"];
+                } else {
+                    $errors[] = [
+                        'error' => 'formulaire',
+                        'message' => "Les modifications n'ont pu être enregistrées !",
+                    ];
                 }
 
 
@@ -171,7 +188,7 @@ class UserController extends AdminController
             if (empty($errors)) {
                 $userManager->update($user);
                 $success = "Vos modifications ont bien été enregistrer !";
-            }else{
+            } else {
                 $user = $oldUser;
             }
 
@@ -190,7 +207,16 @@ class UserController extends AdminController
     public function loginAction()
     {
         session_start();
-
+        if($_SERVER['HTTP_REFERER'] != 'http://blog.fr/login' && $_SERVER['HTTP_REFERER'] != 'http://blog.fr/user/reset')
+        {
+            $_SESSION['route'] = $_SERVER['HTTP_REFERER'];
+        }
+        $infos = [];
+        if(isset($_SESSION['success']))
+        {
+            $infos[] = $_SESSION['success'];
+            unset($_SESSION['success']);
+        }
         $errors = [];
         // On vérifie qe la methode est post et donc que le formulaire est passé
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -221,21 +247,24 @@ class UserController extends AdminController
                 $user = $userManager->findOneByFirstNameAndPassword($firstname, $password);
                 // on vérifie l'existance de l'user
                 if (!$user) {
-                    $errors[] = [ "error" => "formulaire", 'message' => "L'user n'existe pas ou mauvais mot de passe"];
-                }elseif($user->isBanish()){
-                   return $this->redirectTo('/');
+                    $errors[] = ["error" => "formulaire", 'message' => "L'user n'existe pas ou mauvais mot de passe"];
+                } elseif ($user->isBanish()) {
+                    return $this->redirectTo('/');
                 }
-                if(empty($errors)){
+                if (empty($errors)) {
+                    $route = $_SESSION['route'];
                     // On enregistre l'utilisateur dans une session
                     $this->fillSession($user);
                     // L'utilisateur étant enrgistrer on le renvoye vers la page d'accueil
-                    $this->redirectTo('/');
+
+                    $this->redirectTo($route);
+
                 }
 
             }
         }
 
-        echo $this->render('login.html.twig', array('errors' => $errors), $_SESSION);
+        echo $this->render('login.html.twig', array('errors' => $errors, 'infos' => $infos), $_SESSION);
     }
 
     public function logoutAction()
@@ -246,21 +275,26 @@ class UserController extends AdminController
         $this->redirectTo('/');
     }
 
-    public function resetAction(){
+    public function resetAction()
+    {
+        session_start();
         $errors = [];
         $infos = [];
-        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $email = htmlspecialchars($_POST['email']);
-            if(isset($email)){
+            if (isset($email)) {
                 $userValidator = new UserValidator();
-                if(!$userValidator->isMail($email)){
+                if (!$userValidator->isMail($email)) {
                     $errors['message'] = "Ce mail n'est pas valide !";
-                }else{
+                } else {
                     $userManager = new UserManager();
                     $user = $userManager->findOneByMail($email);
-                    if($user){
+                    if ($user) {
                         $password = uniqid();
-                        $view = $this->render('email.password.html.twig', array('user' => $user, 'password' => $password));
+                        $view = $this->render(
+                            'email.password.html.twig',
+                            array('user' => $user, 'password' => $password)
+                        );
                         $mailer = new Mailer();
                         $mailer->sendMail($user, $password, $view);
                         $succes['messages'] = "Un email a été envoyé à l'adresse mail";
@@ -269,10 +303,12 @@ class UserController extends AdminController
 
                     }
                     $infos[] = "Nous avons bien enregistré votre demande.<br/> Si l'adresse mail $email correspond à un visiteur, un mail sera envoyé à cette adresse !<br/>Consultez-le !";
+                    $_SESSION['success'] = $infos;
+                    $this->redirectTo('/login');
                 }
             }
         }
 
-        echo $this->render('reset.password.html.twig', array('errors' => $errors, 'infos' => $infos));
+        echo $this->render('reset.password.html.twig', array('errors' => $errors));
     }
 }

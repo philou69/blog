@@ -75,11 +75,13 @@ class Controller
             $_SESSION['firstname'] = $user->getfirstname();
             $_SESSION['roles'] = $user->getRoles();
             $_SESSION['isconnected'] = true;
+            $_SESSION['route'] = '';
         } else {
             // Sinon, on créé une session anonyme
             $_SESSION['firstname'] = "visiteur";
             $_SESSION['roles'] = ["ROLE_USER"];
             $_SESSION['isconnected'] = false;
+            $_SESSION['route'] = '';
         }
     }
 }
