@@ -98,7 +98,7 @@ class ChapterManager
         // Tableau prévue pour contenir les chapters
         $chapters = [];
         $q = $this->db->query(
-            "SELECT id , title, chapter, publishedAt, published FROM Chapter WHERE published = true ORDER BY publishedAt DESC"
+            "SELECT id , title, chapter, publishedAt, published FROM Chapter WHERE published = true and publishedAt < NOW() ORDER BY publishedAt DESC"
         );
 
         // On vérifie le nombre d'entrées retourné
@@ -117,7 +117,7 @@ class ChapterManager
     public function findLastPublished()
     {
         $q = $this->db->query(
-            "SELECT id,title, chapter, published, publishedAt FROM Chapter WHERE published = true ORDER BY publishedAt DESC  LIMIT 0, 1"
+            "SELECT id,title, chapter, published, publishedAt FROM Chapter WHERE published = true and publishedAt < NOW() ORDER BY publishedAt DESC  LIMIT 0, 1"
         );
         if ($q->rowCount() != 1) {
             return false;

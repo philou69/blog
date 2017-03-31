@@ -13,7 +13,7 @@
         </p>
     </div>
     <div class="well">
-        {% if chapter.published_at < "now" |date('Y-m-d') %}
+        {% if chapter.publishedAt < "now" |date('Y-m-d') %}
             <h2 class="text-center">{{ chapter.title }}</h2>
             <p>
                 {{ chapter.title }} n'a pas encore été diffusée. Vous pourrez connaître
@@ -22,7 +22,7 @@
         {% else %}
             <h2 class="text-center"><a href="chapter/{{ chapter.id }}">{{ chapter.title }}</a></h2>
             <p>
-                {{ chapter.chapter|slice(0,3) }}...
+                {{ chapter.chapter|slice(0,250) | raw }}...
             </p>
         {% endif %}
     </div>

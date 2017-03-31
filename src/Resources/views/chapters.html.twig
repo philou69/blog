@@ -29,7 +29,7 @@
                     <li class="well">
                         <h4><a href="/chapter/{{ chapter.id }}">{{ chapter.title }}</a></h4>
                         <p>
-                            {{ chapter.chapter | slice(0,5) }}...
+                            {{ chapter.chapter | slice(0,5) | raw }}...
                         </p>
                         <small>Paru le : {{ chapter.publishedAt | date("d/m/Y") }}</small>
                     </li>
