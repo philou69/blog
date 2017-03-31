@@ -16,10 +16,14 @@ class UserController extends AdminController
     public function inscriptionAction()
     {
         session_start();
-        $route = $_SERVER['HTTP_REFERER'];
-        if ($route != 'http://blog.fr/inscription') {
-            $_SESSION['route'] = $route;
+
+        if (isset($_SERVER['HTTP_REFERER'])){
+            $route = $_SERVER['HTTP_REFERER'];
+            if ($route != 'http://blog.fr/inscription') {
+                $_SESSION['route'] = $route;
+            }
         }
+
         $errors = [];
         // On vérifie si le formulaire a bien été envoyé
         $user = new User();
@@ -50,7 +54,7 @@ class UserController extends AdminController
                 if ($password !== $passwordConfirmation) {
                     $errors[] = ["error" => "passwords", "message" => "Les mots de passe ne sont pas identiques !"];
                 } elseif (!$userValidator->isPassword($password)) {
-                    $errors[] = ["error" => "password", "message" => "Ce mot de passe n'est pas valide !"];
+                    $errors[] = ["error" => "passwords", "message" => "Ce mot de passe n'est pas valide !"];
                 }
                 // On va s'assurer que l'username et mail n'est pas déjà utilisé
 
@@ -144,7 +148,7 @@ class UserController extends AdminController
                         if (!$userValidator->isPassword($password)) {
                             $errors[] = [
                                 "error" => "password",
-                                "message" => "Le mot de passe n'est pas au bon format!",
+                                "message" => "Le mot de passe n'est pas valide !",
                             ];
                         }
                     }
@@ -207,7 +211,7 @@ class UserController extends AdminController
     public function loginAction()
     {
         session_start();
-        if($_SERVER['HTTP_REFERER'] != 'http://blog.fr/login' && $_SERVER['HTTP_REFERER'] != 'http://blog.fr/user/reset')
+        if(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != 'http://blog.fr/login' && $_SERVER['HTTP_REFERER'] != 'http://blog.fr/user/reset')
         {
             $_SESSION['route'] = $_SERVER['HTTP_REFERER'];
         }
@@ -229,7 +233,7 @@ class UserController extends AdminController
                 $password = htmlspecialchars($_POST['password']);
                 $userValidator = new UserValidator();
                 if (!$userValidator->isUsername($firstname)) {
-                    $errors[] = ["error" => "username", "message" => "Le nom n'est valide !"];
+                    $errors[] = ["error" => "firstname", "message" => "Le nom n'est valide !"];
                 }
                 if (!$userValidator->isPassword($password)) {
                     $errors[] = ["error" => "password", "message" => "Le mot de passe n'est pas valide !"];

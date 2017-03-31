@@ -32,7 +32,7 @@
             <div class="form-group">
                 <label for="password" class="control-label col-sm-2">Mot de passe :</label>
                 <div class="col-sm-5">
-                    <input type="password" class="form-control" name="password" id="password">
+                    <input type="password" class="form-control" name="password" id="password" value="">
                 </div>
                 {% for error in errors if error.error == "password" %}
                     <div class="alert alert-danger col-sm-5">
