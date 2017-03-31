@@ -279,4 +279,9 @@ $routes["content_post"] = ["method" => "post",
                 "url" => "/admin/content/:id",
                 "controller" => "ContentAdmin:content"];
 
-
+/*
+ * Mentions légales
+ */
+$routes['mention_legales'] = ['method' => 'get',
+                "url" => '/mentions_legales',
+                'controller' => ':mention'];

@@ -12,12 +12,13 @@
                 {{ comment.comment }}<br/>
                 <small>paru le : {{ comment.createdAt|date("d/m/Y") }}
                     {% if session.isconnected == true %}
-                        <a href="/signal/{{ comment.id }}">
+                        <a href="#{{ comment.id }}_signaler" data-toggle="modal">
                             Signaler
                         </a>
                         <a href="#" class="response" id="{{ comment.id }}">
                             Répondre
                         </a>
+                        {% include 'confirm.signal.comment.html.twig' with {'comment': comment} %}
                     {% else %}
                         <a href="/login">Connectez-vous</a> ou <a href="/inscription">inscrivez</a> vous.
                     {% endif %}

@@ -6,7 +6,7 @@
     {% if comment.status.id == 1 %}
         {% set etat = "signaled" %}
     {% elseif comment.status.id == 2 %}
-        {% set etat = "banished" %}
+        {% set etat = "moderé" %}
     {% else %}
         {% set etat = "normal" %}
     {% endif %}
@@ -34,7 +34,7 @@
                 </div>
                 <div class="radio ">
                     <label><input type="radio" name="etat"
-                                  value="banished" {% if etat == "banished" %} checked="true" {% endif %} >Banni
+                                  value="banished" {% if etat == "moderé" %} checked="true" {% endif %} >Moderé
                     </label>
                 </div>
 

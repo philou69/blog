@@ -132,9 +132,9 @@ class ChapterAdminController extends AdminController
                 $errors[] = ['error' => "chapter", "message" => "Le chapitre n'est pas au bon format !"];
             }
             if(empty($publishedAt)){
-                $errors[] = ['error' => "published_at", "message" => "La date de publication ne peut être vide !"];
+                $errors[] = ['error' => "publishedAt", "message" => "La date de publication ne peut être vide !"];
             }elseif(!$chapterValidator->isDate($publishedAt)){
-                $errors[]= ['error' => "published_at", "message" => "La date de publication n'est pas valide!"];
+                $errors[]= ['error' => "publishedAt", "message" => "La date de publication n'est pas valide!"];
             }
             if(!isset($published)){
                 $errors[] = ['error' => "published", "message" => "Le statut de la publication ne peut être vide !"];

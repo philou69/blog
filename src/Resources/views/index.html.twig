@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="well">
-        <h1 class="text-center">{% for content in contents if content.title == "title_index" %}{{ content.content }}
+        <h1 class="text-center">{% for content in contents if content.title == "title_index" %}{{ content.content | raw }}
     {% endfor %}</h1>
         <p>
             {% for content in contents if content.title == "presentation" %}
@@ -14,7 +14,7 @@
     </div>
     <div class="well">
         {% if chapter.publishedAt < "now" |date('Y-m-d') %}
-            <h2 class="text-center">{{ chapter.title }}</h2>
+            <h2 class="text-center">{{ chapter.title  }}</h2>
             <p>
                 {{ chapter.title }} n'a pas encore été diffusée. Vous pourrez connaître
                 la suite des aventures le {{ chapter.published_at|date('d/m/Y') }}

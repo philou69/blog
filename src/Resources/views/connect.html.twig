@@ -8,7 +8,7 @@
             <h1 class="text-center">Formulaire d'inscription</h1>
             {% for error in errors if error.error == "user" or error.error == "password" %}
                 <div class="alert alert-danger">
-                    {{ error.message }}
+                    {{ error.message | raw }}
                 </div>
             {% endfor %}
             <div class="form-group">
@@ -18,7 +18,7 @@
                 </div>
                 {% for error in errors if error.error == "firstname" %}
                     <div class="alert alert-danger col-sm-5">
-                        {{ error.message }}
+                        {{ error.message | raw }}
                     </div>
                 {% endfor %}
             </div>
@@ -29,7 +29,7 @@
                 </div>
                 {% for error in errors if error.error == "username" %}
                     <div class="alert alert-danger col-sm-5">
-                        {{ error.message }}
+                        {{ error.message | raw }}
                     </div>
                 {% endfor %}
             </div>
@@ -40,7 +40,7 @@
                 </div>
                 {% for error in errors if error.error == "mail" %}
                     <div class="alert alert-danger col-sm-5">
-                        {{ error.message }}
+                        {{ error.message | raw }}
                     </div>
                 {% endfor %}
             </div>
@@ -50,7 +50,7 @@
                     <input type="password" class="form-control" name="password" id="password" required>
                 </div>{% for error in errors if error.error == "password" %}
                 <div class="alert alert-danger col-sm-5">
-                    {{ error.message }}
+                    {{ error.message | raw }}
                 </div>
                 {% endfor %}
             </div>
@@ -61,7 +61,7 @@
                            required>
                 </div>{% for error in errors if error.error == "passwords" %}
                 <div class="alert alert-danger col-sm-5">
-                    {{ error.message }}
+                    {{ error.message | raw }}
                 </div>
                 {% endfor %}
             </div>

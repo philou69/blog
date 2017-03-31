@@ -19,7 +19,7 @@ class UserController extends AdminController
 
         if (isset($_SERVER['HTTP_REFERER'])){
             $route = $_SERVER['HTTP_REFERER'];
-            if ($route != 'http://blog.fr/inscription') {
+            if ($route != $this->url . '/inscription') {
                 $_SESSION['route'] = $route;
             }
         }
@@ -41,20 +41,20 @@ class UserController extends AdminController
                 $userValidator = new UserValidator();
                 // le prénoms d'abord
                 if (!$userValidator->isUsername($firstname)) {
-                    $errors[] = ["error" => "firstname", "message" => "Ce prénom n'est pas valide !"];
+                    $errors[] = ["error" => "firstname", "message" => "Ce prénom n'est pas valide !<br/> Il ne doit contenir que des caractères alphabétiques"];
                 }
                 if (!$userValidator->isUsername($username)) {
-                    $errors[] = ["error" => "username", "message" => "Ce nom n'est pas valide !"];
+                    $errors[] = ["error" => "username", "message" => "Ce nom n'est pas valide !<br/> Il ne doit contenir que des caractères alphabétiques"];
                 }
                 // le mail
                 if (!$userValidator->isMail($mail)) {
-                    $errors[] = ["error" => "mail", "message" => "Cette adresse mail n'est pas valide !"];
+                    $errors[] = ["error" => "mail", "message" => "Cette adresse mail n'est pas valide !<br> Le format doit être xxx@xxx.xxx"];
                 }
                 // les mots de passe
                 if ($password !== $passwordConfirmation) {
                     $errors[] = ["error" => "passwords", "message" => "Les mots de passe ne sont pas identiques !"];
                 } elseif (!$userValidator->isPassword($password)) {
-                    $errors[] = ["error" => "passwords", "message" => "Ce mot de passe n'est pas valide !"];
+                    $errors[] = ["error" => "passwords", "message" => "Ce mot de passe n'est pas valide !<br> Il peut être constitué de caractères alphanumérique et des caractères spéciaux suivant éèêùàîôûç@+*&-"];
                 }
                 // On va s'assurer que l'username et mail n'est pas déjà utilisé
 
@@ -77,7 +77,11 @@ class UserController extends AdminController
             }
             // On vérifie si la  variable error n'est pas vide
             if (empty($errors)) {
-                $route = $_SESSION['route'];
+                if(isset($_SESSION['route'])){
+                    $route = $_SESSION['route'];
+                }else{
+                    $route = '/';
+                }
                 // On l'enregistre
                 $userManager = new UserManager();
                 $user = $userManager->create($user);
@@ -211,7 +215,7 @@ class UserController extends AdminController
     public function loginAction()
     {
         session_start();
-        if(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != 'http://blog.fr/login' && $_SERVER['HTTP_REFERER'] != 'http://blog.fr/user/reset')
+        if(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != $this->url . '/login' && $_SERVER['HTTP_REFERER'] != $this->url . '/user/reset')
         {
             $_SESSION['route'] = $_SERVER['HTTP_REFERER'];
         }
@@ -256,7 +260,11 @@ class UserController extends AdminController
                     return $this->redirectTo('/');
                 }
                 if (empty($errors)) {
-                    $route = $_SESSION['route'];
+                    if(isset($_SESSION['route'])){
+                        $route = $_SESSION['route'];
+                    }else{
+                        $route = '/';
+                    }
                     // On enregistre l'utilisateur dans une session
                     $this->fillSession($user);
                     // L'utilisateur étant enrgistrer on le renvoye vers la page d'accueil

@@ -48,6 +48,13 @@
                             <label><input type="checkbox"  name="roles[]" value="ROLE_ADMIN" {% for role in user.roles if role == "ROLE_ADMIN" %}checked="true"{% endfor %}>ROLE_ADMIN</label>
                         </div>
                     </div>
+                    <div class="col-sm-4">
+                        {% for error in errors %}
+                            <div class="alert alert-danger">
+                                {{ error.message | raw }}
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             {% endif %}
 

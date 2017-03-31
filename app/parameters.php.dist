@@ -6,3 +6,7 @@ define("DB_HOST" ,"");
 define("DB_BASE", "");
 define("DB_USER", "");
 define("DB_PASSWORD", "");
+define("SM_SMTP", "");
+define("SM_USER", "");
+define("SM_PASSWORD", "");
+define("URL", "");

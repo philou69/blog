@@ -5,13 +5,14 @@ namespace App\Controller;
 
 
 use App\Manager\ContentManager;
-
+require_once 'app/parameters.php';
 class Controller
 {
     private $loader;
     private $twig;
     protected $contentManager;
     protected $template;
+    protected $url;
 
 
     public function __construct()
@@ -20,6 +21,7 @@ class Controller
         $this->twig = new \Twig_Environment($this->loader, array('cache' => __DIR__.'/../../var/cache', 'debug' =>true));
         $this->twig->addExtension(new \Twig_Extension_Debug());
         $this->contentManager = new ContentManager();
+        $this->url = URL;
     }
 
     /**
@@ -83,5 +85,13 @@ class Controller
             $_SESSION['isconnected'] = false;
             $_SESSION['route'] = '';
         }
+    }
+
+    /*
+     * Page des mentions légales
+     */
+    public function mentionAction()
+    {
+        echo $this->render('mentions.legales.html.twig');
     }
 }
