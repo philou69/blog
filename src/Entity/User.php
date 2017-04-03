@@ -7,6 +7,7 @@ namespace App\Entity;
 class User
 {
     private $id;
+    private $pseudo;
     private $username;
     private $firstname;
     private $mail;
@@ -43,6 +44,32 @@ class User
     {
         return $this->id;
     }
+
+    /**
+     * Get pseudo
+     *
+     * @return mixed
+     */
+    public function getPseudo()
+    {
+        return $this->pseudo;
+    }
+
+    /**
+     * Set pseudo
+     *
+     * @param mixed $pseudo
+     *
+     * @return $this
+     */
+    public function setPseudo($pseudo)
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    
 
     /**
      * @return mixed

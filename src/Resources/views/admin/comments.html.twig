@@ -19,18 +19,18 @@
                 {% for comment in comments %}
                     {% if comment.status.id == 1 %}
                         {% set status = "Signalé
-                            par " ~ comment.statusedBy.username ~ "
+                            par " ~ comment.statusedBy.pseudo ~ "
                             le " ~ comment.statusedAt | date('d/m/Y') %}
                     {% elseif comment.status.id == 2%}
                         {% set status = "Moderé
-                            par " ~ comment.statusedBy.username ~ "
+                            par " ~ comment.statusedBy.pseudo ~ "
                             le " ~ comment.statusedAt | date('d/m/Y') %}
                     {% else %}
                         {% set status = 'Normal' %}
                     {% endif %}
                     <tr class="row">
                         <th class="col-sm-4">{{ comment.comment | slice(0,50) }}...</th>
-                        <th class="col-sm-2">{{ comment.user.username }}</th>
+                        <th class="col-sm-2">{{ comment.user.pseudo }}</th>
                         <th class="col-sm-2">{{ comment.createdAt | date('d/m/Y') }}</th>
                         <th class="col-sm-3">{{ status }}
                         </th>

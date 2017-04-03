@@ -91,19 +91,19 @@ class UserAdminController extends AdminController
         $errors = [];
         // On vérifie qe la methode est post et donc que le formulaire est passé
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $firstname = htmlspecialchars($_POST['firstname']);
+            $pseudo = htmlspecialchars($_POST['pseudo']);
             $password = htmlspecialchars($_POST['password']);
             // On vérifie la présence de données username et password en post
             // On va pour cela utiliser un validator
-            if (isset($firstname) && isset($password)) {
+            if (isset($pseudo) && isset($password)) {
                 // On va vérifier les données avec un validator
                 // Les regex sont gérer dans le validator
                 $userValidator = new UserValidator();
-                if (!$userValidator->isUsername($firstname)) {
-                    $errors[] = ["error" => "firstname", "message" => "Erreur sur le format du nom"];
+                if (!$userValidator->isUsername($pseudo)) {
+                    $errors[] = ["error" => "pseudo", "message" => "Ce pseudo n'est pas valide"];
                 }
                 if (!$userValidator->isPassword($password)) {
-                    $errors[] = ["error" => "password", "message" => "Erreur sur le format du mot de passe"];
+                    $errors[] = ["error" => "password", "message" => "Ce mot de passe n'est pas valide"];
                 }
             } else {
                 $errors[] = ["error" => "formulaire", "message" => "Il faut un nom et un mot de passe!"];
@@ -115,7 +115,7 @@ class UserAdminController extends AdminController
                 // Il n'est pas utile de protege les POST car password est  hashé et username est protéger automatiquement dans la requête
                 $password = hash("sha512", $password);
                 $userManager = new UserManager();
-                $user = $userManager->findOneByFirstNameAndPassword($firstname, $password);
+                $user = $userManager->findOneByPseudoAndPassword($pseudo, $password);
                 // on vérifie l'existance de l'user
                 if (!$user) {
                     throw new \Exception("L'user n'existe pas ou mauvais mot de passe");

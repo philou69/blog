@@ -9,7 +9,7 @@
                     En attente de moderation.
 
                 {% else %}
-                    {{ comment.user.username }} : <br/>
+                    {{ comment.user.pseudo }} : <br/>
                     {{ comment.comment }}<br/>
                     <small>paru le : {{ comment.createdAt|date("d/m/Y") }}
                         {% if session.isconnected == true %}

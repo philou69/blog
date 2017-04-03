@@ -17,9 +17,9 @@ class UserController extends AdminController
     {
         session_start();
 
-        if (isset($_SERVER['HTTP_REFERER'])){
+        if (isset($_SERVER['HTTP_REFERER'])) {
             $route = $_SERVER['HTTP_REFERER'];
-            if ($route != $this->url . '/inscription') {
+            if ($route != $this->url.'/inscription') {
                 $_SESSION['route'] = $route;
             }
         }
@@ -28,6 +28,7 @@ class UserController extends AdminController
         // On vérifie si le formulaire a bien été envoyé
         $user = new User();
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $pseudo = htmlspecialchars($_POST['pseudo']);
             $firstname = htmlspecialchars($_POST['firstname']);
             $username = htmlspecialchars($_POST['username']);
             $mail = htmlspecialchars($_POST['mail']);
@@ -35,30 +36,49 @@ class UserController extends AdminController
             $passwordConfirmation = htmlspecialchars($_POST['passwordConfirmation']);
 
             // On vérifie la presence des éléments post username, mail, password et passwordConfirmation
-            if (isset($firstname) && isset($username) && isset($mail) && isset($password) && isset($passwordConfirmation)) {
+            if (isset($pseudo) && isset($firstname) && isset($username) && isset($mail) && isset($password) && isset($passwordConfirmation)) {
                 // Ils sont tous remplient
                 // On utilise le userValidator
                 $userValidator = new UserValidator();
+                if (!$userValidator->isUsername($pseudo)) {
+                    $errors[] = [
+                        'error' => 'pseudo',
+                        'message' => "Ce pseudo n'est pas valide !<br/> Il ne doit contenir que des caractères alphanumériques.",
+                    ];
+                }
                 // le prénoms d'abord
                 if (!$userValidator->isUsername($firstname)) {
-                    $errors[] = ["error" => "firstname", "message" => "Ce prénom n'est pas valide !<br/> Il ne doit contenir que des caractères alphabétiques"];
+                    $errors[] = [
+                        "error" => "firstname",
+                        "message" => "Ce prénom n'est pas valide !<br/> Il ne doit contenir que des caractères alphabétiques",
+                    ];
                 }
                 if (!$userValidator->isUsername($username)) {
-                    $errors[] = ["error" => "username", "message" => "Ce nom n'est pas valide !<br/> Il ne doit contenir que des caractères alphabétiques"];
+                    $errors[] = [
+                        "error" => "username",
+                        "message" => "Ce nom n'est pas valide !<br/> Il ne doit contenir que des caractères alphabétiques",
+                    ];
                 }
                 // le mail
                 if (!$userValidator->isMail($mail)) {
-                    $errors[] = ["error" => "mail", "message" => "Cette adresse mail n'est pas valide !<br> Le format doit être xxx@xxx.xxx"];
+                    $errors[] = [
+                        "error" => "mail",
+                        "message" => "Cette adresse mail n'est pas valide !<br> Le format doit être xxx@xxx.xxx",
+                    ];
                 }
                 // les mots de passe
                 if ($password !== $passwordConfirmation) {
                     $errors[] = ["error" => "passwords", "message" => "Les mots de passe ne sont pas identiques !"];
                 } elseif (!$userValidator->isPassword($password)) {
-                    $errors[] = ["error" => "passwords", "message" => "Ce mot de passe n'est pas valide !<br> Il peut être constitué de caractères alphanumérique et des caractères spéciaux suivant éèêùàîôûç@+*&-"];
+                    $errors[] = [
+                        "error" => "passwords",
+                        "message" => "Ce mot de passe n'est pas valide !<br> Il peut être constitué de caractères alphanumérique et des caractères spéciaux suivant éèêùàîôûç@+*&-",
+                    ];
                 }
                 // On va s'assurer que l'username et mail n'est pas déjà utilisé
 
-                $user->setUsername($username)
+                $user->setPseudo($pseudo)
+                    ->setUsername($username)
                     ->setFirstname($firstname)
                     ->setMail($mail)
                     ->setPassword(hash("sha512", $password))
@@ -77,9 +97,9 @@ class UserController extends AdminController
             }
             // On vérifie si la  variable error n'est pas vide
             if (empty($errors)) {
-                if(isset($_SESSION['route'])){
+                if (isset($_SESSION['route'])) {
                     $route = $_SESSION['route'];
-                }else{
+                } else {
                     $route = '/';
                 }
                 // On l'enregistre
@@ -88,7 +108,7 @@ class UserController extends AdminController
                 // On crée la session
                 $this->fillSession($user);
                 // On renvoie vers la page d'accueil
-                    $this->redirectTo($route);
+                $this->redirectTo($route);
             }
         }
 
@@ -113,6 +133,7 @@ class UserController extends AdminController
 
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             // On crée un tableau d'errors et un vérificateur
+            $pseudo = htmlspecialchars($_POST['pseudo']);
             $username = htmlspecialchars($_POST['username']);
             $firstname = htmlspecialchars($_POST['firstname']);
             $mail = htmlspecialchars($_POST['mail']);
@@ -122,6 +143,11 @@ class UserController extends AdminController
             if (empty($oldPassword)) {
                 $errors[] = ['error' => 'formulaire', 'message' => "L'ancien mot de passe ne peut être vide"];
             } else {
+                if (isset($pseudo)) {
+                    if (!$userValidator->isUsername($pseudo)) {
+                        $errors[] = ['error' => 'pseudo', 'message' => 'Le pseudo n\'est pas au bon format'];
+                    }
+                }
                 if (isset($username)) {
                     //username n'est pas vide.
                     if (!$userValidator->isUsername($username)) {
@@ -158,18 +184,22 @@ class UserController extends AdminController
                     }
                 }
                 if (hash('sha512', $oldPassword) == $user->getPassword()) {
+                    if ($user->getPseudo() != $pseudo) {
+                        $user->setPseudo($pseudo);
+                        if (!$userConstraint->isNotOtherPseudo($pseudo)) {
+                            $errors[] = [
+                                'error' => 'formulaire',
+                                'message' => "Vos modifications n'ont pas été enregistrer !",
+                            ];
+                        }
+                    }
                     if ($user->getUsername() != $username) {
                         $user->setUsername($username);
 
                     }
                     if ($user->getFirstname() != $firstname) {
                         $user->setFirstname($firstname);
-                        if (!$userConstraint->isNotOtherFirstName($firstname)) {
-                            $errors[] = [
-                                'error' => 'formulaire',
-                                'message' => "Vos modifications n'ont pas été enregistrer !",
-                            ];
-                        }
+
                     }
                     if ($user->getMail() != $mail) {
                         $user->setMail($mail);
@@ -215,13 +245,11 @@ class UserController extends AdminController
     public function loginAction()
     {
         session_start();
-        if(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != $this->url . '/login' && $_SERVER['HTTP_REFERER'] != $this->url . '/user/reset')
-        {
+        if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != $this->url.'/login' && $_SERVER['HTTP_REFERER'] != $this->url.'/user/reset') {
             $_SESSION['route'] = $_SERVER['HTTP_REFERER'];
         }
         $infos = [];
-        if(isset($_SESSION['success']))
-        {
+        if (isset($_SESSION['success'])) {
             $infos[] = $_SESSION['success'];
             unset($_SESSION['success']);
         }
@@ -230,14 +258,14 @@ class UserController extends AdminController
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // On vérifie la présence de données username et password en post
             // On va pour cela utiliser un validator
-            if (isset($_POST['firstname']) && isset($_POST['password'])) {
+            if (isset($_POST['pseudo']) && isset($_POST['password'])) {
                 // On va vérifier les données avec un validator
                 // Les regex sont gérer dans le validator
-                $firstname = htmlspecialchars($_POST['firstname']);
+                $pseudo = htmlspecialchars($_POST['pseudo']);
                 $password = htmlspecialchars($_POST['password']);
                 $userValidator = new UserValidator();
-                if (!$userValidator->isUsername($firstname)) {
-                    $errors[] = ["error" => "firstname", "message" => "Le nom n'est valide !"];
+                if (!$userValidator->isUsername($pseudo)) {
+                    $errors[] = ["error" => "pseudo", "message" => "Le pseudo n'est pas valide !"];
                 }
                 if (!$userValidator->isPassword($password)) {
                     $errors[] = ["error" => "password", "message" => "Le mot de passe n'est pas valide !"];
@@ -252,7 +280,7 @@ class UserController extends AdminController
                 // Il n'est pas utile de protege les POST car password est  hashé et username est protéger automatiquement dans la requête
                 $password = hash("sha512", $password);
                 $userManager = new UserManager();
-                $user = $userManager->findOneByFirstNameAndPassword($firstname, $password);
+                $user = $userManager->findOneByPseudoAndPassword($pseudo, $password);
                 // on vérifie l'existance de l'user
                 if (!$user) {
                     $errors[] = ["error" => "formulaire", 'message' => "L'user n'existe pas ou mauvais mot de passe"];
@@ -260,9 +288,9 @@ class UserController extends AdminController
                     return $this->redirectTo('/');
                 }
                 if (empty($errors)) {
-                    if(isset($_SESSION['route'])){
+                    if (isset($_SESSION['route'])) {
                         $route = $_SESSION['route'];
-                    }else{
+                    } else {
                         $route = '/';
                     }
                     // On enregistre l'utilisateur dans une session

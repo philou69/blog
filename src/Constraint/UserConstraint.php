@@ -22,17 +22,17 @@ class UserConstraint
     {
 
         // On vérifie s'il existe un user avec le même nom ou le même mail
-        if ($this->userManager->findByFirstnameOrMail($this->user->getFirstname(), $this->user->getMail())) {
+        if ($this->userManager->findByPseudoOrMail($this->user->getPseudo(), $this->user->getMail())) {
             return true;
         }
 
         return false;
     }
 
-    public function isNotOtherFirstName($username)
+    public function isNotOtherPseudo($pseudo)
     {
         // On regard si la réponse est un boolean
-        if($this->userManager->findByFirstname($username)){
+        if($this->userManager->findByPseudo($pseudo)){
              return true;
          }
          return false;

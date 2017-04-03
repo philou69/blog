@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Entity\User;
 use App\Manager\ContentManager;
 require_once 'app/parameters.php';
 class Controller
@@ -68,19 +69,19 @@ class Controller
     /*
      * Création de session
      */
-    protected function fillSession($user = null)
+    protected function fillSession(User $user = null)
     {
         session_unset();
         // Si user n'est pas vide, on créé une session correspondante
         if ($user) {
             $_SESSION['id'] = $user->getId();
-            $_SESSION['firstname'] = $user->getfirstname();
+            $_SESSION['pseudo'] = $user->getPseudo();
             $_SESSION['roles'] = $user->getRoles();
             $_SESSION['isconnected'] = true;
             $_SESSION['route'] = '';
         } else {
             // Sinon, on créé une session anonyme
-            $_SESSION['firstname'] = "visiteur";
+            $_SESSION['pseudo'] = "visiteur";
             $_SESSION['roles'] = ["ROLE_USER"];
             $_SESSION['isconnected'] = false;
             $_SESSION['route'] = '';

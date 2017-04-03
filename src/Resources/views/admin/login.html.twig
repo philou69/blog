@@ -19,9 +19,9 @@
                 </div>
             {% endfor %}
             <div class="form-group">
-                <label for="firstname" class="control-label col-sm-2">Nom : </label>
+                <label for="pseudo" class="control-label col-sm-2">Pseudo : </label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" name="firstname" id="firstname" value="">
+                    <input type="text" class="form-control" name="pseudo" id="pseudo" value="">
                 </div>
                 {% for error in errors if error.error == "firstname" %}
                     <div class="alert alert-danger col-sm-5">

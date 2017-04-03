@@ -13,21 +13,26 @@ class ChapterController extends AdminController
     /*
      * Liste des chapters visibles par les visiteurs
      */
-    public function chaptersAction(){
+    public function chaptersAction($page = null){
         session_start();
         // On vérifie si le visiteur viens pour la premier fois sur le site
         $this->session();
         // Récuperation des chapters publiés
+        if($page === null || !is_numeric($page)){
+            $page = 1;
+        }
         $chapterManager = new ChapterManager();
-        $chapters = $chapterManager->findPublished();
-
+        $chapters = $chapterManager->findAllPublished();
+        $offset = ((2 * $page) -2);
+        $limit = 2;
+        $numberPage = ceil(count($chapters) / $limit);
         if (!$chapters) {
             throw new \Exception("Page introuvable");
         }
         // Affichage de la vue
         echo $this->render(
             'chapters.html.twig',
-            array('chapters' => $chapters),
+            array('chapters' => $chapters, 'page' => $page, 'offset' => $offset, 'limit' => $limit, 'numberPage' => $numberPage),
             $_SESSION
         );
     }

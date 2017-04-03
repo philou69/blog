@@ -12,6 +12,15 @@
                 </div>
             {% endfor %}
             <div class="form-group">
+                <label for="pseudo" class="control-label col-sm-2">Pseudo :</label>
+                <div class="col-sm-5">
+                    <input type="text" name="pseudo" id="pseudo" value="{{ user.pesudo }}" required class="form-control">
+                </div>
+                {% for erros in errors if error.error =="pseudo" %}
+                    
+                {% endfor %}
+            </div>
+            <div class="form-group">
                 <label for="firstname" class="control-label col-sm-2">Prénom : </label>
                 <div class="col-sm-5">
                     <input type="text" class="form-control" name="firstname" id="firstname" value="{{ user.firstname }}" required>

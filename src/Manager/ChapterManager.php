@@ -159,9 +159,38 @@ class ChapterManager
         $q = $this->db->prepare("SELECT id FROM Chapter WHERE title = :title");
         $q->bindValue(':title', $title, \PDO::PARAM_STR);
         $q->execute();
-        if(is_bool($q->fetch())){
+        if (is_bool($q->fetch())) {
             return true;
         }
+
         return false;
+    }
+
+    public function findByPage($limit, $offset)
+    {
+        $chapters = [];
+        $query = $this->db->prepare(
+            'SELECT id, title, chapter, published, publishedAt FROM Chapter WHERE published = true and publishedAt < NOW() ORDER BY publishedAt LIMIT :limit, :offset'
+        );
+        $query->bindValue('limit', $limit, \PDO::PARAM_INT);
+        $query->bindValue('offset', $offset, \PDO::PARAM_INT);
+        $query->execute();
+        if ($query->rowCount() == 0) {
+            return false;
+        }
+        while ($chapter = $query->fetchObject(Chapter::class)) {
+            $chapters[] = $chapter;
+        }
+
+        return $chapters;
+    }
+
+    public function findPageNumber()
+    {
+        $query = $this->db->query(
+            'SELECT id, title, chapter, published, publishedAt FROM Chapter WHERE published = true and publishedAt < NOW() ORDER BY publishedAt '
+        );
+
+        return $query->rowCount();
     }
 }

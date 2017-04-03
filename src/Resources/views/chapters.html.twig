@@ -13,8 +13,20 @@
 {% block body %}
     <div>
         <h2 id="chapter">Les chapitres</h2>
+        <div class="text-right">
+            <ul class="pagination pagination-sm">
+                <li {% if page -1 == 0 %}class="disabled " {% endif %}>
+                    <a {% if page -1 == 0 %} disabled href=""{% else %}href="/chapters/{{ page-1 }}" {% endif %}><span class="glyphicon glyphicon-chevron-left"></span></a>
+                </li>
+                {% for i  in 1..numberPage %}
+                    <li {% if i == page %}class="active"{% endif %}><a href="/chapters/{{ i }}">{{ i }}</a></li>
+                {% endfor %}
+                <li {% if page + 1 > numberPage %}class="disabled "{% endif %}><a  {% if page + 1 > numberPage %}disabled href="" {% else %}href="/chapters/{{ page + 1 }}"{% endif %}><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+            </ul>
+        </div>
+
         <ul class="list-unstyled">
-            {% for chapter in chapters %}
+            {% for chapter in chapters | slice( offset,limit) %}
                 {% if chapter.publishedAt|date('Y-m-d') > "now"|date("Y-m-d") %}
                     <li class="well">
                         <h4>{{ chapter.title }}</h4>

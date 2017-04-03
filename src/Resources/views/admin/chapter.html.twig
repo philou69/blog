@@ -17,7 +17,11 @@
 {% endblock %}
 
 {% block body_chapter %}
-        <h2 class="text-center">Création d'un formulaire</h2>
+        <h2 class="text-center">{% if chapter.id is null %}
+            Création
+                {% else %}
+                Edition
+            {% endif %} d'un chapitre</h2>
         <form action="" method="post" class="form-horizontal">
             <div class="row">
                 {% for error in errors if error.error == "formulaire" %}

@@ -26,7 +26,7 @@ $routes["index_admin"] = ["method" => "get",
  * Route de la liste des chapitres
  */
 $routes["chapters"] = ["method" => "get",
-                "url" => "/chapters",
+                "url" => "/chapters/:page",
                 "controller" => "Chapter:chapters"];
 
 /*
