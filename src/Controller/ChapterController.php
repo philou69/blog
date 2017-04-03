@@ -22,7 +22,7 @@ class ChapterController extends AdminController
             $page = 1;
         }
         $chapterManager = new ChapterManager();
-        $chapters = $chapterManager->findAllPublished();
+        $chapters = $chapterManager->findPublished();
         $offset = ((2 * $page) -2);
         $limit = 2;
         $numberPage = ceil(count($chapters) / $limit);
